@@ -14,52 +14,102 @@
     <!-- >>>>>D3 SCRIPTS<<<<< -->
     <script type="text/javascript" src="d3/d3.js"></script>
     
-    <!-- >>>>>own SCRIPTS<<<<< -->
+    <!-- >>>>>own SCRIPTS<<<<< 
     <script type="text/javascript" src="gmuModel.js"></script>
     <script type="text/javascript" src="gmuView.js"></script>
     <script type="text/javascript" src="gmuController.js"></script>
     <script type="text/javascript" src="gmuStart.js"></script>
+    -->
   </head>
-  <body onload="gmuStart.init();">
+  <body>
     <div id="wrapper">
       <div id="gmuArt">
+
       </div>
     </div>
     <script type="text/javascript">
-      var w = window.innerWidth;
-      var h = window.innerHeight;
+      alert("running");
+      var w = window.innerWidth - 20;
+      var h = window.innerHeight - 20;
 
-      var rect_count = 800;
-      var data = [];
-      function setup_grid(){
-        
+      var rect_count = 2000;
+      var dataset = new Array();
+      setup_grid(rect_count);
+      draw_grid();
+
+      alert(dataset.length);
+      function setup_grid(r_count){
         var _p_count = w*h;
-        var _r_w = pixel_count/rect_count;
+        var _r_w = _p_count/r_count;
         var _r_h = 1;
-        while ((_r_w/_r_h) > ((_r_w*2)/(_r_h/2))){
-          _r_w = _r_w *2;
-          _r_h = _r_h /2;
+        while ((_r_w/_r_h) > ((_r_w/2)/(_r_h*2)) && ((_r_w/2)/(_r_h*2)) > 0.6) {
+          _r_w = _r_w /2;
+          _r_h = _r_h *2;
         }
-        data[data.length] = []
-        rect_w = _r_w;
-        rect_h = _r_h;
+        var _rects_per_col = Math.round(w / _r_w);
+        var _rects_per_row = Math.round(h / _r_h);
+        
+
+        alert("jetzt kommt anzahl der reihen");
+        alert(_rects_per_row);
+        alert("jetzt kommt anzahl der cols");
+        alert(_rects_per_col);
+        var _col = 0;
+        var _row = -1;
+        for(var i = 0; i < r_count; i++){
+          _col = (i % _rects_per_col) | 0;
+          if (_col == 0)
+            _row++;
+
+          dataset[i] = new Object();
+          dataset[i]["id"]      = i;
+          dataset[i]["width"]   = _r_w;
+          dataset[i]["height"]  = _r_h;
+          dataset[i]["pos_x"]   = _r_w * _col;
+          dataset[i]["pos_y"]   = _r_h * _row;
+          dataset[i]["touched"] = 0;
+        }
       }
+
       
+      
+      function draw_grid(){
+        var backgroundGrid = d3.select("#gmuArt")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", h);
+        var rects = backgroundGrid.selectAll("rect")
+          .data(dataset)
+          .enter()
+          .append("rect")
+        alert("draw rects");
+        rects.attr("id", function(d,i){return "r"+i;})
+          .attr("x", function(d,i){return dataset[i].pos_x})
+          .attr("y", function(d,i){return dataset[i].pos_y})
+          .attr("width", function(d,i){return dataset[i].width})
+          .attr("height", function(d,i){return dataset[i].height})
+          .attr("fill", "#111111")
+          .attr("stroke", "black")
+          .on("mouseover",  function(d,i) {
+            backgroundGrid.select("#r"+parseInt(d.id))
+              .transition()
+              .duration(30)
+              .attr("fill","green");
+          })
+          .on("mouseout",  function(d,i) {
+            backgroundGrid.select("#r"+parseInt(d.id))
+              .transition()
+              .duration(1000)
+              .attr("fill","#111111");
+          })
+          .on("click",  function(d,i) {
+            backgroundGrid.select("#r"+parseInt(d.id))
+              .transition()
+              .duration(1000)
+              .attr("fill","#F11111");
 
-      var backgroundGrid = d3.select("#gmuArt")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h);
-      var rects = backgroundGrid.selectAll("rect")
-        .data(data)
-        .enter()
-        .append("rect")
-
-      rects.attr("id", function(d,i){return "r"+i;})
-        .attr("x", function(d,i){return 50})
-        .attr("y", function(d,i){return 50})
-        .attr("width", function(d,i))
-
+          })
+      }
 
 
     </script>
