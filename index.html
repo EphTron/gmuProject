@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PLANTS HUMANS ROBOTS</title>
+    <meta charset="utf-8">
+    
+    <!-- >>>>>STYLESHEETS<<<<< -->
+    <link href="gmuStyle.css" rel="stylesheet" type="text/css">
+    
+    <!-- >>>>>BOOTSTRAP SCRIPTS<<<<< -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    
+    <!-- >>>>>D3 SCRIPTS<<<<< -->
+    <script type="text/javascript" src="d3/d3.js"></script>
+    
+    <!-- >>>>>own SCRIPTS<<<<< -->
+    <script type="text/javascript" src="gmuModel.js"></script>
+    <script type="text/javascript" src="gmuView.js"></script>
+    <script type="text/javascript" src="gmuController.js"></script>
+    <script type="text/javascript" src="gmuStart.js"></script>
+  </head>
+  <body onload="gmuStart.init();">
+    <div id="wrapper">
+      <div id="gmuArt">
+      </div>
+    </div>
+    <script type="text/javascript">
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+
+      var rect_count = 800;
+      var data = [];
+      function setup_grid(){
+        
+        var _p_count = w*h;
+        var _r_w = pixel_count/rect_count;
+        var _r_h = 1;
+        while ((_r_w/_r_h) > ((_r_w*2)/(_r_h/2))){
+          _r_w = _r_w *2;
+          _r_h = _r_h /2;
+        }
+        data[data.length] = []
+        rect_w = _r_w;
+        rect_h = _r_h;
+      }
+      
+
+      var backgroundGrid = d3.select("#gmuArt")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h);
+      var rects = backgroundGrid.selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+
+      rects.attr("id", function(d,i){return "r"+i;})
+        .attr("x", function(d,i){return 50})
+        .attr("y", function(d,i){return 50})
+        .attr("width", function(d,i))
+
+
+
+    </script>
+  </body>
+</html>
