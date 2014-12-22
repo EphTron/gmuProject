@@ -28,10 +28,11 @@
       </div>
     </div>
     <script type="text/javascript">
-      var w = window.innerWidth-5;
-      var h = window.innerHeight-5;
+      var w = 200;//window.innerWidth-5;
+      var h = 400;//window.innerHeight-5;
+      alert(w);
 
-      var rect_count = 4;
+      var rect_count = 8;
       var dataset = new Array();
       setup_grid(rect_count);
       draw_grid();
@@ -39,7 +40,8 @@
 
       function setup_grid(r_count){
         var _p_count = w*h;
-        var _r_w = _p_count/ r_count;
+        console.log("pixel:",_p_count);
+        var _r_w = w;
         var _r_h = h / r_count;
         var _be_low_1 = false;
 
@@ -51,22 +53,141 @@
 
         var _cur_ratio = _cur_max / _cur_min;
         var _nex_ratio = _nex_max / _nex_min;
-        while ( _cur_ratio > _nex_ratio){
-          _r_w = _r_w /2;
-          _r_h = _r_h *2;
+        var i = 0;
+        while ( _cur_ratio > _nex_ratio && (i * 2 * _r_w/2  == w)){
+
+          console.log("current:",_cur_ratio ,"next:" ,_nex_ratio);
+          console.log("current w:",_r_w ,"current h:" ,_r_h);
+          var _rects_per_col = Math.round(w / _r_w);
+          if (i * 2 * _r_w /2 == w)
+            _r_w = _r_w /2;
+            _r_h = _r_h *2;
+          console.log("after w:",_r_w ,"after h:" ,_r_h);
           _cur_max = Math.max(_r_w,_r_h);
           _cur_min = Math.min(_r_w,_r_h);
 
           _nex_max = Math.max(_r_w/2,_r_h*2);
           _nex_min = Math.min(_r_w/2,_r_h*2);
 
-          _cur_ratio = _nex_ratio;
+          _cur_ratio = _nex_ratio;//_cur_max / _cur_min;
+          _nex_ratio = _nex_max / _nex_min;
+          i++;
+        }
+        var _hor_ratio = _cur_ratio;
+        console.log("actual w:",_r_w ,"actual h:" ,_r_h, "rounds:", i);
+        
+        var _rects_per_col = Math.round(w / _r_w);
+        var _rects_per_row = Math.round(h / _r_h);
+
+        var _col = 0;
+        var _row = -1;
+        for(var i = 0; i < r_count; i++){
+          _col = (i % _rects_per_col) | 0;
+          if (_col == 0)
+            _row++;
+
+          dataset[i] = new Object();
+          dataset[i]["id"]      = i;
+          dataset[i]["width"]   = _r_w;
+          dataset[i]["height"]  = _r_h;
+          dataset[i]["pos_x"]   = _r_w * _col;
+          dataset[i]["pos_y"]   = _r_h * _row;
+          dataset[i]["touched"] = 0;
+        }
+      }
+
+      function setup_grid_slow(r_count){
+        var _p_count = w*h;
+        console.log("pixel:",_p_count);
+        var _p_per_rect = w*h / _p_count;
+        for (var i = 1; i < _p_count; i ++){
+          _r_w = i;
+          _r_h = _p_per_rect / _r_w;
+
+          var _ratio
+        }
+        var _r_h = h;
+        var _r_w = w / r_count;
+        var _be_low_1 = false;
+
+        var _cur_max = Math.max(_r_w,_r_h);
+        var _cur_min = Math.min(_r_w,_r_h);
+
+        var _nex_max = Math.max(_r_h/2,_r_w*2);
+        var _nex_min = Math.min(_r_h/2,_r_w*2);
+
+        var _cur_ratio = _cur_max / _cur_min;
+        var _nex_ratio = _nex_max / _nex_min;
+        while ( _cur_ratio > _nex_ratio){
+          console.log("current:",_cur_ratio ,"next:" ,_nex_ratio);
+          console.log("current w:",_r_w ,"current h:" ,_r_h);
+          _r_w = _r_w *2;
+          _r_h = _r_h /2;
+          console.log("after w:",_r_w ,"after h:" ,_r_h);
+          _cur_max = Math.max(_r_w,_r_h);
+          _cur_min = Math.min(_r_w,_r_h);
+
+          _nex_max = Math.max(_r_h/2,_r_w*2);
+          _nex_min = Math.min(_r_h/2,_r_w*2);
+
+          _cur_ratio = _cur_max / _cur_min;
           _nex_ratio = _nex_max / _nex_min;
         }
-
+        alert(_r_w);
+        alert(_r_h);
         
-        alert("resultat");
-        alert(_cur_ratio);
+        var _rects_per_col = Math.round(w / _r_w);
+        var _rects_per_row = Math.round(h / _r_h);
+
+        var _col = 0;
+        var _row = -1;
+        for(var i = 0; i < r_count; i++){
+          _col = (i % _rects_per_col) | 0;
+          if (_col == 0)
+            _row++;
+
+          dataset[i] = new Object();
+          dataset[i]["id"]      = i;
+          dataset[i]["width"]   = _r_w;
+          dataset[i]["height"]  = _r_h;
+          dataset[i]["pos_x"]   = _r_w * _col;
+          dataset[i]["pos_y"]   = _r_h * _row;
+          dataset[i]["touched"] = 0;
+        }
+      }
+
+      function setup_grid_h(r_count){
+        var _p_count = w*h;
+        console.log("pixel:",_p_count);
+        var _r_h = h;
+        var _r_w = w / r_count;
+        var _be_low_1 = false;
+
+        var _cur_max = Math.max(_r_w,_r_h);
+        var _cur_min = Math.min(_r_w,_r_h);
+
+        var _nex_max = Math.max(_r_h/2,_r_w*2);
+        var _nex_min = Math.min(_r_h/2,_r_w*2);
+
+        var _cur_ratio = _cur_max / _cur_min;
+        var _nex_ratio = _nex_max / _nex_min;
+        while ( _cur_ratio > _nex_ratio){
+          console.log("current:",_cur_ratio ,"next:" ,_nex_ratio);
+          console.log("current w:",_r_w ,"current h:" ,_r_h);
+          _r_w = _r_w *2;
+          _r_h = _r_h /2;
+          console.log("after w:",_r_w ,"after h:" ,_r_h);
+          _cur_max = Math.max(_r_w,_r_h);
+          _cur_min = Math.min(_r_w,_r_h);
+
+          _nex_max = Math.max(_r_h/2,_r_w*2);
+          _nex_min = Math.min(_r_h/2,_r_w*2);
+
+          _cur_ratio = _cur_max / _cur_min;
+          _nex_ratio = _nex_max / _nex_min;
+        }
+        alert(_r_w);
+        alert(_r_h);
         
         var _rects_per_col = Math.round(w / _r_w);
         var _rects_per_row = Math.round(h / _r_h);
