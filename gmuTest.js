@@ -914,3 +914,15 @@
     </script>
   </body>
 </html>
+          if (_r_w / _r_h < 1){
+            be_low_1 = true;
+            var best_res = Math.max(Math.abs(last_val-1),Math.abs(_r_w/_r_h -1));
+            if (best_res == Math.abs(last_val-1)){
+              _r_w = _r_w *2;
+              _r_h = _r_h /2;
+            }
+            else if(best_res == Math.abs(_r_w/_r_h -1)){
+              alert("ebst")
+            }
+          }
+          last_val = _r_w / _r_h;
