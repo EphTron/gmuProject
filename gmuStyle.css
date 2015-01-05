@@ -2,9 +2,11 @@ body{
 	margin:0;
 	padding:0;
 
-  background: #111F11;
+  background: #212121;
 }
 
 #gmuArt{
-  background: #00334A;
+  padding-top: 4px; 
+  padding-left: 4px;
+  background: #000000;
 }
