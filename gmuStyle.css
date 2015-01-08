@@ -3,10 +3,29 @@ body{
 	padding:0;
 
   background: #212121;
+  position: relative;
 }
 
-#gmuArt{
-  padding-top: 4px; 
-  padding-left: 4px;
-  background: #000000;
+#gmuGrid{
+  padding-top: 0px; 
+  padding-left: 0px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
 }
+
+#gmuPlant{
+  padding-top: 0px; 
+  padding-left: 0px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+svg{
+  position: absolute;
+  top: 0;
+  left: 0;
+} 

@@ -22,91 +22,240 @@
     -->
   </head>
   <body>
-    <div id="wrapper">
-      <div id="gmuArt">
+    <div id="gmuArt">
+      <div id="gmuPlant">
       </div>
+      <div id="gmuGrid">
+      </div>
+      
     </div>
     <script type="text/javascript">
-      var w = window.innerWidth-8;
-      var h = window.innerHeight-8;
+
+      //constants
+      var padding = 10
+      var w = window.innerWidth - padding;
+      var h = window.innerHeight- padding;
+      var rect_count = 500;
+      var grid_data = new Array();
+      var rect_opacity = 0.2;
+
+      var branches = 10;
+      var branch_length = 200;
+      var branch_queue = new Array();
+      var sub_branch = 4;
+      var max_sub_angle = 3*Math.PI/4 ;
+      var max_size = 8 ;
+      var plant_data = new Array();
+      var branch_count = 0;
+      var plantContainer = d3.select("#gmuPlant")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+      init_plant();
+      grow_plant();
       
+      //init_grid(rect_count);
+      //draw_grid();
 
-      var rect_count = 9000;
-      var dataset = new Array();
-      setup_grid(rect_count);
-      draw_grid();
+      function init_grid(r_count){
+        var _cols = Math.round(Math.sqrt(r_count * (w/h)));
+        var _rows = Math.round(r_count / _cols);
 
-
-      function setup_grid(r_count){
-        var _p_count = w*h;
-        console.log("pixel:",_p_count);
-
-        var _cols = Math.sqrt(r_count * (w/h));
-        var _rows = r_count / _cols;
-        _cols = Math.round(_cols);
-        _rows = Math.round(_rows);
-
-        console.log("actual rows:",_rows ,"actual cols:" ,_cols);
-
-        var _r_w = w / _cols;
-        var _r_h = h / _rows;
-        console.log("actual w:",_r_w ,"actual h:" ,_r_h);
+        var _r_w = w / _cols; // calc width of rects
+        var _r_h = h / _rows; // calc height of rects
 
         var idx = 0;
         for(var r = 0; r < _rows; r++){
           for(var c = 0; c < _cols ; c++){
-            dataset[idx] = new Object();
-            dataset[idx]["id"]      = idx;
-            dataset[idx]["width"]   = _r_w;
-            dataset[idx]["pos_y"]   = _r_h * r;
-            dataset[idx]["height"]  = _r_h;
-            dataset[idx]["pos_x"]   = _r_w * c;
-            dataset[idx]["touched"] = 0;
+            grid_data[idx] = new Object();
+            grid_data[idx]["id"]      = idx;
+            grid_data[idx]["width"]   = _r_w;
+            grid_data[idx]["pos_y"]   = _r_h * r;
+            grid_data[idx]["height"]  = _r_h;
+            grid_data[idx]["pos_x"]   = _r_w * c;
+            grid_data[idx]["touched"] = 0;
             idx++;
           }
         }
-        alert(idx-1);
+        //alert(idx-1);
       }
 
       function draw_grid(){
-        var backgroundGrid = d3.select("#gmuArt")
+        var gridContainer = d3.select("#gmuGrid")
           .append("svg")
           .attr("width", w)
           .attr("height", h);
-        var rects = backgroundGrid.selectAll("rect")
-          .data(dataset)
+
+        var rectGrid = gridContainer.selectAll("rect")
+          .data(grid_data)
           .enter()
-          .append("rect")
-        rects.attr("id", function(d,i){return "r"+i;})
-          .attr("x", function(d,i){return dataset[i].pos_x})
-          .attr("y", function(d,i){return dataset[i].pos_y})
-          .attr("width", function(d,i){return dataset[i].width})
-          .attr("height", function(d,i){return dataset[i].height})
+          .append("rect");
+
+        rectGrid.attr("id", function(d,i){return "r"+i;})
+          .attr("x", function(d,i){return grid_data[i].pos_x})
+          .attr("y", function(d,i){return grid_data[i].pos_y})
+          .attr("width", function(d,i){return grid_data[i].width})
+          .attr("height", function(d,i){return grid_data[i].height})
           .attr("fill", "#111111")
-          .attr("stroke", "#111111")
+          .attr("fill-opacity", rect_opacity)
+          .attr("stroke", "grey")
+          .attr("stroke-width", 1)
+          .attr("stroke-opacity", rect_opacity)
           .on("mouseover",  function(d,i) {
-            backgroundGrid.select("#r"+parseInt(d.id))
+            gridContainer.select("#r"+parseInt(d.id))
                           .transition()
                           .duration(30)
-                          .attr("fill","black");
+                          .attr("fill","green")
+                          .attr("fill-opacity", rect_opacity);
           })
           .on("mouseout",  function(d,i) {
-            backgroundGrid.select("#r"+parseInt(d.id))
+            gridContainer.select("#r"+parseInt(d.id))
                           .transition()
                           .duration(1000)
-                          .attr("fill","#111111");
+                          .attr("fill","#111111")
+                          .attr("fill-opacity", rect_opacity);
           })
           .on("click",  function(d,i) {
-            backgroundGrid.select("#r"+parseInt(d.id))
+            gridContainer.select("#r"+parseInt(d.id))
                           .transition()
                           .duration(1000)
-                          .attr("fill","#F11111");
-
+                          .attr("fill","#F11111")
+                          .attr("fill-opacity",1);
           })
       }
+
+      function get_random_num(){
+        return Math.floor(Math.random()*1000) - 500;
+      }
+
+      function init_plant(){
+        var _root = new Array();
+        // to do : create new point with the help of an angle
+        //var _omega = -25 * Math.PI / 180; length * Math.cos(acc.state.theta)
+        var _start = {"x":w/2, "y":h};
+        var _end = { "x": _start.x + get_random_num(), "y": _start.y - branch_length}; 
+        _root.push(_start);
+        _root.push(_end);
+
+        plant_data[0] = new Object();
+        plant_data[0]["id"] = 0;
+        plant_data[0]["branch"] = _root;
+        plant_data[0]["generation"] = 0;
+        plant_data[0]["children"] = [1,2];
+        plant_data[0]["parent"] = -1;
+        branch_count++;
+
+        branch_queue.push(0);
+      }
+
+      function create_branches(object){
+        for (i in object.children){
+          child = object.children[i];
+          plant_data[child] = new Object();
+          plant_data[child]["id"] = child;
+          plant_data[child]["branch"] = new_branch(object.id);
+          plant_data[child]["generation"] = object.generation +1;
+          plant_data[child]["children"] = [child*2+1,child*2+2];
+          plant_data[child]["parent"] = object.id;
+          branch_count++;
+
+          branch_queue.push(child);
+        }
+      }
+
+      function new_branch(idx){
+        var _branch = new Array();
+        var old_end = plant_data[idx].branch[1];
+        var _start = { "x": old_end.x, "y": old_end.y}; 
+        var _end = { "x": _start.x + get_random_num(), "y": _start.y - branch_length}; 
+        _branch.push(_start);
+        _branch.push(_end);
+
+        return _branch;
+      }
+
+      function draw_plant(){
+        for (var i = 0; i < branch_count; i++){
+          var lineFunction = d3.svg.line()
+            .x(function(d) { return d.x; })
+            .y(function(d) { return d.y; })
+            .interpolate("basis");
+
+          var plantGraph = plantContainer.append("path")
+            .attr("d", lineFunction(plant_data[i].branch))
+            .attr("id", "p"+plant_data[i].id)
+            .attr("stroke", "green")
+            .attr("stroke-width", 10)
+            .attr("fill", "none");
+
+          var plant_length = plantGraph.node().getTotalLength();
+
+          plantGraph.attr("stroke-dasharray", plant_length + " " + plant_length)
+            .attr("stroke-dashoffset", plant_length)
+            .transition()
+              .delay(plant_data[i].generation * 3000)
+              .duration(3000)
+              .ease("basis")
+              .attr("stroke-dashoffset", 0);
+        }
+      }
+
+      function draw_branches(branch_list){
+        var _branch_count = branch_list.length;
+        for (var i = 0; i < _branch_count; i++){
+          idx = branch_list.shift();
+          var lineFunction = d3.svg.line()
+            .x(function(d) { return d.x; })
+            .y(function(d) { return d.y; })
+            .interpolate("basis");
+
+          var plantGraph = plantContainer.append("path")
+            .attr("d", lineFunction(plant_data[idx].branch))
+            .attr("id", "p"+plant_data[idx].id)
+            .attr("stroke", "green")
+            .attr("stroke-width", 10)
+            .attr("fill", "none");
+
+          var plant_length = plantGraph.node().getTotalLength();
+
+          plantGraph.attr("stroke-dasharray", plant_length + " " + plant_length)
+            .attr("stroke-dashoffset", plant_length)
+            .transition()
+              //.delay(plant_data[idx].generation * 3000)
+              .duration(3000 + get_random_num())
+              .ease("basis")
+              .attr("stroke-dashoffset", 0);
+        }
+      }
+
+      function grow_plant(){
+        draw_branches([0])
+          var grow = setInterval(function(){
+            var _l = branch_queue.length;
+            for (var i = 0; i < _l; i++){
+              idx = branch_queue.shift();
+
+              create_branches(plant_data[idx]); //create children of last branch
+
+              draw_branches(plant_data[idx].children); // draw children of last branch
+              console.log(branch_count);
+              if (branch_count > 100){
+                window.clearInterval(grow);
+                console.log(plant_data);
+                break;
+              }
+            }
+            
+          }, 3000);
+        // console.log(plant_data)
+
+        //}
+        //draw_plant();
+
+      }
+
+
     </script>
   </body>
 </html>
-
-
-
