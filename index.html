@@ -35,16 +35,14 @@
       var padding = 10
       var w = window.innerWidth - padding;
       var h = window.innerHeight- padding;
-      var rect_count = 500;
+      var rect_count = 1000;
       var grid_data = new Array();
       var rect_opacity = 0.2;
 
-      var branches = 10;
-      var branch_length = 200;
+      var grow_time = 1000;
+      var max_angle = 4*Math.PI/5;
+      var branch_length = w / 16;
       var branch_queue = new Array();
-      var sub_branch = 4;
-      var max_sub_angle = 3*Math.PI/4 ;
-      var max_size = 8 ;
       var plant_data = new Array();
       var branch_count = 0;
       var plantContainer = d3.select("#gmuPlant")
@@ -55,8 +53,8 @@
       init_plant();
       grow_plant();
       
-      //init_grid(rect_count);
-      //draw_grid();
+      init_grid(rect_count);
+      draw_grid();
 
       function init_grid(r_count){
         var _cols = Math.round(Math.sqrt(r_count * (w/h)));
@@ -78,7 +76,6 @@
             idx++;
           }
         }
-        //alert(idx-1);
       }
 
       function draw_grid(){
@@ -108,6 +105,8 @@
                           .duration(30)
                           .attr("fill","green")
                           .attr("fill-opacity", rect_opacity);
+            d.touched++;
+            console.log(d.touched)
           })
           .on("mouseout",  function(d,i) {
             gridContainer.select("#r"+parseInt(d.id))
@@ -125,22 +124,19 @@
           })
       }
 
-      function get_random_num(){
-        return Math.floor(Math.random()*1000) - 500;
-      }
-
       function init_plant(){
-        var _root = new Array();
-        // to do : create new point with the help of an angle
-        //var _omega = -25 * Math.PI / 180; length * Math.cos(acc.state.theta)
+        var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
         var _start = {"x":w/2, "y":h};
-        var _end = { "x": _start.x + get_random_num(), "y": _start.y - branch_length}; 
+        var _end = { "x": _start.x + 1.5* branch_length * Math.cos(_omega), "y": _start.y + 1.5* branch_length * Math.sin(_omega)}; 
+
+        var _root = new Array();
         _root.push(_start);
         _root.push(_end);
 
         plant_data[0] = new Object();
         plant_data[0]["id"] = 0;
         plant_data[0]["branch"] = _root;
+        plant_data[0]["angle"] = _omega;
         plant_data[0]["generation"] = 0;
         plant_data[0]["children"] = [1,2];
         plant_data[0]["parent"] = -1;
@@ -153,51 +149,27 @@
         for (i in object.children){
           child = object.children[i];
           plant_data[child] = new Object();
+          
+          var _old_end = plant_data[object.id].branch[1];
+          var _old_omega = plant_data[object.id].angle;
+          var _omega = _old_omega + Math.random() * max_angle - (max_angle / 2); 
+          var _start = { "x": _old_end.x, 
+                         "y": _old_end.y}; 
+          var _end = { "x": _start.x + branch_length * Math.cos(_omega),
+                       "y": _start.y + branch_length * Math.sin(_omega)}; 
+          var _branch = new Array();
+          _branch.push(_start);
+          _branch.push(_end);
+
           plant_data[child]["id"] = child;
-          plant_data[child]["branch"] = new_branch(object.id);
+          plant_data[child]["branch"] = _branch;
+          plant_data[child]["angle"] = _omega;
           plant_data[child]["generation"] = object.generation +1;
           plant_data[child]["children"] = [child*2+1,child*2+2];
           plant_data[child]["parent"] = object.id;
           branch_count++;
 
           branch_queue.push(child);
-        }
-      }
-
-      function new_branch(idx){
-        var _branch = new Array();
-        var old_end = plant_data[idx].branch[1];
-        var _start = { "x": old_end.x, "y": old_end.y}; 
-        var _end = { "x": _start.x + get_random_num(), "y": _start.y - branch_length}; 
-        _branch.push(_start);
-        _branch.push(_end);
-
-        return _branch;
-      }
-
-      function draw_plant(){
-        for (var i = 0; i < branch_count; i++){
-          var lineFunction = d3.svg.line()
-            .x(function(d) { return d.x; })
-            .y(function(d) { return d.y; })
-            .interpolate("basis");
-
-          var plantGraph = plantContainer.append("path")
-            .attr("d", lineFunction(plant_data[i].branch))
-            .attr("id", "p"+plant_data[i].id)
-            .attr("stroke", "green")
-            .attr("stroke-width", 10)
-            .attr("fill", "none");
-
-          var plant_length = plantGraph.node().getTotalLength();
-
-          plantGraph.attr("stroke-dasharray", plant_length + " " + plant_length)
-            .attr("stroke-dashoffset", plant_length)
-            .transition()
-              .delay(plant_data[i].generation * 3000)
-              .duration(3000)
-              .ease("basis")
-              .attr("stroke-dashoffset", 0);
         }
       }
 
@@ -214,7 +186,7 @@
             .attr("d", lineFunction(plant_data[idx].branch))
             .attr("id", "p"+plant_data[idx].id)
             .attr("stroke", "green")
-            .attr("stroke-width", 10)
+            .attr("stroke-width", 10 / ((plant_data[idx].generation) + 1) * 2)
             .attr("fill", "none");
 
           var plant_length = plantGraph.node().getTotalLength();
@@ -223,13 +195,15 @@
             .attr("stroke-dashoffset", plant_length)
             .transition()
               //.delay(plant_data[idx].generation * 3000)
-              .duration(3000 + get_random_num())
+              .duration(grow_time)
               .ease("basis")
               .attr("stroke-dashoffset", 0);
         }
       }
 
       function grow_plant(){
+
+      
         draw_branches([0])
           var grow = setInterval(function(){
             var _l = branch_queue.length;
@@ -239,19 +213,13 @@
               create_branches(plant_data[idx]); //create children of last branch
 
               draw_branches(plant_data[idx].children); // draw children of last branch
-              console.log(branch_count);
-              if (branch_count > 100){
+              if (branch_count > 300){
                 window.clearInterval(grow);
-                console.log(plant_data);
                 break;
               }
             }
             
-          }, 3000);
-        // console.log(plant_data)
-
-        //}
-        //draw_plant();
+          }, grow_time)
 
       }
 
