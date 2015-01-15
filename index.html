@@ -12,14 +12,9 @@
     <script src="https://code.jquery.com/jquery.js"></script>
     
     <!-- >>>>>D3 SCRIPTS<<<<< -->
-    <script type="text/javascript" src="d3/d3.js"></script>
-    
-    <!-- >>>>>own SCRIPTS<<<<< 
-    <script type="text/javascript" src="gmuModel.js"></script>
-    <script type="text/javascript" src="gmuView.js"></script>
-    <script type="text/javascript" src="gmuController.js"></script>
-    <script type="text/javascript" src="gmuStart.js"></script>
-    -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!--<script type="text/javascript" src="d3/d3.min.js"></script>-->
+
   </head>
   <body>
     <div id="gmuArt">
@@ -35,23 +30,30 @@
       var padding = 10
       var w = window.innerWidth - padding;
       var h = window.innerHeight- padding;
+      var cols = 0;
+      var rows = 0;
       var rect_count = 1000;
       var grid_data = new Array();
       var rect_opacity = 0.2;
+      var gridContainer = d3.select("#gmuGrid")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", h);
 
-      var grow_time = 1000;
-      var max_angle = 4*Math.PI/5;
-      var branch_length = w / 16;
+      var grow_time = 3000;
+      var max_angle = 3*Math.PI/4;
+      var branch_length = w / 15;
       var branch_queue = new Array();
       var plant_data = new Array();
       var branch_count = 0;
-      var plantContainer = d3.select("#gmuPlant")
+      var artContainer = d3.select("#gmuPlant")
             .append("svg")
             .attr("width", w)
             .attr("height", h);
 
       init_plant();
       grow_plant();
+      
       
       init_grid(rect_count);
       draw_grid();
@@ -76,14 +78,11 @@
             idx++;
           }
         }
+        cols = _cols;
+        rows = _rows;
       }
 
       function draw_grid(){
-        var gridContainer = d3.select("#gmuGrid")
-          .append("svg")
-          .attr("width", w)
-          .attr("height", h);
-
         var rectGrid = gridContainer.selectAll("rect")
           .data(grid_data)
           .enter()
@@ -126,11 +125,16 @@
 
       function init_plant(){
         var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
-        var _start = {"x":w/2, "y":h};
-        var _end = { "x": _start.x + 1.5* branch_length * Math.cos(_omega), "y": _start.y + 1.5* branch_length * Math.sin(_omega)}; 
+        var _start = { "x":w/2, 
+                       "y":h};
+        var _middle = { "x": _start.x + branch_length * Math.cos(_omega) * 0.5,
+                        "y": _start.y + (branch_length * Math.sin(_omega) * 0.5) + 20}; 
+        var _end = { "x": _start.x + 2.5* branch_length * Math.cos(_omega), 
+                     "y": _start.y + 1.5* branch_length * Math.sin(_omega)}; 
 
         var _root = new Array();
         _root.push(_start);
+        _root.push(_middle)
         _root.push(_end);
 
         plant_data[0] = new Object();
@@ -150,15 +154,19 @@
           child = object.children[i];
           plant_data[child] = new Object();
           
-          var _old_end = plant_data[object.id].branch[1];
+          var _old_end = plant_data[object.id].branch[2];
           var _old_omega = plant_data[object.id].angle;
           var _omega = _old_omega + Math.random() * max_angle - (max_angle / 2); 
           var _start = { "x": _old_end.x, 
-                         "y": _old_end.y}; 
+                         "y": _old_end.y};
+          var _test_test = find_hotspot(_start, grid_data);
+          var _middle = { "x": _start.x + branch_length * Math.cos(_omega/2) * 0.5,
+                          "y": _start.y + (branch_length * Math.sin(_omega/2) * 0.5) + (Math.random() * 20) - 10 }; 
           var _end = { "x": _start.x + branch_length * Math.cos(_omega),
                        "y": _start.y + branch_length * Math.sin(_omega)}; 
           var _branch = new Array();
           _branch.push(_start);
+          _branch.push(_middle);
           _branch.push(_end);
 
           plant_data[child]["id"] = child;
@@ -173,6 +181,28 @@
         }
       }
 
+      function find_hotspot(location, data){
+
+        console.log("start: ", location.x,  location.y);
+        console.log("w und h: ",  data[0].width,  data[0].height);
+        var _r_pos_x = Math.floor(location.x / data[0].width);
+        var _r_pos_y = Math.floor(location.y / data[0].height);
+        console.log("so: ", _r_pos_x, _r_pos_y);
+        console.log("spalte:",data[0].width * _r_pos_x);
+        console.log("zeile:",data[0].height * _r_pos_y);
+        var _r_id = (_r_pos_y) * cols + _r_pos_x;
+        gridContainer.select("#r"+parseInt(_r_id))
+                          .transition()
+                          .duration(100)
+                          .attr("fill","#1111F1")
+                          .attr("fill-opacity",0.5);
+
+
+        var _point = { "x": 0, 
+                       "y": 0};
+        return _point
+      }
+
       function draw_branches(branch_list){
         var _branch_count = branch_list.length;
         for (var i = 0; i < _branch_count; i++){
@@ -180,13 +210,13 @@
           var lineFunction = d3.svg.line()
             .x(function(d) { return d.x; })
             .y(function(d) { return d.y; })
-            .interpolate("basis");
+            .interpolate("linear");
 
-          var plantGraph = plantContainer.append("path")
+          var plantGraph = artContainer.append("path")
             .attr("d", lineFunction(plant_data[idx].branch))
             .attr("id", "p"+plant_data[idx].id)
             .attr("stroke", "green")
-            .attr("stroke-width", 10 / ((plant_data[idx].generation) + 1) * 2)
+            .attr("stroke-width", 5 - (plant_data[idx].generation) * 0.4)
             .attr("fill", "none");
 
           var plant_length = plantGraph.node().getTotalLength();
@@ -202,8 +232,6 @@
       }
 
       function grow_plant(){
-
-      
         draw_branches([0])
           var grow = setInterval(function(){
             var _l = branch_queue.length;
@@ -213,7 +241,7 @@
               create_branches(plant_data[idx]); //create children of last branch
 
               draw_branches(plant_data[idx].children); // draw children of last branch
-              if (branch_count > 300){
+              if (branch_count > 100){
                 window.clearInterval(grow);
                 break;
               }
