@@ -35,12 +35,12 @@
       var padding = 10
       var w = window.innerWidth - padding;
       var h = window.innerHeight- padding;
-      var rect_count = 1000;
+      var rect_count = 500;
       var grid_data = new Array();
       var rect_opacity = 0.2;
 
       var grow_time = 1000;
-      var max_angle = 4*Math.PI/5;
+      var max_angle = 3*Math.PI/4;
       var branch_length = w / 16;
       var branch_queue = new Array();
       var plant_data = new Array();
@@ -125,7 +125,7 @@
       }
 
       function init_plant(){
-        var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
+        var _omega = -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
         var _start = {"x":w/2, "y":h};
         var _end = { "x": _start.x + 1.5* branch_length * Math.cos(_omega), "y": _start.y + 1.5* branch_length * Math.sin(_omega)}; 
 
@@ -186,7 +186,7 @@
             .attr("d", lineFunction(plant_data[idx].branch))
             .attr("id", "p"+plant_data[idx].id)
             .attr("stroke", "green")
-            .attr("stroke-width", 10 / ((plant_data[idx].generation) + 1) * 2)
+            .attr("stroke-width", 10 - plant_data[idx].generation)
             .attr("fill", "none");
 
           var plant_length = plantGraph.node().getTotalLength();
@@ -202,25 +202,21 @@
       }
 
       function grow_plant(){
-
-      
         draw_branches([0])
-          var grow = setInterval(function(){
-            var _l = branch_queue.length;
-            for (var i = 0; i < _l; i++){
-              idx = branch_queue.shift();
+        var grow = setInterval(function(){
+          var _l = branch_queue.length;
+          for (var i = 0; i < _l; i++){
+            idx = branch_queue.shift();
 
-              create_branches(plant_data[idx]); //create children of last branch
+            create_branches(plant_data[idx]); //create children of last branch
 
-              draw_branches(plant_data[idx].children); // draw children of last branch
-              if (branch_count > 300){
-                window.clearInterval(grow);
-                break;
-              }
+            draw_branches(plant_data[idx].children); // draw children of last branch
+            if (branch_count > 500){
+              window.clearInterval(grow);
+              break;
             }
-            
-          }, grow_time)
-
+          } 
+        }, grow_time)
       }
 
 
