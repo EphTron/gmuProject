@@ -26,7 +26,7 @@
     </div>
     <script type="text/javascript">
 
-      //constants
+      // constants
       var padding = 10
       var w = window.innerWidth - padding;
       var h = window.innerHeight- padding;
@@ -51,13 +51,14 @@
             .attr("width", w)
             .attr("height", h);
 
+      // run
       init_plant();
       grow_plant();
-      
       
       init_grid(rect_count);
       draw_grid();
 
+      // functions
       function init_grid(r_count){
         var _cols = Math.round(Math.sqrt(r_count * (w/h)));
         var _rows = Math.round(r_count / _cols);
@@ -182,16 +183,10 @@
       }
 
       function find_hotspot(location, data){
-
-        console.log("start: ", location.x,  location.y);
-        console.log("w und h: ",  data[0].width,  data[0].height);
-        var _r_pos_x = Math.floor(location.x / data[0].width);
-        var _r_pos_y = Math.floor(location.y / data[0].height);
-        console.log("so: ", _r_pos_x, _r_pos_y);
-        console.log("spalte:",data[0].width * _r_pos_x);
-        console.log("zeile:",data[0].height * _r_pos_y);
-        var _r_id = (_r_pos_y) * cols + _r_pos_x;
-        gridContainer.select("#r"+parseInt(_r_id))
+        var _location_on_grid_x = Math.floor(location.x / data[0].width);
+        var _location_on_grid_y = Math.floor(location.y / data[0].height);
+        var _location_rect_id = (_location_on_grid_y) * cols + _location_on_grid_x;
+        gridContainer.select("#r"+parseInt(_location_rect_id))
                           .transition()
                           .duration(100)
                           .attr("fill","#1111F1")
@@ -210,7 +205,7 @@
           var lineFunction = d3.svg.line()
             .x(function(d) { return d.x; })
             .y(function(d) { return d.y; })
-            .interpolate("linear");
+            .interpolate("basis");
 
           var plantGraph = artContainer.append("path")
             .attr("d", lineFunction(plant_data[idx].branch))
