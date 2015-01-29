@@ -6,6 +6,17 @@ body{
   position: relative;
 }
 
+#webside{
+  padding-top: 500px; 
+  padding-left: 500px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  pointer-events: inherit;
+}
+
 #gmuGrid{
   padding-top: 0px; 
   padding-left: 0px;
@@ -22,10 +33,22 @@ body{
   position: absolute;
   top: 0;
   left: 0;
+
+  pointer-events: none;
 }
 
 svg{
   position: absolute;
   top: 0;
   left: 0;
+
+  pointer-events: none;
+} 
+
+path{
+  pointer-events: all;
+}
+
+rect{
+  pointer-events: all;
 } 
