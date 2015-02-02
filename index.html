@@ -12,97 +12,285 @@
     <script src="https://code.jquery.com/jquery.js"></script>
     
     <!-- >>>>>D3 SCRIPTS<<<<< -->
-    <script type="text/javascript" src="d3/d3.js"></script>
-    
-    <!-- >>>>>own SCRIPTS<<<<< 
-    <script type="text/javascript" src="gmuModel.js"></script>
-    <script type="text/javascript" src="gmuView.js"></script>
-    <script type="text/javascript" src="gmuController.js"></script>
-    <script type="text/javascript" src="gmuStart.js"></script>
-    -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!--<script type="text/javascript" src="d3/d3.min.js"></script>-->
+
   </head>
   <body>
-    <div id="wrapper">
-      <div id="gmuArt">
-
+    <div id="gmuArt">
+      <div id="website">
+        <form action="input_button.htm">
+          <p>
+            <textarea cols="20" rows="4" name="textfeld"></textarea>
+            <input id="b1" type="button" name="Text 1" value="Text 1 anzeigen"
+              onclick="this.form.textfeld.value='Text 1 und rückwärts seltsam geschrieben ich bin.'">
+            <input id="b2" type="button" name="Text 2" value="Text 2 anzeigen"
+              onclick="this.form.textfeld.value='Ich bin Text 2 - ganz normal'">
+          </p>
+        </form>
       </div>
+      <div id="gmuPlant">
+      </div>
+      <div id="gmuGrid">
+      </div>
+      
     </div>
     <script type="text/javascript">
-      var w = window.innerWidth - 20;
-      var h = window.innerHeight - 20;
 
-      var rect_count = 2000;
-      var dataset = new Array();
-      setup_grid(rect_count);
-      draw_grid();
+      var mouse = {x: 0, y: 0};
 
-      alert(dataset.length);
-      function setup_grid(r_count){
-        var _p_count = w*h;
-        var _r_w = _p_count/r_count;
-        var _r_h = 1;
-        while ((_r_w/_r_h) > ((_r_w/2)/(_r_h*2)) && ((_r_w/2)/(_r_h*2)) > 0.6) {
-          _r_w = _r_w /2;
-          _r_h = _r_h *2;
-        }
-        var _rects_per_col = Math.round(w / _r_w);
-        var _rects_per_row = Math.round(h / _r_h);
-        
-        var _col = 0;
-        var _row = -1;
-        for(var i = 0; i < r_count; i++){
-          _col = (i % _rects_per_col) | 0;
-          if (_col == 0)
-            _row++;
+      document.addEventListener('mousemove', function(e){ 
+        mouse.x = e.clientX || e.pageX; 
+        mouse.y = e.clientY || e.pageY 
+      }, false);
 
-          dataset[i] = new Object();
-          dataset[i]["id"]      = i;
-          dataset[i]["width"]   = _r_w;
-          dataset[i]["height"]  = _r_h;
-          dataset[i]["pos_x"]   = _r_w * _col;
-          dataset[i]["pos_y"]   = _r_h * _row;
-          dataset[i]["touched"] = 0;
-        }
-      }
-
-      
-      
-      function draw_grid(){
-        var backgroundGrid = d3.select("#gmuArt")
+      // constants
+      var padding = 10
+      var w = window.innerWidth - padding;
+      var h = window.innerHeight- padding;
+      var cols = 0;
+      var rows = 0;
+      var rect_count = 1000;
+      var grid_data = new Array();
+      var rect_opacity = 0.2;
+      var hotspot_list = new Array();
+      var gridContainer = d3.select("#gmuGrid")
           .append("svg")
           .attr("width", w)
           .attr("height", h);
-        var rects = backgroundGrid.selectAll("rect")
-          .data(dataset)
+
+      var grow_time = 3000;
+      var max_angle = 3*Math.PI/4;
+      var branch_length = w / 15;
+      var branch_queue = new Array();
+      var plant_data = new Array();
+      var branch_count = 0;
+      var artContainer = d3.select("#gmuPlant")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+      // run
+      init_plant();
+      grow_plant();
+      
+      init_grid(rect_count);
+      draw_grid();
+
+      // functions
+      function init_grid(r_count){
+        cols = Math.round(Math.sqrt(r_count * (w/h)));
+        rows = Math.round(r_count / cols);
+
+        var _r_w = w / cols; // calc width of rects
+        var _r_h = h / rows; // calc height of rects
+
+        var idx = 0;
+        for(var r = 0; r < rows; r++){
+          for(var c = 0; c < cols ; c++){
+            grid_data[idx] = new Object();
+            grid_data[idx]["id"]      = idx;
+            grid_data[idx]["width"]   = _r_w;
+            grid_data[idx]["pos_y"]   = _r_h * r;
+            grid_data[idx]["height"]  = _r_h;
+            grid_data[idx]["pos_x"]   = _r_w * c;
+            grid_data[idx]["touched"] = 0;
+            idx++;
+          }
+        }
+      }
+
+      function get_element_under_rect(x,y){
+        var resulting_element;
+        var first_element = document.elementFromPoint(x,y);
+        //check if first_element is a rect
+        if (first_element.nodeName == "rect") {
+          _display = first_element.style.display;             // save display of rect
+          first_element.style.display = "none";      // make rect invisible
+          resulting_element = document.elementFromPoint(x,y); 
+          first_element.style.display = _display;    // reset display
+        } else {
+          resulting_element = first_element;
+        }
+        return resulting_element;
+      }
+
+      function draw_grid(){
+        var rectGrid = gridContainer.selectAll("rect")
+          .data(grid_data)
           .enter()
-          .append("rect")
-        alert("draw rects");
-        rects.attr("id", function(d,i){return "r"+i;})
-          .attr("x", function(d,i){return dataset[i].pos_x})
-          .attr("y", function(d,i){return dataset[i].pos_y})
-          .attr("width", function(d,i){return dataset[i].width})
-          .attr("height", function(d,i){return dataset[i].height})
+          .append("rect");
+
+        rectGrid.attr("id", function(d,i){return "r"+i;})
+          .attr("x", function(d,i){return grid_data[i].pos_x})
+          .attr("y", function(d,i){return grid_data[i].pos_y})
+          .attr("width", function(d,i){return grid_data[i].width})
+          .attr("height", function(d,i){return grid_data[i].height})
           .attr("fill", "#111111")
-          .attr("stroke", "black")
+          .attr("fill-opacity", rect_opacity)
+          .attr("stroke", "grey")
+          .attr("stroke-width", 1)
+          .attr("stroke-opacity", rect_opacity)
+          .style("pointer-events","auto")
           .on("mouseover",  function(d,i) {
-            backgroundGrid.select("#r"+parseInt(d.id))
-              .transition()
-              .duration(30)
-              .attr("fill","green");
+            gridContainer.select("#r"+parseInt(d.id))
+                          .transition()
+                          .duration(30)
+                          .attr("fill","green")
+                          .attr("fill-opacity", rect_opacity);
+            d.touched++;
           })
           .on("mouseout",  function(d,i) {
-            backgroundGrid.select("#r"+parseInt(d.id))
-              .transition()
-              .duration(1000)
-              .attr("fill","#111111");
+            gridContainer.select("#r"+parseInt(d.id))
+                          .transition()
+                          .duration(1000)
+                          .attr("fill","#111111")
+                          .attr("fill-opacity", rect_opacity);
           })
-          .on("click",  function(d,i) {
-            backgroundGrid.select("#r"+parseInt(d.id))
-              .transition()
-              .duration(1000)
-              .attr("fill","#F11111");
+          .on("click", function(d,i) {
+            var element = get_element_under_rect( mouse.x, mouse.y );
+            element.click();
+          }); 
+      }
 
-          })
+      function update_hotspots(id){
+        grid_data[id].touched++;
+        // add rect to hotspot_list
+        // sort hotspot_list
+
+        hotspot_list.push(grid_data[id]);
+        // update rect color
+
+        // use hotspot list to calc near hotspot while growing
+        // -> see find_near_hotspor()
+      }
+
+      function init_plant(){
+        var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
+        var _start = { "x":w/2, 
+                       "y":h};
+        var _middle = { "x": _start.x + branch_length * Math.cos(_omega) * 0.5+ 20,
+                        "y": _start.y + (branch_length * Math.sin(_omega) * 0.5)}; 
+        var _end = { "x": _start.x + 2.5* branch_length * Math.cos(_omega), 
+                     "y": _start.y + 1.5* branch_length * Math.sin(_omega)}; 
+
+        var _root = new Array();
+        _root.push(_start);
+        _root.push(_middle)
+        _root.push(_end);
+
+        plant_data[0] = new Object();
+        plant_data[0]["id"] = 0;
+        plant_data[0]["branch"] = _root;
+        plant_data[0]["angle"] = _omega;
+        plant_data[0]["generation"] = 0;
+        plant_data[0]["children"] = [1,2];
+        plant_data[0]["parent"] = -1;
+        branch_count++;
+
+        branch_queue.push(0);
+      }
+
+      function create_branches(object){
+        for (i in object.children){
+          child = object.children[i];
+          plant_data[child] = new Object();
+          
+          var _old_end = plant_data[object.id].branch[2];
+          var _old_omega = plant_data[object.id].angle;
+          var _omega = _old_omega + Math.random() * max_angle - (max_angle / 2); 
+          var _start = { "x": _old_end.x, 
+                         "y": _old_end.y};
+          var _test_test = find_near_hotspot(_start, grid_data);
+
+          var _middle = { "x": _start.x + branch_length * Math.cos(_omega/1.2) * 0.5 + (Math.random() * 200) - 100,
+                          "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
+
+          var _end = { "x": _start.x + branch_length * Math.cos(_omega),
+                       "y": _start.y + branch_length * Math.sin(_omega)}; 
+          var _branch = new Array();
+          _branch.push(_start);
+          _branch.push(_middle);
+          _branch.push(_end);
+
+          plant_data[child]["id"] = child;
+          plant_data[child]["branch"] = _branch;
+          plant_data[child]["angle"] = _omega;
+          plant_data[child]["generation"] = object.generation +1;
+          plant_data[child]["children"] = [child*2+1,child*2+2];
+          plant_data[child]["parent"] = object.id;
+          branch_count++;
+
+          branch_queue.push(child);
+        }
+      }
+
+      function find_near_hotspot(location, data){
+        var _location_on_grid_x = Math.floor(location.x / data[0].width);
+        var _location_on_grid_y = Math.floor(location.y / data[0].height);
+        var _location_rect_id = (_location_on_grid_y) * cols + _location_on_grid_x;
+
+        gridContainer.select("#r"+parseInt(_location_rect_id))
+                          .transition()
+                          .duration(100)
+                          .attr("fill","#1111F1")
+                          .attr("fill-opacity",0.5);
+
+
+        var _point = { "x": 0, 
+                       "y": 0};
+        return _point
+      }
+
+      function draw_branches(branch_list){
+        var _branch_count = branch_list.length;
+        for (var i = 0; i < _branch_count; i++){
+          idx = branch_list.shift();
+          var lineFunction = d3.svg.line()
+            .x(function(d) { return d.x; })
+            .y(function(d) { return d.y; })
+            .interpolate("basis");
+
+          var plantGraph = artContainer.append("path")
+            .attr("d", lineFunction(plant_data[idx].branch))
+            .attr("id", "p"+plant_data[idx].id)
+            .attr("stroke", "green")
+            .attr("stroke-width", 5 - (plant_data[idx].generation) * 0.4)
+            .attr("fill", "none")
+            .on("mouseover",  function(d,i) {
+              console.log("testetsestset")
+          });
+
+          var plant_length = plantGraph.node().getTotalLength();
+
+          plantGraph.attr("stroke-dasharray", plant_length + " " + plant_length)
+            .attr("stroke-dashoffset", plant_length)
+            .transition()
+              //.delay(plant_data[idx].generation * 3000)
+              .duration(grow_time)
+              .ease("basis")
+              .attr("stroke-dashoffset", 0);
+        }
+      }
+
+      function grow_plant(){
+        draw_branches([0])
+
+        var grow = setInterval(function(){
+          var _l = branch_queue.length;
+          for (var i = 0; i < _l; i++){
+            idx = branch_queue.shift();
+
+            create_branches(plant_data[idx]); //create children of last branch
+
+            draw_branches(plant_data[idx].children); // draw children of last branch
+            if (branch_count > 500){
+              window.clearInterval(grow);
+              break;
+            }
+          }
+          
+        }, grow_time)
       }
 
 

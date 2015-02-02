@@ -2,5 +2,54 @@ body{
 	margin:0;
 	padding:0;
 
-  background: #111111;
+  background: #212121;
+  position: relative;
+}
+
+#website{
+  padding-top: 500px; 
+  padding-left: 500px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto;
+}
+
+#gmuGrid{
+  padding-top: 0px; 
+  padding-left: 0px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: stroke;
+}
+
+#gmuPlant{
+  padding-top: 0px; 
+  padding-left: 0px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#button{
+  pointer-events: auto;
+}
+
+svg{
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+} 
+
+path{
+  pointer-events: all;
+}
+
+rect{
+  pointer-events: auto;
 }
