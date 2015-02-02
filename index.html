@@ -18,13 +18,13 @@
   </head>
   <body>
     <div id="gmuArt">
-      <div id="webside">
+      <div id="website">
         <form action="input_button.htm">
           <p>
             <textarea cols="20" rows="4" name="textfeld"></textarea>
-            <input type="button" name="Text 1" value="Text 1 anzeigen"
+            <input id="b1" type="button" name="Text 1" value="Text 1 anzeigen"
               onclick="this.form.textfeld.value='Text 1 und rückwärts seltsam geschrieben ich bin.'">
-            <input type="button" name="Text 2" value="Text 2 anzeigen"
+            <input id="b2" type="button" name="Text 2" value="Text 2 anzeigen"
               onclick="this.form.textfeld.value='Ich bin Text 2 - ganz normal'">
           </p>
         </form>
@@ -36,6 +36,13 @@
       
     </div>
     <script type="text/javascript">
+
+      var mouse = {x: 0, y: 0};
+
+      document.addEventListener('mousemove', function(e){ 
+        mouse.x = e.clientX || e.pageX; 
+        mouse.y = e.clientY || e.pageY 
+      }, false);
 
       // constants
       var padding = 10
@@ -93,6 +100,21 @@
         }
       }
 
+      function get_element_under_rect(x,y){
+        var resulting_element;
+        var first_element = document.elementFromPoint(x,y);
+        //check if first_element is a rect
+        if (first_element.nodeName == "rect") {
+          _display = first_element.style.display;             // save display of rect
+          first_element.style.display = "none";      // make rect invisible
+          resulting_element = document.elementFromPoint(x,y); 
+          first_element.style.display = _display;    // reset display
+        } else {
+          resulting_element = first_element;
+        }
+        return resulting_element;
+      }
+
       function draw_grid(){
         var rectGrid = gridContainer.selectAll("rect")
           .data(grid_data)
@@ -109,6 +131,7 @@
           .attr("stroke", "grey")
           .attr("stroke-width", 1)
           .attr("stroke-opacity", rect_opacity)
+          .style("pointer-events","auto")
           .on("mouseover",  function(d,i) {
             gridContainer.select("#r"+parseInt(d.id))
                           .transition()
@@ -124,13 +147,10 @@
                           .attr("fill","#111111")
                           .attr("fill-opacity", rect_opacity);
           })
-          .on("click",  function(d,i) {
-            gridContainer.select("#r"+parseInt(d.id))
-                          .transition()
-                          .duration(1000)
-                          .attr("fill","#F11111")
-                          .attr("fill-opacity",1);
-          })
+          .on("click", function(d,i) {
+            var element = get_element_under_rect( mouse.x, mouse.y );
+            element.click();
+          }); 
       }
 
       function update_hotspots(id){
