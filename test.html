@@ -59,11 +59,10 @@
           .attr("width", w)
           .attr("height", h);
 
-      var draw_process = 0;
-      var draw_limit = 50;
+      var max_depth = 3;
       var grow_time = 3000;
       var max_angle = 3*Math.PI/4;
-      var branch_length = w / 15;
+      var branch_length = w / 40;
       var branch_queue = new Array();
       var plant_data = new Array();
       var branch_count = 0;
@@ -74,8 +73,7 @@
 
       // run
       init_plant();
-      grow_plant();
-      //grow_tree(0,1000);
+      grow_plant(0);
       
       init_grid(rect_count);
       draw_grid();
@@ -192,6 +190,7 @@
         branch_count++;
 
         branch_queue.push(0);
+        draw_branches([0]);
       }
 
       function create_branches(object){
@@ -276,77 +275,23 @@
               .attr("stroke-dashoffset", 0);
         }
       }
-      // test function - to do - if not working use draw_branches()
-      function draw_branch(branch, time){
-        var lineFunction = d3.svg.line()
-          .x(function(d) { return d.x; })
-          .y(function(d) { return d.y; })
-          .interpolate("basis");
 
-        var plantGraph = artContainer.append("path")
-          .attr("d", lineFunction(branch.branch))
-          .attr("id", "p" + branch.id)
-          .attr("stroke", "green")
-          .attr("stroke-width", 5 - (branch.generation) * 0.4)
-          .attr("fill", "none")
-          .on("mouseover",  function(d,i) {
-            console.log("mouse over branch")
-        });
+      function grow_plant(iterations){
+        if(iterations < max_depth){
+          setTimeout(function(){
+            var _l = branch_queue.length;
+            console.log(_l)
+            for (var i = 0; i < _l; i++){
+              idx = branch_queue.shift();
 
-        var plant_length = plantGraph.node().getTotalLength();
+              create_branches(plant_data[idx]); //create children of last branch
 
-        plantGraph.attr("stroke-dasharray", plant_length + " " + plant_length)
-          .attr("stroke-dashoffset", plant_length)
-          .transition()
-            //.delay(plant_data[idx].generation * 3000)
-            .duration(time)
-            .ease("basis")
-            .attr("stroke-dashoffset", 0);
-      }
-      // test function - to do - if not working use grow_plant()
-      function grow_tree(idx, time){
-        if(branch_count < 100){
-          if (draw_process < draw_limit){
-            branch_queue.splice(0,1); // delete first element from  branch_queue
-            draw_process++;
-            draw_branch(plant_data[idx],randomIntFromInterval(900,1100))
-            setTimeout(function() {
-              draw_process--;
-              create_branches(plant_data[idx]);
-              var _l = branch_queue.length;
-              for (var i = 0; i < _l; i++){
-                idx = branch_queue.shift();
-                grow_tree(idx,time);
-              }
-            }, time);
-          }
-          else if (draw_process >= draw_limit){
-            branch_queue.unshift(idx)
-          }
-        }
-      }
-
-      function grow_plant(){
-        draw_branches([0])
-
-        var grow = setInterval(function(){
-          var _l = branch_queue.length;
-          for (var i = 0; i < _l; i++){
-            idx = branch_queue.shift();
-
-            create_branches(plant_data[idx]); //create children of last branch
-
-            draw_branches(plant_data[idx].children); // draw children of last branch
-            if (branch_count > 500){
-              window.clearInterval(grow);
-              break;
+              draw_branches(plant_data[idx].children); // draw children of last branch
             }
-          }
-        }, grow_time)
-      }
-
-      function randomIntFromInterval(min,max){
-        return Math.floor(Math.random()*(max-min+1)+min);
+            iterations++;
+            grow_plant(iterations);
+          }, grow_time);
+        }
       }
 
 
