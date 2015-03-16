@@ -74,8 +74,8 @@
             .attr("height", h);
 
       // run
-      init_plant();
-      grow_plant(0,9);
+      init_tendril();
+      grow_tendril(0,10);
       
       init_grid(rect_count);
       draw_grid();
@@ -192,34 +192,6 @@
         // -> see find_near_hotspor()
       }
 
-      function init_plant(){
-        var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
-        var _start = { "x":w/2, 
-                       "y":h};
-        //var _middle = { "x": _start.x + branch_length * Math.cos(_omega) * 0.5+ 20,
-        //                "y": _start.y + (branch_length * Math.sin(_omega) * 0.5)}; 
-        var _end = { "x": _start.x + 2.5* branch_length * Math.cos(_omega), 
-                     "y": _start.y + 4.5* branch_length * Math.sin(_omega)}; 
-
-        var _root = new Array();
-        _root.push(_start);
-        //_root.push(_middle)
-        _root.push(_end);
-
-        plant_data[0] = new Object();
-        plant_data[0]["id"] = 0;
-        plant_data[0]["branch"] = _root;
-        plant_data[0]["angle"] = _omega;
-        plant_data[0]["generation"] = 0;
-        plant_data[0]["children"] = [1,2];
-        plant_data[0]["parent"] = -1;
-        branch_count++;
-
-        branch_queue.push(0);
-        draw_branches([0]);
-      }
-
-
       function init_tendril(){
         var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
         var _start = { "x":w/2, 
@@ -248,48 +220,9 @@
         draw_branches([0]);
       }
 
-      function create_branches(object){
-        for (i in object.children){
-          child = object.children[i];
-          plant_data[child] = new Object();
-          
-          var _old_end = plant_data[object.id].branch[1];
-          var _old_omega = plant_data[object.id].angle;
-          var _omega = _old_omega + Math.random() * max_angle - (max_angle / 2); 
-          var _start = { "x": _old_end.x, 
-                         "y": _old_end.y};
-
-          //var _middle = { "x": _start.x + branch_length * Math.cos(_omega/1.2) * 0.5 + (Math.random() * 200) - 100,
-          //                "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
-
-          //var _end = find_hottest_hotspot(_start);
-          var _end = find_closest_hotspot(_start, 10);
-          if (_end.x == 0 && _end.y == 0){
-            console.log("random");
-            _end = find_hottest_hotspot(_start);
-          }
-          //var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-          //            "y": _start.y + branch_length * Math.sin(_omega)};
-
-          var _branch = new Array();
-          _branch.push(_start);
-          //_branch.push(_middle);
-          _branch.push(_end);
-
-          plant_data[child]["id"] = child;
-          plant_data[child]["branch"] = _branch;
-          plant_data[child]["angle"] = _omega;
-          plant_data[child]["generation"] = object.generation +1;
-          plant_data[child]["children"] = [child*2+1,child*2+2];
-          plant_data[child]["parent"] = object.id;
-          branch_count++;
-
-          branch_queue.push(child);
-        }
-      }
 
       function create_tendril_branch(object){
-        new_child_id = object.children
+        new_child_id = object.children[0]
         plant_data[new_child_id] = new Object();
         
         var _old_end = plant_data[object.id].branch[2];
@@ -313,18 +246,18 @@
 
         var _branch = new Array();
         _branch.push(_start);
-        //_branch.push(_middle);
+        _branch.push(_middle);
         _branch.push(_end);
 
-        plant_data[child]["id"] = child;
-        plant_data[child]["branch"] = _branch;
-        plant_data[child]["angle"] = _omega;
-        plant_data[child]["generation"] = object.generation +1;
-        plant_data[child]["children"] = [child*2+1,child*2+2];
-        plant_data[child]["parent"] = object.id;
+        plant_data[new_child_id]["id"] = new_child_id;
+        plant_data[new_child_id]["branch"] = _branch;
+        plant_data[new_child_id]["angle"] = _omega;
+        plant_data[new_child_id]["generation"] = object.generation +1;
+        plant_data[new_child_id]["children"] = [new_child_id+1];
+        plant_data[new_child_id]["parent"] = object.id;
         branch_count++;
 
-        branch_queue.push(child);
+        branch_queue.push(new_child_id);
       }
 
       function find_hottest_hotspot(location){
@@ -382,13 +315,13 @@
           }
           console.log(_closest_spot);
           // delete hotspot
-          // if (_closest_spot != null){
-          //   remove_id = hotspot_list.indexOf(_closest_spot);
-          //   hotspot_list[remove_id].touched -= 2;
-          //   if (hotspot_list[remove_id].touched <= 0 ){
-          //      hotspot_list.splice(remove_id, 1);
-          //   }
-          // }
+          if (_closest_spot != null){
+            remove_id = hotspot_list.indexOf(_closest_spot);
+            //hotspot_list[remove_id].touched -= 2;
+            //if (hotspot_list[remove_id].touched <= 0 ){
+              hotspot_list.splice(remove_id, 1);
+            //}
+          }
           if (_closest_spot != null){
             _r_x = randomIntFromInterval(0,Math.floor(_closest_spot.width));
             _x = _closest_spot.pos_x + _r_x;
@@ -417,7 +350,10 @@
           var lineFunction = d3.svg.line()
             .x(function(d) { return d.x; })
             .y(function(d) { return d.y; })
-            .interpolate("basis");
+            .interpolate("bundle");
+            //bundle
+            //monotone
+            //cubic
 
           var plantGraph = artContainer.append("path")
             .attr("d", lineFunction(plant_data[idx].branch))
@@ -436,47 +372,27 @@
             .transition()
               //.delay(plant_data[idx].generation * 3000)
               .duration(time)
-              .ease("basis")
+              .ease("basic")
               .attr("stroke-dashoffset", 0);
-        }
-      }
-
-      function grow_plant(iterations, max_depth){
-        if(iterations < max_depth){
-          time = randomIntFromInterval(grow_time-200, grow_time+200)
-          setTimeout(function(){
-            var _l = branch_queue.length;
-            //console.log(_l)
-            for (var i = 0; i < _l; i++){
-              idx = branch_queue.shift();
-
-              create_branches(plant_data[idx]); //create children of last branch
-
-              draw_branches(plant_data[idx].children, time); // draw children of last branch
-            }
-            iterations++;
-            console.log(iterations);
-            grow_plant(iterations,max_depth);
-          }, time);
         }
       }
 
       function grow_tendril(iterations, max_depth){
         if(iterations < max_depth){
-          time = randomIntFromInterval(grow_time-200, grow_time+200)
+          time = 1000;//randomIntFromInterval(grow_time-200, grow_time+200)
           setTimeout(function(){
             var _l = branch_queue.length;
             //console.log(_l)
             for (var i = 0; i < _l; i++){
               idx = branch_queue.shift();
 
-              create_branches(plant_data[idx]); //create children of last branch
+              create_tendril_branch(plant_data[idx]); //create children of last branch
 
               draw_branches(plant_data[idx].children, time); // draw children of last branch
             }
             iterations++;
             console.log(iterations);
-            grow_plant(iterations,max_depth);
+            grow_tendril(iterations,max_depth);
           }, time);
         }
       }
