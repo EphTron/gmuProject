@@ -75,7 +75,7 @@
 
       // run
       init_tendril();
-      grow_tendril(0,10);
+      grow_tendril(0,5);
       
       init_grid(rect_count);
       draw_grid();
@@ -193,13 +193,20 @@
       }
 
       function init_tendril(){
-        var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
+        var a = Math.PI/3
+        var _alpha = -Math.PI/2;
+        var _omega = _alpha + a *Math.random() - a/2
+        //_alpha + a *Math.random() - a/2
+
+        //-3*Math.PI/8;a *Math.random()
+        
+        //max_angle * Math.random() + (max_angle/2) ;
         var _start = { "x":w/2, 
                        "y":h};
-        var _middle = { "x": _start.x + branch_length * Math.cos(_omega) * 0.5 + 5,
-                        "y": _start.y + (branch_length * Math.sin(_omega) * 0.5)}; 
-        var _end = { "x": _start.x + 2.5* branch_length * Math.cos(_omega), 
-                     "y": _start.y + 4.5* branch_length * Math.sin(_omega)}; 
+        var _middle = { "x": _start.x + 2*(branch_length * Math.cos(_omega - _alpha) ),
+                        "y": _start.y + 2*(branch_length * Math.sin(_omega - _alpha) )}; 
+        var _end = { "x": _start.x + 4* branch_length * Math.cos(_omega), 
+                     "y": _start.y + 4* branch_length * Math.sin(_omega)}; 
 
         var _root = new Array();
         _root.push(_start);
@@ -232,18 +239,21 @@
         var _start = { "x": _old_end.x, 
                        "y": _old_end.y};
 
-        var _middle = { "x": _start.x + branch_length * Math.cos(_omega/1.2) * 0.5 + (Math.random() * 200) - 100,
+        var _middle = { "x": _start.x + branch_length * Math.cos(_omega/1.2) * 0.5, //+ (Math.random() * 200) - 100,
                         "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
 
         //var _end = find_hottest_hotspot(_start);
         var _end = find_closest_hotspot(_start, 10);
         if (_end.x == 0 && _end.y == 0){
-          console.log("random");
+          console.log("finding hottest point")
           _end = find_hottest_hotspot(_start);
+          if (_end.x == 0 && _end.y == 0){
+            console.log("random point");
+            var _end = {"x": _start.x + branch_length * Math.cos(_omega),
+                        "y": _start.y + branch_length * Math.sin(_omega)};
+          }
         }
-        //var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-        //            "y": _start.y + branch_length * Math.sin(_omega)};
-
+        
         var _branch = new Array();
         _branch.push(_start);
         _branch.push(_middle);
@@ -273,6 +283,11 @@
           if ( hotspot_list[0].touched< 0){
             hotspot_list[0].touched = 0;
           }
+          gridContainer.select("#r"+parseInt(d.id))
+                  .transition()
+                  .duration(1000)
+                  .attr("fill",color_scale(d.touched))
+                  .attr("fill-opacity", rect_opacity);
 
           _r_x = randomIntFromInterval(0,Math.floor(_most_touched_rect.width));
           _x = _most_touched_rect.pos_x + _r_x;
@@ -320,6 +335,11 @@
             //hotspot_list[remove_id].touched -= 2;
             //if (hotspot_list[remove_id].touched <= 0 ){
               hotspot_list.splice(remove_id, 1);
+              gridContainer.select("#r"+parseInt(d.id))
+                          .transition()
+                          .duration(1000)
+                          .attr("fill",color_scale(d.touched))
+                          .attr("fill-opacity", rect_opacity);
             //}
           }
           if (_closest_spot != null){
@@ -359,7 +379,7 @@
             .attr("d", lineFunction(plant_data[idx].branch))
             .attr("id", "p"+plant_data[idx].id)
             .attr("stroke", "green")
-            .attr("stroke-width", 5 - (plant_data[idx].generation) * 0.4)
+            .attr("stroke-width", 5) //- (plant_data[idx].generation) * 0.4)
             .attr("fill", "none")
             .on("mouseover",  function(d,i) {
               console.log("testetsestset")

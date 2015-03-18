@@ -59,7 +59,7 @@
           .attr("width", w)
           .attr("height", h);
       var color_scale = d3.scale.linear()
-        .domain([0,14])
+        .domain([0,6])
         .range(["#111111","green"]);
 
       var grow_time = 1000;
@@ -75,7 +75,7 @@
 
       // run
       init_plant();
-      grow_plant(0,9);
+      grow_plant(0,5);
       
       init_grid(rect_count);
       draw_grid();
@@ -263,11 +263,18 @@
           //                "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
 
           //var _end = find_hottest_hotspot(_start);
-          var _end = find_closest_hotspot(_start, 10);
+        var _end = find_closest_hotspot(_start, 10, _old_omega);
+        if (_end.x == 0 && _end.y == 0){
+          _end = find_hottest_hotspot(_start);
           if (_end.x == 0 && _end.y == 0){
             console.log("random");
-            _end = find_hottest_hotspot(_start);
+            var _end = {"x": _start.x + branch_length * Math.cos(_omega),
+                        "y": _start.y + branch_length * Math.sin(_omega)};
           }
+        }
+        if (_end.x == 0 && _end.y == 0){
+          console.log("STILL ZERO ?");
+        }
           //var _end = {"x": _start.x + branch_length * Math.cos(_omega),
           //            "y": _start.y + branch_length * Math.sin(_omega)};
 
@@ -303,10 +310,17 @@
                         "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
 
         //var _end = find_hottest_hotspot(_start);
-        var _end = find_closest_hotspot(_start, 10);
+        var _end = find_closest_hotspot(_start, 10, _old_omega);
         if (_end.x == 0 && _end.y == 0){
-          console.log("random");
           _end = find_hottest_hotspot(_start);
+          if (_end.x == 0 && _end.y == 0){
+            console.log("random");
+            var _end = {"x": _start.x + branch_length * Math.cos(_omega),
+                        "y": _start.y + branch_length * Math.sin(_omega)};
+          }
+        }
+        if (_end.x == 0 && _end.y == 0){
+          console.log("STILL ZERO ?");
         }
         //var _end = {"x": _start.x + branch_length * Math.cos(_omega),
         //            "y": _start.y + branch_length * Math.sin(_omega)};
@@ -349,14 +363,15 @@
           _vec_length = Math.sqrt((_x-location.x) * (_x-location.x)+ (_y-location.y) * (_y-location.y))
           _vec_norm = {"x": (_x-location.x) / _vec_length,
                        "y": (_y-location.y) / _vec_length};
-
-          _point = {"x": location.x + branch_length * _vec_norm.x, 
-                    "y": location.y + branch_length * _vec_norm.y};
+          var a = Math.PI/3
+          var _alpha = -Math.PI/2 + a *Math.random() - a/2;
+          _point = {"x": location.x + branch_length * _vec_norm.x  , 
+                    "y": location.y + branch_length * _vec_norm.y  };
         }
         return _point;
       }
 
-      function find_closest_hotspot(location, candidates){
+      function find_closest_hotspot(location, candidates, angle){
         var _point = {"x": 0, 
                       "y": 0};
         if (hotspot_list.length > 0 && hotspot_list.length < candidates){
@@ -382,13 +397,13 @@
           }
           console.log(_closest_spot);
           // delete hotspot
-          // if (_closest_spot != null){
-          //   remove_id = hotspot_list.indexOf(_closest_spot);
+          if (_closest_spot != null){
+            remove_id = hotspot_list.indexOf(_closest_spot);
           //   hotspot_list[remove_id].touched -= 2;
           //   if (hotspot_list[remove_id].touched <= 0 ){
-          //      hotspot_list.splice(remove_id, 1);
+            hotspot_list.splice(remove_id, 1);
           //   }
-          // }
+          }
           if (_closest_spot != null){
             _r_x = randomIntFromInterval(0,Math.floor(_closest_spot.width));
             _x = _closest_spot.pos_x + _r_x;
@@ -399,8 +414,13 @@
             _vec_norm = {"x": (_x-location.x) / _vec_length,
                          "y": (_y-location.y) / _vec_length};
 
-            _point = {"x": location.x + branch_length * _vec_norm.x, 
-                      "y": location.y + branch_length * _vec_norm.y};
+            var a = Math.PI/6
+            var _alpha = -Math.PI/2 + angle + a *Math.random() - a/2;  
+
+            _point = {"x": location.x + branch_length *  _vec_norm.x ,
+                      "y": location.y + branch_length *  _vec_norm.y };
+            _point = {"x": location.x + (branch_length * Math.cos(_alpha)) * _vec_norm.x ,
+                      "y": location.y + (branch_length * Math.sin(_alpha)) * _vec_norm.y };
           }
         }
         return _point;
@@ -446,6 +466,8 @@
           time = randomIntFromInterval(grow_time-200, grow_time+200)
           setTimeout(function(){
             var _l = branch_queue.length;
+            //var _l = hotspot_list.length;
+
             //console.log(_l)
             for (var i = 0; i < _l; i++){
               idx = branch_queue.shift();
