@@ -1,5 +1,6 @@
 
 
+console.log($(document).height());
 var mouse = {x: 0, y: 0};
 
 document.addEventListener('mousemove', function(e){ 
@@ -9,8 +10,8 @@ document.addEventListener('mousemove', function(e){
 
 // constants
 var padding = 10
-var w = window.innerWidth - padding;
-var h = window.innerHeight- padding;
+var w = $(document).width() - padding;
+var h =  $(document).height() - padding;
 var cols = 0;
 var rows = 0;
 var rect_count = 1000;
