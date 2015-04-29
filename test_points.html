@@ -71,7 +71,7 @@
 
       var grow_time = 1000;
       var max_angle = Math.PI/5;
-      var branch_length = 100;
+      var branch_length = 30;
       var branch_queue = new Array();
       var plant_data = new Array();
       var branch_count = 0;
@@ -177,26 +177,6 @@
 
         branch_queue.push(0);
         draw_branches([0]);
-      }
-
-      function grow_test(iterations, max_depth){
-        if(iterations < max_depth){
-          time = 1000;//randomIntFromInterval(grow_time-200, grow_time+200)
-          setTimeout(function(){
-            var _l = branch_queue.length;
-            //console.log(_l)
-            for (var i = 0; i < _l; i++){
-              idx = branch_queue.shift();
-
-              create_tendril_branch(plant_data[idx]); //create children of last branch
-
-              draw_branches(plant_data[idx].children, time); // draw children of last branch
-            }
-            iterations++;
-            console.log(iterations);
-            grow_tendril(iterations,max_depth);
-          }, time);
-        }
       }
 
       function get_points() {

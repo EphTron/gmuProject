@@ -1,0 +1,18 @@
+init_point_container: sammelt klicks und malt kreise
+get_min_max_angle: berechnet winkel zu neuem punkt.
+init_test_tendril: erzeugt ersten ast
+get_points: sammelt gesetzte punkte ein und füttert wachsum
+create_test_tendril: erzeugt neuen ast aus altem ast und 2 punkten
+dot_product:punkt produkt
+init_grid
+get_element_under_rect
+draw_grid
+update_hotspots
+init_tendril
+normalize_vec2
+create_tendril_branch
+find_hottest_hotspot
+find_closest_hotspot
+draw_branches
+grow_tendril: erzeugt tendril und zeichnet
+randomIntFromInterval
