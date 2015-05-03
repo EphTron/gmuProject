@@ -47,11 +47,15 @@
 
       // constants
       var padding = 10
+
+      // variables
       var w = window.innerWidth - padding;
       var h = window.innerHeight- padding;
       var cols = 0;
       var rows = 0;
-      var rect_count = 1000;
+      var rect_width = 1;
+      var rect_height = 1;
+      var rect_count = 10;
       var grid_data = new Array();
       var point_id  = 0;
       var points = new Array();
@@ -65,6 +69,7 @@
           .append("svg")
           .attr("width", w)
           .attr("height", h);
+
       var color_scale = d3.scale.linear()
         .domain([0,14])
         .range(["#111111","green"]);
@@ -81,15 +86,48 @@
             .attr("height", h);
 
       // run
+      init_grid(rect_count);
+
+      run_hotspot_growth();
       //init_tendril();
       //grow_tendril(0,5);
-      get_points();
+      //run_click_growth();
+      //run_time_growth();
+      //init_grid();
+      // code to get a rect under a spec
+      // var _location_on_grid_x = Math.floor(location.x / data[0].width);
+      // var _location_on_grid_y = Math.floor(location.y / data[0].height);
+      // var _location_rect_id = (_location_on_grid_y) * cols + _location_on_grid_x;
       
-      //init_grid(rect_count);
+      //track_cursor(1000);
       //draw_grid();
 
       // functions
-      init_point_container();
+      //init_point_container();
+
+      //######## Init functions   ########
+
+      function init_grid(r_count){
+        cols = Math.round(Math.sqrt(r_count * (w/h)));
+        rows = Math.round(r_count / cols);
+
+        rect_width = w / cols; // calc width of rects
+        rect_height = h / rows; // calc height of rects
+
+        var idx = 0;
+        for(var r = 0; r < rows; r++){
+          for(var c = 0; c < cols ; c++){
+            grid_data[idx] = new Object();
+            grid_data[idx]["id"]      = idx;
+            grid_data[idx]["pos_x"]   = rect_width * c;
+            grid_data[idx]["pos_y"]   = rect_height * r;
+            grid_data[idx]["width"]   = rect_width;
+            grid_data[idx]["height"]  = rect_height;
+            grid_data[idx]["touched"] = 0;
+            idx++;
+          }
+        }
+      }
 
       function init_point_container(){
 
@@ -106,38 +144,6 @@
             .style("fill", "green");
           point_id++;
         }); 
-      }
-
-      function get_min_max_angle(ref_point, angle, new_point){
-
-        var _dir = { "x": ref_point.x + (branch_length * Math.cos(angle)),
-                     "y": ref_point.y + (branch_length * Math.sin(angle))}; 
-        var _a = {"x": _dir.x - ref_point.x,
-                  "y": _dir.y - ref_point.y};
-        var _b = {"x": new_point.x - ref_point.x,
-                  "y": new_point.y - ref_point.y};
-        //var result_angle = Math.acos(dot_product(normalize_vec2(_a),normalize_vec2(_b)));
-        var result_angle = dot_product(normalize_vec2(_a),normalize_vec2(_b));
-        console.log("dot:", result_angle);
-        if (result_angle > 0.999999){
-          result_angle = 0.999999
-        } else if (result_angle < -0.9999999){
-          result_angle = -0.9999999
-        }
-        result_angle = Math.acos(result_angle);
-        console.log("angle:", result_angle);
-        if ( result_angle > max_angle){
-          result_angle = max_angle;
-        }
-        // check on which side the next point lies
-        var _side = Math.sign((_dir.x-ref_point.x)*(new_point.y-ref_point.y) -
-                              (_dir.y-ref_point.y)*(new_point.x-ref_point.x));
-        // adjust
-        if (_side > 0){
-          result_angle = -result_angle;
-        }
-        result_angle = angle - result_angle;
-        return result_angle;
       }
 
       function init_test_tendril(point, point2){
@@ -179,7 +185,89 @@
         draw_branches([0]);
       }
 
-      function get_points() {
+      function track_cursor(time){
+
+        var last_p = {"x": 0,
+                      "y": 0};
+        setInterval(function(){
+          var _p  = {"x": mouse.x,
+                     "y": mouse.y };
+          if(_p.x == last_p.x && _p.y == last_p.y){
+            console.log("same points");
+          }else{
+            points.push(_p);
+            create_hotspots(_p);
+          }
+          last_p = _p;
+          console.log("added points", _p);
+        },600);
+      }
+
+      function create_hotspots(point){
+
+        // calculate mouse position on an invisible grid
+        var _on_grid_x = Math.floor(point.x /rect_width);
+        var _on_grid_y = Math.floor(point.y / rect_height);
+        var _rect_id   = _on_grid_y * cols + _on_grid_x;
+
+        if (typeof grid_data[_rect_id] != 'undefined') {
+          grid_data[_rect_id].touched++;
+        
+          if(hotspot_list.indexOf(grid_data[_rect_id]) == -1){
+            hotspot_list.push(grid_data[_rect_id]);
+          }
+
+          // sort list - front most touched - back less touched
+          hotspot_list.sort( function compare(a,b) {
+            if (a.touched > b.touched)
+              return -1;
+            if (a.touched < b.touched)
+              return 1;
+            return 0;
+          });
+        }
+      }
+
+      function get_min_max_angle(ref_point, angle, new_point){
+
+        var _dir = { "x": ref_point.x + (branch_length * Math.cos(angle)),
+                     "y": ref_point.y + (branch_length * Math.sin(angle))}; 
+
+        var _a = {"x": _dir.x - ref_point.x,
+                  "y": _dir.y - ref_point.y};
+        console.log("A", _a);
+        console.log("new_point", new_point);
+        console.log("ref_point", ref_point);
+
+        var _b = {"x": new_point.x - ref_point.x,
+                  "y": new_point.y - ref_point.y};
+        console.log("B", _b);
+        //var result_angle = Math.acos(dot_product(normalize_vec2(_a),normalize_vec2(_b)));
+        var result_angle = dot_product(normalize_vec2(_a),normalize_vec2(_b));
+        console.log("dot:", result_angle);
+        if (result_angle > 0.999999){
+          result_angle = 0.999999
+        } else if (result_angle < -0.9999999){
+          result_angle = -0.9999999
+        }
+        result_angle = Math.acos(result_angle);
+        console.log("angle:", result_angle);
+        if ( result_angle > max_angle){
+          result_angle = max_angle;
+        }
+        // check on which side the next point lies
+        var _side = Math.sign((_dir.x-ref_point.x)*(new_point.y-ref_point.y) -
+                              (_dir.y-ref_point.y)*(new_point.x-ref_point.x));
+        // adjust
+        if (_side > 0){
+          result_angle = -result_angle;
+        }
+        result_angle = angle - result_angle;
+        console.log("angle", result_angle);
+        return result_angle;
+      }
+
+      function run_click_growth() {
         setInterval(function(){ 
           if (points.length > 1){
             if(branch_queue.length == 0){
@@ -191,7 +279,7 @@
               idx = branch_queue.shift();
               var _p = points.shift();
               var _p2 = points.shift();
-              create_test_tendril(plant_data[idx], _p, _p2);
+              create_next_tendril(plant_data[idx], _p, _p2);
               draw_branches(plant_data[idx].children, 100);
             }
             //create_test_tendril(plant_data[idx], _p)
@@ -200,7 +288,62 @@
         }, 100);
       }
 
-      function create_test_tendril(object, point, point2){
+      function run_time_growth() {
+        var last_p = {"x": 0,
+                      "y": 0};
+        setInterval(function(){
+          var _p  = {"x": mouse.x,
+                     "y": mouse.y };
+
+          points.push(_p);
+          last_p = _p
+          console.log("added points", _p);
+        },600);
+
+        setInterval(function(){ 
+          if (points.length > 1){
+            if(branch_queue.length == 0){
+              var _p = points.shift();
+              var _p2 = points.shift();
+              init_test_tendril(_p,_p2);
+            }
+            else{
+              idx = branch_queue.shift();
+              var _p = points.shift();
+              var _p2 = points.shift();
+              create_next_tendril(plant_data[idx], _p, _p2);
+              draw_branches(plant_data[idx].children, 1000);
+            }
+          }
+          console.log("took points", points);
+          //create_test_tendril(plant_data[idx], _p)
+        }, 1000);
+      }
+
+      function run_hotspot_growth() {
+        track_cursor(500);
+
+        setInterval(function(){ 
+          if (points.length > 1){
+            if(branch_queue.length == 0){
+              var _p = points.shift();
+              var _p2 = points.shift();
+              init_test_tendril(_p,_p2);
+            }
+            else{
+              idx = branch_queue.shift();
+              var _p = points.shift();
+              var _p2 = points.shift();
+              create_next_tendril_based_on_hotspot(plant_data[idx], _p, _p2);
+              draw_branches(plant_data[idx].children, 1000);
+            }
+          }
+          console.log("took points", points);
+          //create_test_tendril(plant_data[idx], _p)
+        }, 1000);
+      }
+
+      function create_next_tendril_based_on_mouse(object, point, point2){
         new_child_id = object.children[0]
         plant_data[new_child_id] = new Object();
         
@@ -211,28 +354,76 @@
         var _start = _old_end;
 
         var _omega = get_min_max_angle(_start, _old_omega, point);
-        console.log("1",_omega)
         var _middle = { "x": _start.x + branch_length * Math.cos(_omega), //+ (Math.random() * 200) - 100,
                         "y": _start.y + branch_length * Math.sin(_omega)}; 
 
-        _omega = get_min_max_angle(_middle, _omega, point2);
-        console.log("2",_omega)
-
+        _omega = get_min_max_angle(_middle, _omega, _point2);
         var _end = {"x": _middle.x + branch_length * Math.cos(_omega),
                     "y": _middle.y + branch_length * Math.sin(_omega)};
+        
+        var _branch = new Array();
+        _branch.push(_old_mid);
+        _branch.push(_start);
+        _branch.push(_middle);
+        _branch.push(_end);
+        console.log("4", _branch );
 
-        //var _end = find_hottest_hotspot(_start);
-        //points.
-        // var _end = find_closest_hotspot(_start, 10);
-        // if (_end.x == 0 && _end.y == 0){
-        //   console.log("finding hottest point")
-        //   _end = find_hottest_hotspot(_start);
-        //   if (_end.x == 0 && _end.y == 0){
-        //     console.log("random point");
-        //     var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-        //                 "y": _start.y + branch_length * Math.sin(_omega)};
-        //   }
-        // }
+        plant_data[new_child_id]["id"] = new_child_id;
+        plant_data[new_child_id]["branch"] = _branch;
+        plant_data[new_child_id]["angle"] = _omega;
+        plant_data[new_child_id]["generation"] = object.generation +1;
+        plant_data[new_child_id]["children"] = [new_child_id+1];
+        plant_data[new_child_id]["parent"] = object.id;
+        branch_count++;
+
+        branch_queue.push(new_child_id);
+      }
+
+      function create_next_tendril_based_on_hotspot(object){
+        new_child_id = object.children[0]
+        plant_data[new_child_id] = new Object();
+        
+        var _old_end = plant_data[object.id].branch[2];
+        var _old_mid = plant_data[object.id].branch[1];
+        var _old_omega = plant_data[object.id].angle;
+
+        var _start = _old_end;
+
+        var _hotspot_point = find_closest_hotspot(_start, 10);
+        if (_hotspot_point.x == 0 && _hotspot_point.y == 0){
+          console.log("finding hottest point")
+          _end = find_hottest_hotspot(_start);
+          if (_hotspot_point.x == 0 && _hotspot_point.y == 0){
+            _hotspot_point = {"x": _start.x + branch_length * Math.cos(_old_omega),
+                              "y": _start.y + branch_length * Math.sin(_old_omega)};
+            console.log("random point", _hotspot_point);
+          }
+        }
+
+        var _omega = get_min_max_angle(_start, _old_omega, _hotspot_point);
+        //console.log("1",_omega)
+        var _middle = { "x": _start.x + branch_length * Math.cos(_omega), //+ (Math.random() * 200) - 100,
+                        "y": _start.y + branch_length * Math.sin(_omega)}; 
+
+        // 
+        //var _hotspot_point = find_hottest_hotspot(_start);
+        var _hotspot_point2 = find_closest_hotspot(_start, 10);
+        if (_hotspot_point2.x == 0 && _hotspot_point2.y == 0){
+          console.log("finding hottest point")
+          _end = find_hottest_hotspot(_start);
+          if (_hotspot_point2.x == 0 && _hotspot_point2.y == 0){
+            console.log("random point");
+            _hotspot_point2 = {"x": _middle.x + branch_length * Math.cos(_omega),
+                              "y": _middle.y + branch_length * Math.sin(_omega)};
+            console.log("random point", _hotspot_point2);
+          }
+        }
+
+        _omega = get_min_max_angle(_middle, _omega, _hotspot_point2);
+        //console.log("2",_omega)
+        console.log("2")
+        var _end = {"x": _middle.x + branch_length * Math.cos(_omega),
+                    "y": _middle.y + branch_length * Math.sin(_omega)};
 
         
         var _branch = new Array();
@@ -240,6 +431,7 @@
         _branch.push(_start);
         _branch.push(_middle);
         _branch.push(_end);
+        console.log("4", _branch );
 
         plant_data[new_child_id]["id"] = new_child_id;
         plant_data[new_child_id]["branch"] = _branch;
@@ -256,29 +448,6 @@
 
         var result = a.x * b.x + a.y * b.y
         return result
-      }
-
-
-      function init_grid(r_count){
-        cols = Math.round(Math.sqrt(r_count * (w/h)));
-        rows = Math.round(r_count / cols);
-
-        var _r_w = w / cols; // calc width of rects
-        var _r_h = h / rows; // calc height of rects
-
-        var idx = 0;
-        for(var r = 0; r < rows; r++){
-          for(var c = 0; c < cols ; c++){
-            grid_data[idx] = new Object();
-            grid_data[idx]["id"]      = idx;
-            grid_data[idx]["pos_x"]   = _r_w * c;
-            grid_data[idx]["pos_y"]   = _r_h * r;
-            grid_data[idx]["width"]   = _r_w;
-            grid_data[idx]["height"]  = _r_h;
-            grid_data[idx]["touched"] = 0;
-            idx++;
-          }
-        }
       }
 
       function get_element_under_rect(x,y){
@@ -342,34 +511,6 @@
           }); 
       }
 
-      function update_hotspots(id){
-        grid_data[id].touched++;
-        // add rect to hotspot_list
-        // sort hotspot_list
-        if(hotspot_list.indexOf(grid_data[id]) == -1){
-          hotspot_list.push(grid_data[id]);
-        }
-        
-        // gridContainer.select("#r"+parseInt(id))
-        //                   .transition()
-        //                   .duration(30)
-        //                   .attr("fill",color_scale(grid_data[id].touched))
-        //                   .attr("fill-opacity", rect_opacity);
-        //console.log("Before Sort",hotspot_list)
-
-        // sort list - front most touches - back less touches
-        hotspot_list.sort( function compare(a,b) {
-          if (a.touched > b.touched)
-             return -1;
-          if (a.touched < b.touched)
-            return 1;
-          return 0;
-        });
-
-        // use this hotspot list to calc near hotspot while growing
-        // -> see find_near_hotspor()
-      }
-
       function init_tendril(){
         var a = Math.PI/3
         var _alpha = -Math.PI/2;
@@ -408,6 +549,7 @@
         branch_queue.push(0);
         draw_branches([0]);
       }
+
       function normalize_vec2(a){
 
         _a_length = Math.sqrt((a.x) * (a.x) + (a.y) * (a.y));
@@ -417,7 +559,6 @@
 
         return a;
       }
-
 
       function create_tendril_branch(object){
         new_child_id = object.children[0]
@@ -436,10 +577,10 @@
         //var _end = find_hottest_hotspot(_start);
         var _end = find_closest_hotspot(_start, 10);
         if (_end.x == 0 && _end.y == 0){
-          console.log("finding hottest point")
+          //console.log("finding hottest point")
           _end = find_hottest_hotspot(_start);
           if (_end.x == 0 && _end.y == 0){
-            console.log("random point");
+            //console.log("random point");
             var _end = {"x": _start.x + branch_length * Math.cos(_omega),
                         "y": _start.y + branch_length * Math.sin(_omega)};
           }
@@ -507,14 +648,14 @@
             _y = hotspot_list[i].pos_y;
             _vec_length = Math.sqrt((_x-location.x) * (_x-location.x)+ (_y-location.y) * (_y-location.y));
             if (_vec_length < 100){
-              console.log("too close")
+              // console.log("too close")
             }
             else if (_vec_length < _shortest_distance){
               _closest_spot = hotspot_list[i];
               _shortest_distance = _vec_length;
             }
           }
-          console.log(_closest_spot);
+          // console.log(_closest_spot);
           // delete hotspot
           if (_closest_spot != null){
             remove_id = hotspot_list.indexOf(_closest_spot);
@@ -563,7 +704,7 @@
             .attr("stroke-width", 5) //- (plant_data[idx].generation) * 0.4)
             .attr("fill", "none")
             .on("mouseover",  function(d,i) {
-              console.log("testetsestset")
+              // console.log("testetsestset")
           });
 
           var plant_length = plantGraph.node().getTotalLength();
@@ -592,7 +733,7 @@
               draw_branches(plant_data[idx].children, time); // draw children of last branch
             }
             iterations++;
-            console.log(iterations);
+            // console.log(iterations);
             grow_tendril(iterations,max_depth);
           }, time);
         }

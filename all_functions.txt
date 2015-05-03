@@ -9,10 +9,40 @@ get_element_under_rect
 draw_grid
 update_hotspots
 init_tendril
-normalize_vec2
+normalize_vec2: normalisiert vektor
 create_tendril_branch
 find_hottest_hotspot
 find_closest_hotspot
 draw_branches
 grow_tendril: erzeugt tendril und zeichnet
 randomIntFromInterval
+
+
+
+      function init_grid(r_count){
+        cols = Math.round(Math.sqrt(r_count * (w/h)));
+        rows = Math.round(r_count / cols);
+
+        var _r_w = w / cols; // calc width of rects
+        var _r_h = h / rows; // calc height of rects
+
+        var idx = 0;
+        for(var r = 0; r < rows; r++){
+          for(var c = 0; c < cols ; c++){
+            grid_data[idx] = new Object();
+            grid_data[idx]["id"]      = idx;
+            grid_data[idx]["pos_x"]   = _r_w * c;
+            grid_data[idx]["pos_y"]   = _r_h * r;
+            grid_data[idx]["width"]   = _r_w;
+            grid_data[idx]["height"]  = _r_h;
+            grid_data[idx]["touched"] = 0;
+            idx++;
+          }
+        }
+      }
+
+
+
+TO DO:
+unsichtbares grid füllen
+äste verschönern
