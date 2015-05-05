@@ -11,7 +11,7 @@ var setup_structure = function() {
   tendril_pot.style.position = "absolute";
   tendril_pot.style.top =  0;
   tendril_pot.style.left =  0;
-  tendril_pot.style.pointerEvents =  "stroke";
+  tendril_pot.style.pointerEvents =  "none";
 
   var grid = document.createElement("div");
   grid.className = "grid";
@@ -32,3 +32,4 @@ var setup_structure = function() {
 }
 setup_structure();
 console.log("setup finished!");
+alert("TETS");

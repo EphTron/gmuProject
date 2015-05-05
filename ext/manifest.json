@@ -8,13 +8,52 @@
     "activeTab",
     "tabs"
   ],
+  
+  "web_accessible_resources": [
+    "d3/d3.min.js",
+    "jQuery.js",
+    "setup.js",
+    "plant.js"
+  ],
 
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  },
+  "content_scripts": [
+    {
+        "matches": [
+                "http://*/*",
+                "https://*/*"
+        ],
+        "js": ["d3/d3.min.js",
+               "jQuery.js",
+               "content_one.js"],
+        "run_at": "document_start"
+    },
+    {
+        "matches": [
+                "http://*/*",
+                "https://*/*"
+        ],
+        "js": ["content_script.js"] ,
+        "run_at": "document_end"
+    }
+  ],
+
+
+  // "content_scripts": [
+  //   {
+  //     "matches": ["http://amazon.de"],
+  //     "js": ["myscript.js"],
+  //     "run_at": "document_end"
+  //   }
+  // ],
+
+  // "background": {
+  //   "scripts": ["bg.js"],
+  //   "persistent": false
+  // },
 
   "browser_action": {
     "default_title": "Grow strong!"
   }
+
+
 }

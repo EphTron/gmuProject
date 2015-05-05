@@ -1,0 +1,32 @@
+== '''Plants vs Humans''' ==
+
+[[Image:EphTron_gmuTree.png|200px|thumb|right]]
+
+== Ideenfindung ==
+
+Die Grundidee für meine Semesteraufgabe entstand bereits in der Einführungswoche, als uns die unterschiedlichen Projekte des
+Medien verfolgen uns
+
+== Idee & Konzept ==
+My basic idea is to create an interactive background for a website.
+To combine this idea with the concept of ''Plants vs Humans vs Robots''  
+I decided to simulate a growing plant. The growth can be influenced by ''human'' website visitors.
+
+== Implementation ==
+To implement my ideas I will use HTML, CSS and JavaScript. For my plant visualization I am going to use the JavaScript library d3.js from Mike Bostock.
+https://github.com/mbostock/d3/wiki/Gallery
+
+So far the growth of the plant is based on simple randomized angle changes between branches of the plant. In future I want to replace the randomized angles by L-Systems.
+
+== Progress ==
+
+Follow my exact progress on https://github.com/EphTron/gmuProject/
+
+Dec 21, 2014: added a grid
+
+Jan 05, 2015: improved grid
+
+Jan 08, 2015: added plant simulation
+
+Jan 09, 2015: improved visualization
+
