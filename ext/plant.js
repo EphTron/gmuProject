@@ -167,7 +167,7 @@
       function create_hotspots(point){
 
         // calculate mouse position on an invisible grid
-        var _on_grid_x = Math.floor(point.x /rect_width);
+        var _on_grid_x = Math.floor(point.x / rect_width);
         var _on_grid_y = Math.floor(point.y / rect_height);
         var _rect_id   = _on_grid_y * cols + _on_grid_x;
 
@@ -586,6 +586,60 @@
                     "y": location.y + branch_length * _vec_norm.y};
         }
         return _point;
+      }
+
+      function find_hotspot(location, candidates){
+        var _point = {"x": 0, 
+                      "y": 0};
+        if (hotspot_list.length > 0 && hotspot_list.length < candidates){
+          candidates = hotspot_list.length
+        }
+
+        if(hotspot_list.length >= candidates){
+          _shortest_distance = 500;
+          _closest_spot = null;
+          // find closest hotspot out of a set of candidates
+          for(i = 0; i < candidates; i++){
+            // calc distance to hotspot_candidate
+            _x = hotspot_list[i].pos_x;
+            _y = hotspot_list[i].pos_y;
+            _vec_length = Math.sqrt((_x-location.x) * (_x-location.x)+ (_y-location.y) * (_y-location.y));
+            if (_vec_length < 100){
+              // console.log("too close")
+            }
+            else if (_vec_length < _shortest_distance){
+              _closest_spot = hotspot_list[i];
+              _shortest_distance = _vec_length;
+            }
+          }
+          // console.log(_closest_spot);
+          // delete hotspot
+          if (_closest_spot != null){
+            remove_id = hotspot_list.indexOf(_closest_spot);
+            //hotspot_list[remove_id].touched -= 2;
+            //if (hotspot_list[remove_id].touched <= 0 ){
+              hotspot_list.splice(remove_id, 1);
+            //}
+          }
+          if (_closest_spot != null){
+            _r_x = randomIntFromInterval(0,Math.floor(_closest_spot.width));
+            _x = _closest_spot.pos_x + _r_x;
+            _r_y = randomIntFromInterval(0,Math.floor(_closest_spot.height));
+            _y = _closest_spot.pos_y + _r_y;
+            
+            _vec_length = Math.sqrt((_x-location.x) * (_x-location.x)+ (_y-location.y) * (_y-location.y))
+            _vec_norm = {"x": (_x-location.x) / _vec_length,
+                         "y": (_y-location.y) / _vec_length};
+
+            _point = {"x": location.x + branch_length * _vec_norm.x, 
+                      "y": location.y + branch_length * _vec_norm.y};
+          }
+        }
+        return _point;
+
+        // ideen: wenn kein closer_spot -> wachse zufällig
+        // wenn closer_spot zu nah -> setz eine flag, dass blätter wachsen.
+        // ast wächst dann nicht mehr weiter
       }
 
       function find_closest_hotspot(location, candidates){
