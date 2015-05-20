@@ -48,8 +48,8 @@
 
       // run
       init_grid(rect_count);
-      //run_time_growth();
-      run_hotspot_growth();
+      run_time_growth();
+      //run_hotspot_growth();
       //init_tendril();
       //grow_tendril(0,5);
       //run_click_growth();
@@ -189,6 +189,18 @@
         }
       }
 
+      function get_random_angle(plant_id){
+        var _angle = 3*Math.PI/4;
+        var result_angle = 0;
+        if (plant_id%2 == 0){
+          result_angle = _angle * Math.random();
+        } else if (plant_id % 2 == 1){
+          result_angle =  - _angle * Math.random();
+        }
+        
+        return result_angle;
+      }
+
       function get_min_max_angle(ref_point, angle, new_point){
 
         var _dir = { "x": ref_point.x + (branch_length * Math.cos(angle)),
@@ -196,13 +208,10 @@
 
         var _a = {"x": _dir.x - ref_point.x,
                   "y": _dir.y - ref_point.y};
-        console.log("A", _a);
-        console.log("new_point", new_point);
-        console.log("ref_point", ref_point);
+
 
         var _b = {"x": new_point.x - ref_point.x,
                   "y": new_point.y - ref_point.y};
-        console.log("B", _b);
         //var result_angle = Math.acos(dot_product(normalize_vec2(_a),normalize_vec2(_b)));
         var result_angle = dot_product(normalize_vec2(_a),normalize_vec2(_b));
         console.log("dot:", result_angle);
@@ -272,7 +281,8 @@
               idx = branch_queue.shift();
               var _p = points.shift();
               var _p2 = points.shift();
-              create_next_tendril_based_on_mouse(plant_data[idx], _p, _p2);
+              create_next_tendril_random_mouse(plant_data[idx],_p,_p2);
+              //create_next_tendril_based_on_mouse(plant_data[idx], _p, _p2);
               draw_branches(plant_data[idx].children, 1000);
             }
           }
@@ -315,6 +325,48 @@
                         "y": _start.y + branch_length * Math.sin(_omega)}; 
 
         _omega = get_min_max_angle(_middle, _omega, point2);
+        var _end = {"x": _middle.x + branch_length * Math.cos(_omega),
+                    "y": _middle.y + branch_length * Math.sin(_omega)};
+        
+        var _branch = new Array();
+        _branch.push(_old_mid);
+        _branch.push(_start);
+        _branch.push(_middle);
+        _branch.push(_end);
+        console.log("4", _branch );
+
+        plant_data[new_child_id]["id"] = new_child_id;
+        plant_data[new_child_id]["branch"] = _branch;
+        plant_data[new_child_id]["angle"] = _omega;
+        plant_data[new_child_id]["generation"] = object.generation +1;
+        plant_data[new_child_id]["children"] = [new_child_id+1];
+        plant_data[new_child_id]["parent"] = object.id;
+        branch_count++;
+
+        branch_queue.push(new_child_id);
+      }
+
+      function create_next_tendril_random_mouse(object, point, point2){
+        new_child_id = object.children[0]
+        plant_data[new_child_id] = new Object();
+        
+        var _old_end = plant_data[object.id].branch[2];
+        var _old_mid = plant_data[object.id].branch[1];
+        var _old_omega = plant_data[object.id].angle;
+
+        var _start = _old_end;
+
+        var _omega = get_min_max_angle(_start, _old_omega, point);
+        var _beta = get_random_angle(_start, _old_omega);
+        _omega = (_omega + _beta)/2;
+
+
+        var _middle = { "x": _start.x + branch_length * Math.cos(_omega), //+ (Math.random() * 200) - 100,
+                        "y": _start.y + branch_length * Math.sin(_omega)}; 
+
+        _omega = get_min_max_angle(_middle, _omega, point2);
+        _beta = get_random_angle(_start, _old_omega);
+        _omega = (_omega + _beta)/2;
         var _end = {"x": _middle.x + branch_length * Math.cos(_omega),
                     "y": _middle.y + branch_length * Math.sin(_omega)};
         
