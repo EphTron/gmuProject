@@ -11,6 +11,7 @@ var setup_structure = function() {
   tendril_pot.style.position = "absolute";
   tendril_pot.style.top =  0;
   tendril_pot.style.left =  0;
+  tendril_pot.style.zIndex = "99999999999999999999999";
   tendril_pot.style.pointerEvents =  "none";
 
   var grid = document.createElement("div");
