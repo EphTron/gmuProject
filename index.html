@@ -263,18 +263,18 @@
           //                "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
 
           //var _end = find_hottest_hotspot(_start);
-        var _end = find_closest_hotspot(_start, 10, _old_omega);
-        if (_end.x == 0 && _end.y == 0){
-          _end = find_hottest_hotspot(_start);
+          var _end = find_closest_hotspot(_start, 10, _old_omega);
           if (_end.x == 0 && _end.y == 0){
-            console.log("random");
-            var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-                        "y": _start.y + branch_length * Math.sin(_omega)};
+            _end = find_hottest_hotspot(_start);
+            if (_end.x == 0 && _end.y == 0){
+              console.log("random");
+              var _end = {"x": _start.x + branch_length * Math.cos(_omega),
+                          "y": _start.y + branch_length * Math.sin(_omega)};
+            }
           }
-        }
-        if (_end.x == 0 && _end.y == 0){
-          console.log("STILL ZERO ?");
-        }
+          if (_end.x == 0 && _end.y == 0){
+            console.log("STILL ZERO ?");
+          }
           //var _end = {"x": _start.x + branch_length * Math.cos(_omega),
           //            "y": _start.y + branch_length * Math.sin(_omega)};
 

@@ -256,9 +256,9 @@
                     result_angle = -0.9999999
                 }
                 result_angle = Math.acos(result_angle);
-                console.log("acos = ", result_angle);
-                console.log("cos  = ", Math.cos(result_angle));
-                console.log("tada = ", Math.acos(Math.cos(result_angle)));
+                //console.log("acos = ", result_angle);
+                //console.log("cos  = ", Math.cos(result_angle));
+                //console.log("tada = ", Math.acos(Math.cos(result_angle)));
 
                 if ( result_angle > max_angle){
                     result_angle = max_angle;
@@ -389,7 +389,7 @@
                 plant_data[new_child_id] = new Object();
 
                 var _old_end = plant_data[object.id].branch[2];
-                var _old_mid = plant_data[object.id].branch[1];
+                //var _old_mid = plant_data[object.id].branch[1];
                 var _old_omega = plant_data[object.id].angle;
 
                 var _start = _old_end;
@@ -405,8 +405,21 @@
                 _branch.push(_end);
                 //console.log("4", _branch );
 
+                var _leaf = new Array();
+                if(last_angle <0.1){
+                    _leaf.push("a");
+                }else if(last_angle >0.4){
+                    _leaf.push("b");
+                }else {
+                    _leaf.push("c");
+                }
+                //_branch.push(_start);
+                //_branch.push(_middle);
+                //_branch.push(_end);
+
                 plant_data[new_child_id]["id"] = new_child_id;
                 plant_data[new_child_id]["branch"] = _branch;
+                plant_data[new_child_id]["leaf"] = last_angle;
                 plant_data[new_child_id]["angle"] = last_angle;
                 plant_data[new_child_id]["generation"] = object.generation +1;
                 plant_data[new_child_id]["children"] = [new_child_id+1];
@@ -761,6 +774,8 @@
                         .on("mouseover",  function(d,i) {
                             // console.log("testetsestset")
                     });
+
+                    // fancy art comes here
 
                     var plant_length = plantGraph.node().getTotalLength();
 
