@@ -34,3 +34,8 @@ var setup_structure = function() {
 setup_structure();
 console.log("setup finished!");
 alert("TETS");
+
+var tt = [0];
+console.log("test",tt)
+tt.push(5);
+console.log("test tt with append", tt)
