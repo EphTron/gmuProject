@@ -10,7 +10,12 @@
 
             // variables
             var w = window.innerWidth - padding;
-            var h = window.innerHeight- padding;
+            //var h = window.innerHeight- padding;
+            var body = document.body,
+                html = document.documentElement;
+
+            var h = Math.max( body.scrollHeight, body.offsetHeight, 
+                                   html.clientHeight, html.scrollHeight, html.offsetHeight );
             var cols = 0;
             var rows = 0;
             var rect_width = 1;

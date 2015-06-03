@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PLANTS HUMANS ROBOTS</title>
+        <meta charset="utf-8">
+    
+        <!-- >>>>>STYLESHEETS<<<<< -->
+        <link href="css_reset.css" rel="stylesheet" type="text/css">
+        <link href="plants-vs-humans.css" rel="stylesheet" type="text/css">
+
+        <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:regular&amp;subset=latin"/>
+            
+        <!-- >>>>>BOOTSTRAP SCRIPTS<<<<< -->
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://code.jquery.com/jquery.js"></script>
+            
+        <!-- >>>>>D3 SCRIPTS<<<<< -->
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <!--<script type="text/javascript" src="d3/d3.min.js"></script>-->
+
+    </head>
+    <body>
+        <div id="gmuArt">
+            <div id="gmuPlant">
+            </div>
+            <div id="website">
+                <div id="header">
+                    <h3 class="title">PLANTS vs HUMANS</h3>
+                </div>
+                
+                <div id="content_text">
+                    <article>
+                        <h3>Die Natur in der Technik oder die Technik in der Natur.</h3>
+                        <br>
+                        <hr class="shadow"/>
+                        <br>
+
+                        <p>In meinem Uni-Projekt "PLANTS vs HUMANS" entsteht eine kleines Chrome-Plugin, welches einen künstlichen Baum über den Bildschirm wachsen lässt. Ein künstlicher Baum der die Nutzer davon abhält eine Webseite sinnvoll zu bedienen. Ein künstlicher Baum der nichts nützt und trotzdem interessant ist. Er ist nicht interessant weil er stört, sondern aufgrund seines Wachstums und der daraus resultierenden Form. Eine Form die vielen Formen in der Natur in gewisserweise sehr ähnlich ist, da sie nach dem gleichen Prinzip entsteht. Ein Prinzip das sich in den Wolken, in Schneeflocken, an der Küste, in den Bergen, in Pflanzen – überall – wiederfinden lässt.</p>
+
+                        <p>Rekursion – Ein Phänomen, dass sich überall in der Natur finden lässt und oftmals nur unterbewusst bewundert wird, weil wir das Muster nicht in seinem gesamten Ausmaß erkennen. Das Phänomen, dass Formen sich wiederholen, dass Formen sich in sich selbst spiegeln, dass Formen aus sich selbst bestehen. Die Einfachheit und die Genialität der Rekursion verschließt sich dem Auge meist in einer komplexen Vielfalt an Formen, die man erst nach längerem Beobachten durchdringt. In manchen Dingen ist sie leichter zu entdecken als in anderen. 
+                        Es fällt uns beispielsweise schwer genauer zu beschreiben, wie die Struktur eines Baumes oder eines Blumenkohls entsteht. Eine gewisse Ähnlichkeit zwischen beiden Pflanzen ist jedoch nicht von der Hand zu weisen und lässt uns schließen, dass ähnliche "Prozesse" statt finden. Bei Farnblättern hingegen ist das Prinzip der Rekursion leichter zu erfassen. Dort scheinen immer kleinere Kopien des Blattes selbst an dem Blatt zu hängen, nur um ~90° gedreht. Das Farnblatt wird in sich wiederholenden Schritten aus einer einfachen Grundform aufgebaut. Hat man diese Grundlage der Rekursion einmal erkannt, so findet man sie auch beim Blumenkohl wieder, nur mit einer anderen Form. Der Blumenkohl erweckt den Eindruck als bestehe er aus vielen kleinen Blumenkohlen, und diese wieder aus vielen kleinen... bis es irgendwann nicht mehr kleiner geht. In diesem Fall hat man die maximale Rekursionstiefe erreicht.</p>
+                        <p>In der Mathematik werden solche geometrischen Formen, die sich selbstbeinhalten, als Fraktale bezeichnet.</p>
+
+                        <hr class="shadow"/>
+                        <br>
+
+                        <p>Bei Bäumen sind diese rekursiven Fraktale ebenfalls vorhanden, nur etwas komplizierter, weil sie mehrere Grundformen beinhalten und komplexeren Regeln folgen. Um den Baum etwas zu vereinfachen könnte man ihn beispielsweise auf drei Formen reduzieren: dicke und dünne Äste, sowie Blätter. Diese Formen treten am Baum nur in bestimmten Reihenfolgen auf. Wenn man einige Beoachtungen anstellt, könnte man einige Tatsachen festhalten, wie zum Beispiel die Folgenden:</p>
+
+                        <p> - Blätter wachsen nie an dicken Ästen.</p>
+                        <p> - Dicke Äste wachsen nicht an dünnen Ästen.</p>
+                        <p> - Aus dünnen Ästen werden nach einiger Zeit dicke Äste.</p>
+                        usw.
+
+                        <p>Aus einigen dieser Sätze lassen sich im Anschluss sogar Regeln oder Grammatiken formulieren, welche dann auf sehr formale Weise einen Baum (oder andere Dinge in der Natur) beschreiben. Wenn man diese Grammatiken in einen Computer hineingibt, so kann der Computer eine Abbildung des Baumes ableiten. Das interessante dabei ist, dass die Abbildung des Computers nicht unbedingt eine maximale Rekursionstiefe braucht. Was dazu führt, dass man immer tiefer in die Abbildung hineintauchen kann.
+                        Beim hineintauchen wird man feststellen, dass sich das Computerfraktal gar nicht verändert, sondern nur wir unsere Position im Fraktal.</p>
+
+                        <p>In der Informatik bezeichnet man diese Grammatiken als Lindenmayer-Systeme und es ist erstaunlich was für beeindruckende Fraktale sie erzeugen können und wie viele dieser Fraktale man in der Natur wiederfindet, so ähnelt der Pythagorasbaum beispielsweise sehr der Form eines Blumekohl oder Brokkoli.</p>
+
+                        <p>Oft reichen schon wenige Regeln in einem L-System um ein relativ komplexes Fraktal zu bilden. Das kann an der Koch-Kurve sehr schön gezeigt werden. Bei ihr besitzen wir nur eine Form (F), zwei sogenannte Konstanten (+, -) und eine Regel  P={(F → F+F--F+F)}.</p>
+
+                        <p><strong>F</strong> : Stellt eine Strich da, der in eine Richtung gezogen wird.</p>
+                        <p><strong>+</strong> : Dreht den Strich um 60°  gegen den Uhrzeigersinn.</p>
+                        <p><strong>-</strong> : Dreht den Strich um 60° mit dem Uhrzeigersinn.</p>
+
+                        <p>Unser Startwort ist F, was einem einfachen Strich entspricht. Nun beginnen wir unsere Regel P auf F anzuwenden. Wir ersetzten also F durch F+F--F+F. Schon nach wenigen Rekursivendurchgängen (Iterationen) erhalten wir ein Muster, dass sich immer wieder selbstenthält und mit dem Ursprung nur schwer in Verbindung gebracht werden. Erst wenn wir in unserem Muster nach sich wiederholenden Abschnitten ausschau halten, bemerken wir, dass jede Stufe die vorherige beinhaltet.
+                        Bemerkenswert an Fraktalen ist, wie schwer es ist deren Ursprung zu ergründen, selbst wenn wir die Regeln kennen nach denen sie sich richten.</p> 
+
+                        <p>Diese Schneeflocke ist nach der gleichen Regel P erzeugt worden, wie oben unser kleines Beispiel. Sie beinhaltet ebenfalls nur F, + und - und die Regel P. Der einzige Unterschied liegt im Startwort. Kannst du das Startwort oder seine Form in dem Muster erkennen?
+                        Ähnlich wie bei dieser Schneeflocke geht es uns überall in der Natur. Das Wissen um die Rekursion bietet uns eine neu Sichtweise auf unsere altbekannte Umwelt. Sie ermöglicht es uns nach den verborgenen Regeln der Natur zu suchen und die Magie in ihr zu finden.</p>
+
+                        <p>Ob wir dabei jemals einen Ursprung finden werden bleibt offen</p>
+
+                    </article>
+                </div>
+                <div id="content_generator">
+
+                </div>
+            </div>
+            <div id="gmuGrid">
+            </div>
+            <script type="text/javascript">
+            var mouse = {x: 0, y: 0};
+
+            document.addEventListener('mousemove', function(e){ 
+                mouse.x = e.clientX || e.pageX; 
+                mouse.y = e.clientY || e.pageY 
+            }, false);
+
+            // constants
+            var padding = 10
+
+            // variables
+            var w = window.innerWidth - padding;
+            //var h = window.innerHeight- padding;
+            var body = document.body,
+                html = document.documentElement;
+
+            var h = Math.max( body.scrollHeight, body.offsetHeight, 
+                                   html.clientHeight, html.scrollHeight, html.offsetHeight );
+            var cols = 0;
+            var rows = 0;
+            var rect_width = 1;
+            var rect_height = 1;
+            var rect_count = 50;
+            var grid_data = new Array();
+            var point_id  = 0;
+            var points = new Array();
+            var rect_opacity = 0.2;
+            var hotspot_list = new Array();
+
+            var gridContainer = d3.select("#gmuGrid")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h);
+ 
+
+            var color_scale = d3.scale.linear()
+                .domain([0,14])
+                .range(["#111111","green"]);
+
+            var grow_time = 1000;
+            var max_angle = Math.PI/5;
+            var branch_length = 30;
+            var branch_queue = new Array();
+            var plant_data = new Array();
+            var branch_count = 0;
+            var p_id = 0;
+            var last_direction = { "x": 0,
+                                   "y": 1}; 
+            var last_angle = 0;
+            var lattest_drawn_id = 0;
+            var age_queue = new Array();
+            var artContainer = d3.select("#gmuPlant")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h)
+                .attr("z-index", 100000000000)
+                .attr("pointer-events", "none");
+
+            
+            init_grid(rect_count);
+            draw_grid();
+
+            //init_point_container();
+
+            //######## Init functions   ########
+
+            function init_grid(r_count){
+                cols = Math.round(Math.sqrt(r_count * (w/h)));
+                rows = Math.round(r_count / cols);
+
+                rect_width = w / cols; // calc width of rects
+                rect_height = h / rows; // calc height of rects
+
+                var idx = 0;
+                for(var r = 0; r < rows; r++){
+                    for(var c = 0; c < cols ; c++){
+                        grid_data[idx] = new Object();
+                        grid_data[idx]["id"]      = idx;
+                        grid_data[idx]["pos_x"]   = rect_width * c;
+                        grid_data[idx]["pos_y"]   = rect_height * r;
+                        grid_data[idx]["width"]   = rect_width;
+                        grid_data[idx]["height"]  = rect_height;
+                        grid_data[idx]["touched"] = 0;
+                        idx++;
+                    }
+                }
+            }
+
+            function draw_grid(){
+
+                var rectGrid = gridContainer.selectAll("rect")
+                    .data(grid_data)
+                    .enter()
+                    .append("rect");
+
+                rectGrid.attr("id", function(d,i){return "r"+i;})
+                    .attr("x", function(d,i){return grid_data[i].pos_x})
+                    .attr("y", function(d,i){return grid_data[i].pos_y})
+                    .attr("width", function(d,i){return grid_data[i].width})
+                    .attr("height", function(d,i){return grid_data[i].height})
+                    .attr("fill", "#111111")
+                    .attr("fill-opacity", rect_opacity)
+                    .attr("stroke", "grey")
+                    .attr("stroke-width", 1)
+                    .attr("stroke-opacity", rect_opacity)
+                    .style("pointer-events","auto")
+                    .on("mouseover",  function(d,i) {
+                        gridContainer.select("#r"+parseInt(d.id))
+                                     .transition()
+                                     .duration(30)
+                                     .attr("fill","green")
+                                     .attr("fill-opacity", rect_opacity);
+                        update_hotspots(d.id);
+
+                    })
+                    .on("mouseout",  function(d,i) {
+                        gridContainer.select("#r"+parseInt(d.id))
+                                     .transition()
+                                     .duration(1000)
+                                     .attr("fill",color_scale(d.touched))
+                                     .attr("fill-opacity", rect_opacity);
+                    })
+                    
+            }
+
+            function update_hotspots(id){
+                grid_data[id].touched++;
+                
+                // sort hotspot_list
+                // if(hotspot_list.indexOf(grid_data[id]) == -1){
+                //     hotspot_list.push(grid_data[id]);
+                // }
+                
+                // gridContainer.select("#r"+parseInt(id))
+                //     .transition()
+                //     .duration(30)
+                //     .attr("fill",color_scale(grid_data[id].touched))
+                //     .attr("fill-opacity", rect_opacity);
+                // // sort list - front most touches - back less touches
+                // hotspot_list.sort( function compare(a,b) {
+                //     if (a.touched > b.touched)
+                //         return -1;
+                //     if (a.touched < b.touched)
+                //         return 1;
+                //     return 0;
+                // });
+            }
+            </script>
+            
+        </div>
+    </body>
