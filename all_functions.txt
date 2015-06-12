@@ -197,3 +197,48 @@ $( "#getw" ).click(function() {
 
                 branch_queue.push(new_child_id);
             }
+
+
+
+
+ /// OLD GROW method
+
+            function run_time_growth() {
+                var last_p = {"x": 0,
+                              "y": 0};
+                setInterval(function(){
+                    var _p  = {"x": mouse.x,
+                               "y": mouse.y };
+
+                    points.push(_p);
+                    last_p = _p
+                    
+                },900);
+
+                setInterval(function(){ 
+                    if (points.length > 1){
+                        if(branch_queue.length == 0){
+                            var _p = points.shift();
+                            var _p2 = points.shift();
+                            init_test_tendril(_p,_p2);
+                        }
+                        else{
+                            idx = branch_queue.shift();
+                            var _p = points.shift();
+                            var _p2 = points.shift();
+                            for (var i = 0; i < tendril_queue.length; i++){
+                                create_next_tendril_random_mouse(plant_data[idx],_p,_p2);
+                            }
+                            //draw_branches(plant_data[idx].children, 2000);
+                            draw_branches(draw_queue, 2000);
+                            //}
+                        }
+                    }
+                }, 2000);
+
+                // setInterval(function(){
+                //     if(age_queue.length > 2){
+                //         adjust_age(2);
+                //     }
+                // },4000);
+            }

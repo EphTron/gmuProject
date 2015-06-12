@@ -128,7 +128,7 @@
             var point_id  = 0;
             var points = new Array();
             var rect_opacity = 0.2;
-            var hotspot_list = new Array();
+            var hotspots = new Array();
 
             var gridContainer = d3.select("#gmuGrid")
                 .append("svg")
@@ -145,11 +145,13 @@
             var branch_length = 30;
             var tree_length = 60;
             var branch_queue = new Array();
+            var tendril_queue = new Array();
+            var global_tendril_count = 0;
+            var global_tendril_id = 0;
             var tree_queue = new Array();
             var plant_data = new Array();
             var tree_data = new Array();
             var branch_count = 0;
-            var p_id = 0;
             var last_direction = { "x": 0,
                                    "y": 1}; 
             var last_angle = 0;
@@ -212,7 +214,7 @@
                     .text(function(d) { return "generate Tree"; });
 
             
-            init_grid(400);
+            init_grid(8);
             draw_grid();
 
             init_tree();
@@ -286,6 +288,25 @@
             function update_hotspots(id){
 
                 grid_data[id].touched++;
+
+                //
+                if (typeof grid_data[id] != 'undefined') {
+                    grid_data[id].touched++;
+                
+                    if(hotspots.indexOf(grid_data[id]) == -1){
+                        hotspots.push(grid_data[id]);
+                    }
+
+                    // sort list - front most touched - back less touched
+                    hotspots.sort( function compare(a,b) {
+                        if (a.touched > b.touched)
+                            return -1;  
+                        if (a.touched < b.touched)
+                            return 1;
+                        return 0;
+                    });
+                }
+                console.log("Hotspots: ",hotspots)
             }
 
             function run_time_growth() {
@@ -303,17 +324,32 @@
                 setInterval(function(){ 
                     if (points.length > 1){
                         if(branch_queue.length == 0){
-                            var _p = points.shift();
-                            var _p2 = points.shift();
-                            init_test_tendril(_p,_p2);
+                            if (global_tendril_id < 4){
+                                var _start = { "x":1, 
+                                               "y":h/2};
+                                var _p = points.shift();
+                                var _p2 = points.shift();
+                                init_test_tendril(_start,_p,_p2);
+                            }
                         }
                         else{
                             idx = branch_queue.shift();
                             var _p = points.shift();
                             var _p2 = points.shift();
-                            //if (plant_data.length < ){
-                            create_next_tendril_random_mouse(plant_data[idx],_p,_p2);
-                            
+                            for (var i = 0; i < global_tendril_count; i++){
+                                idx = tendril_queue.shift();
+                                var _current_mouse_pos  = {"x": mouse.x,
+                                                           "y": mouse.y };
+                                if (plant_data[idx].tendril_number < 10){
+                                    create_next_tendril_random_mouse(plant_data[idx],
+                                                                     _current_mouse_pos,
+                                                                     _current_mouse_pos);
+                                } else {
+                                    global_tendril_count--;
+                                }
+                            }
+                            console.log("now drawing",draw_queue);
+                            console.log("global tendril count",global_tendril_id);
                             //draw_branches(plant_data[idx].children, 2000);
                             draw_branches(draw_queue, 2000);
                             //}
@@ -328,11 +364,10 @@
                 // },4000);
             }
 
-            function init_test_tendril(point, point2){
+            function init_test_tendril( start, point, point2){
                 var a = Math.PI / 4
                 var _alpha = -Math.PI/2;
-                var _start = { "x":1, 
-                               "y":h/2};
+                var _start =start;  
                 var _omega = get_min_max_angle(_start, _alpha, point);
                 var _middle = { "x": _start.x + branch_length * Math.cos(_omega),
                                 "y": _start.y + branch_length * Math.sin(_omega)};
@@ -346,28 +381,35 @@
 
                 var _root = new Array(_start,_middle,_end);
 
-                plant_data[p_id] = new Object();
-                plant_data[p_id]["id"] = 0;
-                plant_data[p_id]["branch"] = _root;
-                plant_data[p_id]["angle"] = _omega;
-                plant_data[p_id]["wid"] = 6;
-                plant_data[p_id]["generation"] = 0;
-                plant_data[p_id]["children"] = [];
-                plant_data[p_id]["parent"] = -1;
-                branch_count++;
-                p_id++;
+                plant_data[branch_count] = new Object();
+                plant_data[branch_count]["id"] = branch_count;
+                plant_data[branch_count]["tendril_id"] = global_tendril_id;
+                plant_data[branch_count]["tendril_number"] = 0;
+                plant_data[branch_count]["branch"] = _root;
+                plant_data[branch_count]["angle"] = _omega;
+                plant_data[branch_count]["wid"] = 6;
+                plant_data[branch_count]["generation"] = 0;
+                plant_data[branch_count]["children"] = [];
+                plant_data[branch_count]["parent"] = -1;
 
-                branch_queue.push(0);
-                draw_branches([0]);
+                global_tendril_id++;
+                global_tendril_count++;
+
+                branch_queue.push(branch_count);
+                tendril_queue.push(branch_count);
+                draw_branches([branch_count], 1800);
+
+                branch_count++;
             }
 
             function draw_branches(branch_list, time){
-                console.log("to draw: ", draw_queue, draw_queue.length)
+                //console.log("to draw: ", draw_queue, draw_queue.length)
                 var _to_draw = branch_list.length;
                 //console.log("Branchlist: ",branch_list)
                 for (var i = 0; i < _to_draw; i++){
 
                     idx = branch_list.pop();
+                    console.log("drawing", plant_data[idx].id)
                     
                     //draw_queue.shift();
                     var lineFunction = d3.svg.line()
@@ -377,13 +419,14 @@
                         //.interpolate("cubic");
                         //bundle
                         //monotone
-
+                    //console.log("drawing:", plant_data[idx].id)
                     var plantGraph = artContainer.append("path")
                         .attr("d", lineFunction(plant_data[idx].branch))
                         .attr("id", "p"+plant_data[idx].id)
                         .attr("stroke", "green")
                         .attr("pointer-events","stroke")
                         .attr("stroke-width", plant_data[idx].wid) //- (plant_data[idx].generation) * 0.4)
+                        .attr("stroke-linecap", "round")  // stroke-linecap type
                         .attr("fill", "none")
                         .on("mouseover",  function(d,i) {
                             _id = this.id;
@@ -391,6 +434,14 @@
                             _id = parseInt(_id);
 
                             //console.log("NEW LEAF",_id);
+                            if (global_tendril_count < 4){
+                                var _start = plant_data[_id].branch[2];
+                                var _p = {"x": randomIntFromInterval(0,w),
+                                          "y": randomIntFromInterval(0,h)};
+                                var _p2 = {"x": randomIntFromInterval(0,w),
+                                           "y": randomIntFromInterval(0,h)};
+                                init_test_tendril(_start,_p,_p2);
+                            }
                             create_leaf(plant_data[_id], plant_data[_id].branch, plant_data[_id].angle, "b");
                     });
 
@@ -464,11 +515,64 @@
             }
 
             function create_next_tendril_random_mouse(object, point, point2){
-                var new_child_id = p_id;
+                var new_child_id = branch_count;
                 
                 object.children.push(new_child_id);
-                //console.log("child id :",new_child_id);
+
+                //new_child_id = object.children[0]
+                plant_data[new_child_id] = new Object();
+
+                var _max_angle = Math.PI/5;
+                var _old_end = plant_data[object.id].branch[2];
+                var _old_mid = plant_data[object.id].branch[1];
+                var _old_omega = plant_data[object.id].angle;
+
+                var _start = _old_end;
+
+                var _middle = get_next_grow_point(new_child_id, _start, _old_omega, point, _max_angle);
+
+                var _end = get_next_grow_point(new_child_id, _middle, last_angle, point2, _max_angle);
                 
+                var _branch = new Array(_start, _middle,_end);
+
+                plant_data[new_child_id]["id"] = new_child_id;
+                plant_data[new_child_id]["tendril_id"] = object.tendril_id;
+                plant_data[new_child_id]["tendril_number"] = object.tendril_number + 1;
+                plant_data[new_child_id]["branch"] = _branch;
+                plant_data[new_child_id]["angle"] = last_angle;
+                plant_data[new_child_id]["wid"] = 7;
+                plant_data[new_child_id]["generation"] = object.generation +1;
+                plant_data[new_child_id]["children"] = [];
+                plant_data[new_child_id]["parent"] = object.id;
+                plant_data[new_child_id]["age"] = 0;
+
+                branch_count++;
+
+                //create fancy leaves for a nice look
+
+                var check_angle = Math.cos(last_angle);
+
+                if(check_angle <0.1){
+                    var a = 0;
+                    create_leaf(object, _branch, last_angle, "a");
+                }else if(check_angle <0.3){
+                    console.log("creating leaf")
+                    create_leaf(object, _branch, last_angle, "b");
+                }else if(check_angle >0.6){
+                    console.log("creating leaf")
+                    create_leaf(object, _branch, last_angle, "c");
+                }else {
+                    // _leaf.push("c");
+                }
+                draw_queue.push(new_child_id);
+                branch_queue.push(new_child_id);
+                tendril_queue.push(new_child_id);
+            }
+
+            function create_next_tendril_hotspot_mouse(object, point, point2){
+                var new_child_id = branch_count;
+                
+                object.children.push(new_child_id);
 
                 //new_child_id = object.children[0]
                 plant_data[new_child_id] = new Object();
@@ -496,13 +600,10 @@
                 plant_data[new_child_id]["age"] = 0;
 
                 branch_count++;
-                p_id++;
 
                 //create fancy leaves for a nice look
 
                 var check_angle = Math.cos(last_angle);
-
-                console.log("CHECK ANGLE ", check_angle);
 
                 if(check_angle <0.1){
                     var a = 0;
@@ -512,7 +613,7 @@
                     create_leaf(object, _branch, last_angle, "b");
                 }else if(check_angle >0.6){
                     console.log("creating leaf")
-                    create_leaf(object, _branch, last_angle, "b");
+                    create_leaf(object, _branch, last_angle, "c");
                 }else {
                     // _leaf.push("c");
                 }
@@ -521,7 +622,7 @@
             }
 
             function create_leaf(object, branch, middle_angle, type){
-                var new_leaf_id = p_id;
+                var new_leaf_id = branch_count;
                 //console.log("leaf id :",new_leaf_id);
                 object.children.push(new_leaf_id);
                 //new_child_id = object.children[0]
@@ -531,21 +632,51 @@
                 var _old_mid = plant_data[object.id].branch[1];
                 var _old_omega = plant_data[object.id].angle;
 
-                var _ran_point = {"x": randomIntFromInterval(0,w),
-                                  "y": randomIntFromInterval(0,h)};
-                var _start = get_next_grow_point(new_leaf_id, _old_mid, middle_angle, _ran_point, Math.PI/8);
-                
-                _ran_point = {"x": randomIntFromInterval(0,w),
-                                  "y": randomIntFromInterval(0,h)};
-                var _middle = get_next_grow_point(new_leaf_id, _start, last_angle, _ran_point, Math.PI/5);
+                if (type == "a"){
+                    console.log("a")
+                    var _ran_point = {"x": randomIntFromInterval(0,w),
+                                      "y": randomIntFromInterval(0,h)};
+                    var _start = get_next_grow_point(new_leaf_id, _old_mid, middle_angle, _ran_point, Math.PI/8);
+                    
+                    _ran_point = {"x": randomIntFromInterval(0,w),
+                                      "y": randomIntFromInterval(0,h)};
+                    var _middle = get_next_grow_point(new_leaf_id, _start, last_angle, _ran_point, Math.PI/5);
 
-                _ran_point = {"x": randomIntFromInterval(0,w),
-                              "y": randomIntFromInterval(0,h)};
-                var _end = get_next_grow_point(new_leaf_id, _middle, last_angle, _ran_point, Math.PI/4);
-                
+                    _ran_point = {"x": randomIntFromInterval(0,w),
+                                  "y": randomIntFromInterval(0,h)};
+                    var _end = get_next_grow_point(new_leaf_id, _middle, last_angle, _ran_point, Math.PI/4);
+                } else if (type == "b"){
+                    console.log("b")
+                    var _ran_point = {"x": randomIntFromInterval(0,w),
+                                      "y": randomIntFromInterval(0,h)};
+                    var _start = get_next_grow_point(new_leaf_id, _old_mid, middle_angle, _ran_point, Math.PI/10);
+                    
+                    _ran_point = {"x": randomIntFromInterval(0,w),
+                                      "y": randomIntFromInterval(0,h)};
+                    var _middle = get_next_grow_point(new_leaf_id, _start, last_angle, _ran_point, Math.PI/10);
+
+                    _ran_point = {"x": randomIntFromInterval(0,w),
+                                  "y": randomIntFromInterval(0,h)};
+                    var _end = get_next_grow_point(new_leaf_id, _middle, last_angle, _ran_point, Math.PI/10);
+                }else if (type == "c"){
+                    console.log("c")
+                    var _ran_point = {"x": randomIntFromInterval(0,w),
+                                      "y": randomIntFromInterval(0,h)};
+                    var _start = get_next_grow_point(new_leaf_id, _old_mid, middle_angle, _ran_point, Math.PI/10);
+                    
+                    _ran_point = {"x": randomIntFromInterval(0,w),
+                                      "y": randomIntFromInterval(0,h)};
+                    var _middle = get_next_grow_point(new_leaf_id, _start, last_angle, _ran_point, Math.PI/10);
+
+                    _ran_point = {"x": randomIntFromInterval(0,w),
+                                  "y": randomIntFromInterval(0,h)};
+                    var _end = get_next_grow_point(new_leaf_id, _middle, last_angle, _ran_point, Math.PI/10);
+                }
                 var _branch = new Array(_old_mid, _start, _middle, _end);
 
                 plant_data[new_leaf_id]["id"] = new_leaf_id;
+                plant_data[new_leaf_id]["tendril_id"] = object.tendril_id;
+                plant_data[new_leaf_id]["tendril_number"] = object.tendril_number;
                 plant_data[new_leaf_id]["branch"] = _branch;
                 plant_data[new_leaf_id]["angle"] = last_angle;
                 plant_data[new_leaf_id]["wid"] = 3;
@@ -554,9 +685,14 @@
                 plant_data[new_leaf_id]["parent"] = object.id;
                 plant_data[new_leaf_id]["age"] = 0;
                 branch_count++;
-                p_id++;
 
                 draw_queue.push(new_leaf_id);
+            }
+
+            function create_leaf_end(object, branch, middle_angle, type){
+                // to do
+                // make leafs end smaller
+                
             }
 
             function get_next_grow_point(id, start, old_angle, new_point, max_angle){
@@ -575,7 +711,6 @@
                 //set the direction of middle as last_direction
                 last_direction = {"x": branch_length * Math.cos(_omega),
                                   "y": branch_length * Math.sin(_omega)};
-                
                 
                 last_angle = _omega;
 
@@ -623,6 +758,8 @@
                 return Math.floor(Math.random()*(max-min+1)+min);
             }
 
+
+            // ##### TREE FUNCTIONS #####
             function init_tree(){
                 var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
                 var _start = { "x":1170/2, 
@@ -714,9 +851,7 @@
                     time = randomIntFromInterval(grow_time-200, grow_time+200)
                     setTimeout(function(){
                         var _l = tree_queue.length;
-                        //var _l = hotspot_list.length;
 
-                        //console.log(_l)
                         for (var i = 0; i < _l; i++){
                             idx = tree_queue.shift();
 
