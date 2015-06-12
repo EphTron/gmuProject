@@ -1,533 +1,737 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>PLANTS HUMANS ROBOTS</title>
-    <meta charset="utf-8">
+    <head>
+        <title>PLANTS HUMANS ROBOTS</title>
+        <meta charset="utf-8">
     
-    <!-- >>>>>STYLESHEETS<<<<< -->
-    <link href="gmuStyle.css" rel="stylesheet" type="text/css">
-    
-    <!-- >>>>>BOOTSTRAP SCRIPTS<<<<< -->
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery.js"></script>
-    
-    <!-- >>>>>D3 SCRIPTS<<<<< -->
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <!--<script type="text/javascript" src="d3/d3.min.js"></script>-->
+        <!-- >>>>>STYLESHEETS<<<<< -->
+        <link href="css_reset.css" rel="stylesheet" type="text/css">
+        <link href="plants-vs-humans.css" rel="stylesheet" type="text/css">
 
-  </head>
-  <body>
-    <div id="gmuArt">
-      <div id="website">
-        <form action="input_button.htm">
-          <p>
-            <textarea cols="20" rows="4" name="textfeld"></textarea>
-            <input id="b1" type="button" name="Text 1" value="Text 1 anzeigen"
-              onclick="this.form.textfeld.value='Text 1 und rückwärts seltsam geschrieben ich bin.'">
-            <input id="b2" type="button" name="Text 2" value="Text 2 anzeigen"
-              onclick="this.form.textfeld.value='Ich bin Text 2 - ganz normal'">
-          </p>
-        </form>
-      </div>
-      <div id="gmuPlant">
-      </div>
-      <div id="gmuGrid">
-      </div>
-      
-    </div>
-    <script type="text/javascript">
-
-      var mouse = {x: 0, y: 0};
-
-      document.addEventListener('mousemove', function(e){ 
-        mouse.x = e.clientX || e.pageX; 
-        mouse.y = e.clientY || e.pageY 
-      }, false);
-
-      // constants
-      var padding = 10
-      var w = window.innerWidth - padding;
-      var h = window.innerHeight- padding;
-      var cols = 0;
-      var rows = 0;
-      var rect_count = 1000;
-      var grid_data = new Array();
-      var rect_opacity = 0.2;
-      var hotspot_list = new Array();
-      var gridContainer = d3.select("#gmuGrid")
-          .append("svg")
-          .attr("width", w)
-          .attr("height", h);
-      var color_scale = d3.scale.linear()
-        .domain([0,6])
-        .range(["#111111","green"]);
-
-      var grow_time = 1000;
-      var max_angle = 3*Math.PI/4;
-      var branch_length = w / 30;
-      var branch_queue = new Array();
-      var plant_data = new Array();
-      var branch_count = 0;
-      var artContainer = d3.select("#gmuPlant")
-            .append("svg")
-            .attr("width", w)
-            .attr("height", h);
-
-      // run
-      init_plant();
-      grow_plant(0,5);
-      
-      init_grid(rect_count);
-      draw_grid();
-
-      // functions
-      function init_grid(r_count){
-        cols = Math.round(Math.sqrt(r_count * (w/h)));
-        rows = Math.round(r_count / cols);
-
-        var _r_w = w / cols; // calc width of rects
-        var _r_h = h / rows; // calc height of rects
-
-        var idx = 0;
-        for(var r = 0; r < rows; r++){
-          for(var c = 0; c < cols ; c++){
-            grid_data[idx] = new Object();
-            grid_data[idx]["id"]      = idx;
-            grid_data[idx]["pos_x"]   = _r_w * c;
-            grid_data[idx]["pos_y"]   = _r_h * r;
-            grid_data[idx]["width"]   = _r_w;
-            grid_data[idx]["height"]  = _r_h;
-            grid_data[idx]["touched"] = 0;
-            idx++;
-          }
-        }
-      }
-
-      function get_element_under_rect(x,y){
-        var resulting_element;
-        var first_element = document.elementFromPoint(x,y);
-        //check if first_element is a rect
-        if (first_element.nodeName == "rect") {
-          _display = first_element.style.display;             // save display of rect
-          first_element.style.display = "none";      // make rect invisible
-          resulting_element = document.elementFromPoint(x,y); 
-          first_element.style.display = _display;    // reset display
-        } else {
-          resulting_element = first_element;
-        }
-        return resulting_element;
-      }
-
-      function draw_grid(){
-        var rectGrid = gridContainer.selectAll("rect")
-          .data(grid_data)
-          .enter()
-          .append("rect");
-
-        rectGrid.attr("id", function(d,i){return "r"+i;})
-          .attr("x", function(d,i){return grid_data[i].pos_x})
-          .attr("y", function(d,i){return grid_data[i].pos_y})
-          .attr("width", function(d,i){return grid_data[i].width})
-          .attr("height", function(d,i){return grid_data[i].height})
-          .attr("fill", "#111111")
-          .attr("fill-opacity", rect_opacity)
-          .attr("stroke", "grey")
-          .attr("stroke-width", 1)
-          .attr("stroke-opacity", rect_opacity)
-          .style("pointer-events","auto")
-          .on("mouseover",  function(d,i) {
-            gridContainer.select("#r"+parseInt(d.id))
-                          .transition()
-                          .duration(30)
-                          .attr("fill","green")
-                          .attr("fill-opacity", rect_opacity);
-            update_hotspots(d.id);
-            //d.touched++;
-            //update_hotspots(d.id);
-          })
-          .on("mouseout",  function(d,i) {
-            gridContainer.select("#r"+parseInt(d.id))
-                          .transition()
-                          .duration(1000)
-                          .attr("fill",color_scale(d.touched))
-                          .attr("fill-opacity", rect_opacity);
-          })
-          .on("click", function(d,i) {
+        <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:regular&amp;subset=latin"/>
+        <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Arvo:regular&amp;subset=latin"/>
             
-            var element = get_element_under_rect( mouse.x, mouse.y );
-            if(typeof element === 'undefined'){
-               
-            }else {
-              element.click();
-            }
-              
-          }); 
-      }
-
-      function update_hotspots(id){
-        grid_data[id].touched++;
-        // add rect to hotspot_list
-        // sort hotspot_list
-        if(hotspot_list.indexOf(grid_data[id]) == -1){
-          hotspot_list.push(grid_data[id]);
-        }
-        
-        // gridContainer.select("#r"+parseInt(id))
-        //                   .transition()
-        //                   .duration(30)
-        //                   .attr("fill",color_scale(grid_data[id].touched))
-        //                   .attr("fill-opacity", rect_opacity);
-        //console.log("Before Sort",hotspot_list)
-
-        // sort list - front most touches - back less touches
-        hotspot_list.sort( function compare(a,b) {
-          if (a.touched > b.touched)
-             return -1;
-          if (a.touched < b.touched)
-            return 1;
-          return 0;
-        });
-
-        // use this hotspot list to calc near hotspot while growing
-        // -> see find_near_hotspor()
-      }
-
-      function init_plant(){
-        var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
-        var _start = { "x":w/2, 
-                       "y":h};
-        //var _middle = { "x": _start.x + branch_length * Math.cos(_omega) * 0.5+ 20,
-        //                "y": _start.y + (branch_length * Math.sin(_omega) * 0.5)}; 
-        var _end = { "x": _start.x + 2.5* branch_length * Math.cos(_omega), 
-                     "y": _start.y + 4.5* branch_length * Math.sin(_omega)}; 
-
-        var _root = new Array();
-        _root.push(_start);
-        //_root.push(_middle)
-        _root.push(_end);
-
-        plant_data[0] = new Object();
-        plant_data[0]["id"] = 0;
-        plant_data[0]["branch"] = _root;
-        plant_data[0]["angle"] = _omega;
-        plant_data[0]["generation"] = 0;
-        plant_data[0]["children"] = [1,2];
-        plant_data[0]["parent"] = -1;
-        branch_count++;
-
-        branch_queue.push(0);
-        draw_branches([0]);
-      }
-
-
-      function init_tendril(){
-        var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
-        var _start = { "x":w/2, 
-                       "y":h};
-        var _middle = { "x": _start.x + branch_length * Math.cos(_omega) * 0.5 + 5,
-                        "y": _start.y + (branch_length * Math.sin(_omega) * 0.5)}; 
-        var _end = { "x": _start.x + 2.5* branch_length * Math.cos(_omega), 
-                     "y": _start.y + 4.5* branch_length * Math.sin(_omega)}; 
-
-        var _root = new Array();
-        _root.push(_start);
-        _root.push(_middle)
-        _root.push(_end);
-
-        plant_data[0] = new Object();
-        plant_data[0]["id"] = 0;
-        plant_data[0]["branch"] = _root;
-        plant_data[0]["angle"] = _omega;
-        plant_data[0]["generation"] = 0;
-        plant_data[0]["children"] = [1];
-        plant_data[0]["branchlet"] = ["b1"];
-        plant_data[0]["parent"] = -1;
-        branch_count++;
-
-        branch_queue.push(0);
-        draw_branches([0]);
-      }
-
-      function create_branches(object){
-        for (i in object.children){
-          child = object.children[i];
-          plant_data[child] = new Object();
-          
-          var _old_end = plant_data[object.id].branch[1];
-          var _old_omega = plant_data[object.id].angle;
-          var _omega = _old_omega + Math.random() * max_angle - (max_angle / 2); 
-          var _start = { "x": _old_end.x, 
-                         "y": _old_end.y};
-
-          //var _middle = { "x": _start.x + branch_length * Math.cos(_omega/1.2) * 0.5 + (Math.random() * 200) - 100,
-          //                "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
-
-          //var _end = find_hottest_hotspot(_start);
-          var _end = find_closest_hotspot(_start, 10, _old_omega);
-          if (_end.x == 0 && _end.y == 0){
-            _end = find_hottest_hotspot(_start);
-            if (_end.x == 0 && _end.y == 0){
-              console.log("random");
-              var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-                          "y": _start.y + branch_length * Math.sin(_omega)};
-            }
-          }
-          if (_end.x == 0 && _end.y == 0){
-            console.log("STILL ZERO ?");
-          }
-          //var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-          //            "y": _start.y + branch_length * Math.sin(_omega)};
-
-          var _branch = new Array();
-          _branch.push(_start);
-          //_branch.push(_middle);
-          _branch.push(_end);
-
-          plant_data[child]["id"] = child;
-          plant_data[child]["branch"] = _branch;
-          plant_data[child]["angle"] = _omega;
-          plant_data[child]["generation"] = object.generation +1;
-          plant_data[child]["children"] = [child*2+1,child*2+2];
-          plant_data[child]["parent"] = object.id;
-          branch_count++;
-
-          branch_queue.push(child);
-        }
-      }
-
-      function create_tendril_branch(object){
-        new_child_id = object.children
-        plant_data[new_child_id] = new Object();
-        
-        var _old_end = plant_data[object.id].branch[2];
-        var _old_mid = plant_data[object.id].branch[1];
-        var _old_omega = plant_data[object.id].angle;
-        var _omega = _old_omega + Math.random() * max_angle - (max_angle / 2); 
-        var _start = { "x": _old_end.x, 
-                       "y": _old_end.y};
-
-        var _middle = { "x": _start.x + branch_length * Math.cos(_omega/1.2) * 0.5 + (Math.random() * 200) - 100,
-                        "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
-
-        //var _end = find_hottest_hotspot(_start);
-        var _end = find_closest_hotspot(_start, 10, _old_omega);
-        if (_end.x == 0 && _end.y == 0){
-          _end = find_hottest_hotspot(_start);
-          if (_end.x == 0 && _end.y == 0){
-            console.log("random");
-            var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-                        "y": _start.y + branch_length * Math.sin(_omega)};
-          }
-        }
-        if (_end.x == 0 && _end.y == 0){
-          console.log("STILL ZERO ?");
-        }
-        //var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-        //            "y": _start.y + branch_length * Math.sin(_omega)};
-
-        var _branch = new Array();
-        _branch.push(_start);
-        //_branch.push(_middle);
-        _branch.push(_end);
-
-        plant_data[child]["id"] = child;
-        plant_data[child]["branch"] = _branch;
-        plant_data[child]["angle"] = _omega;
-        plant_data[child]["generation"] = object.generation +1;
-        plant_data[child]["children"] = [child*2+1,child*2+2];
-        plant_data[child]["parent"] = object.id;
-        branch_count++;
-
-        branch_queue.push(child);
-      }
-
-      function find_hottest_hotspot(location){
-        // this function searches for the most touched rect on the grid
-        // and calculates a point in the direction
-        var _point = {"x": 0, 
-                      "y": 0};
-        if(hotspot_list.length > 0){
-
-          _most_touched_rect =  hotspot_list[0];
-          //_most_touched_rect = hotspot_list.shift();
-          hotspot_list[0].touched--;
-          if ( hotspot_list[0].touched< 0){
-            hotspot_list[0].touched = 0;
-          }
-
-          _r_x = randomIntFromInterval(0,Math.floor(_most_touched_rect.width));
-          _x = _most_touched_rect.pos_x + _r_x;
-          _r_y = randomIntFromInterval(0,Math.floor(_most_touched_rect.height));
-          _y = _most_touched_rect.pos_y + _r_y;
-          
-          _vec_length = Math.sqrt((_x-location.x) * (_x-location.x)+ (_y-location.y) * (_y-location.y))
-          _vec_norm = {"x": (_x-location.x) / _vec_length,
-                       "y": (_y-location.y) / _vec_length};
-          var a = Math.PI/3
-          var _alpha = -Math.PI/2 + a *Math.random() - a/2;
-          _point = {"x": location.x + branch_length * _vec_norm.x  , 
-                    "y": location.y + branch_length * _vec_norm.y  };
-        }
-        return _point;
-      }
-
-      function find_closest_hotspot(location, candidates, angle){
-        var _point = {"x": 0, 
-                      "y": 0};
-        if (hotspot_list.length > 0 && hotspot_list.length < candidates){
-          candidates = hotspot_list.length
-        }
-
-        if(hotspot_list.length >= candidates){
-          _shortest_distance = 500;
-          _closest_spot = null;
-          // find closest hotspot out of a set of candidates
-          for(i = 0; i < candidates; i++){
-            // calc distance to hotspot_candidate
-            _x = hotspot_list[i].pos_x;
-            _y = hotspot_list[i].pos_y;
-            _vec_length = Math.sqrt((_x-location.x) * (_x-location.x)+ (_y-location.y) * (_y-location.y));
-            if (_vec_length < 100){
-              console.log("too close")
-            }
-            else if (_vec_length < _shortest_distance){
-              _closest_spot = hotspot_list[i];
-              _shortest_distance = _vec_length;
-            }
-          }
-          console.log(_closest_spot);
-          // delete hotspot
-          if (_closest_spot != null){
-            remove_id = hotspot_list.indexOf(_closest_spot);
-          //   hotspot_list[remove_id].touched -= 2;
-          //   if (hotspot_list[remove_id].touched <= 0 ){
-            hotspot_list.splice(remove_id, 1);
-          //   }
-          }
-          if (_closest_spot != null){
-            _r_x = randomIntFromInterval(0,Math.floor(_closest_spot.width));
-            _x = _closest_spot.pos_x + _r_x;
-            _r_y = randomIntFromInterval(0,Math.floor(_closest_spot.height));
-            _y = _closest_spot.pos_y + _r_y;
+        <!-- >>>>>BOOTSTRAP SCRIPTS<<<<< -->
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://code.jquery.com/jquery.js"></script>
             
-            _vec_length = Math.sqrt((_x-location.x) * (_x-location.x)+ (_y-location.y) * (_y-location.y))
-            _vec_norm = {"x": (_x-location.x) / _vec_length,
-                         "y": (_y-location.y) / _vec_length};
+        <!-- >>>>>D3 SCRIPTS<<<<< -->
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <!--<script type="text/javascript" src="d3/d3.min.js"></script>-->
 
-            var a = Math.PI/6
-            var _alpha = -Math.PI/2 + angle + a *Math.random() - a/2;  
+    </head>
+    <body>
+        <div id="gmuArt">
+            <div id="website">
+                <div id="header">
+                    <h3 class="title">PLANTS vs HUMANS</h3>
+                </div>
+                
+                <div id="content_text">
+                    <article>
+                        <h3>Die Natur in der Technik oder die Technik in der Natur.</h3>
+                        <br>
+                        <hr class="shadow"/>
+                        <br>
 
-            _point = {"x": location.x + branch_length *  _vec_norm.x ,
-                      "y": location.y + branch_length *  _vec_norm.y };
-            _point = {"x": location.x + (branch_length * Math.cos(_alpha)) * _vec_norm.x ,
-                      "y": location.y + (branch_length * Math.sin(_alpha)) * _vec_norm.y };
-          }
-        }
-        return _point;
+                        <p>In meinem Uni-Projekt "PLANTS vs HUMANS" ist ein kleines Chrome-Plugin entstanden, welches einen künstlichen Baum über den Bildschirm wachsen lässt. Ein künstlicher Baum, der die Nutzer davon abhält eine Webseite sinnvoll zu bedienen. Ein künstlicher Baum, der nichts nützt und trotzdem interessant ist. Er ist nicht interessant weil er stört, sondern aufgrund seines Wachstums und der daraus resultierenden Form. Eine Form die vielen Formen in der Natur in gewisserweise sehr ähnlich ist, da sie nach dem gleichen Prinzip entsteht. Ein Prinzip das sich in den Wolken, in Schneeflocken, an der Küste, in den Bergen, in Pflanzen – überall – wiederfinden lässt.</p>
 
-        // ideen: wenn kein closer_spot -> wachse zufällig
-        // wenn closer_spot zu nah -> setz eine flag, dass blätter wachsen.
-        // ast wächst dann nicht mehr weiter
-      }
+                        <p>Rekursion – Ein Phänomen, dass sich überall in der Natur finden lässt und oftmals nur unterbewusst bewundert wird, weil wir das Muster nicht in seinem gesamten Ausmaß erkennen. Das Phänomen, dass Formen sich wiederholen, dass Formen sich in sich selbst spiegeln, dass Formen aus sich selbst bestehen. Die Einfachheit und die Genialität der Rekursion verschließt sich dem Auge meist in einer komplexen Vielfalt an Formen, die man erst nach längerem Beobachten durchdringt. In manchen Dingen ist sie leichter zu entdecken als in anderen. 
+                        Es fällt uns beispielsweise schwer genauer zu beschreiben, wie die Struktur eines Baumes oder eines Blumenkohls entsteht. Eine gewisse Ähnlichkeit zwischen beiden Pflanzen ist jedoch nicht von der Hand zu weisen und lässt uns schließen, dass ähnliche "Prozesse" statt finden. Bei Farnblättern hingegen ist das Prinzip der Rekursion leichter zu erfassen. Dort scheinen immer kleinere Kopien des Blattes selbst an dem Blatt zu hängen, nur um ~90° gedreht. Das Farnblatt wird in sich wiederholenden Schritten aus einer einfachen Grundform aufgebaut. Hat man diese Grundlage der Rekursion einmal erkannt, so findet man sie auch beim Blumenkohl wieder, nur mit einer anderen Form. Der Blumenkohl erweckt den Eindruck als bestehe er aus vielen kleinen Blumenkohlen, und diese wieder aus vielen kleinen... bis es irgendwann nicht mehr kleiner geht. In diesem Fall hat man die maximale Rekursionstiefe erreicht.</p>
+                        <p>In der Mathematik werden solche geometrischen Formen, die sich selbstbeinhalten, als Fraktale bezeichnet.</p>
 
-      function draw_branches(branch_list, time){
-        var _branch_count = branch_list.length;
-        for (var i = 0; i < _branch_count; i++){
-          idx = branch_list.shift();
-          var lineFunction = d3.svg.line()
-            .x(function(d) { return d.x; })
-            .y(function(d) { return d.y; })
-            .interpolate("basis");
+                        <div class="text_imgs" style="width:700px;">
+                            <img class="picture" id="farn" src="imgs/farn.jpg" height="300px">
+                            <img class="picture" id="kohl" src="imgs/kohl.jpg" height="300px">
+                        </div>
+                        <br>
+                        <hr class="shadow"/>
+                        <br>
 
-          var plantGraph = artContainer.append("path")
-            .attr("d", lineFunction(plant_data[idx].branch))
-            .attr("id", "p"+plant_data[idx].id)
-            .attr("stroke", "green")
-            .attr("stroke-width", 5 - (plant_data[idx].generation) * 0.4)
-            .attr("fill", "none")
-            .on("mouseover",  function(d,i) {
-              console.log("testetsestset")
-          });
+                        <p>Bei Bäumen sind diese rekursiven Fraktale ebenfalls vorhanden, nur etwas komplizierter, weil sie mehrere Grundformen beinhalten und komplexeren Regeln folgen. Um den Baum etwas zu vereinfachen könnte man ihn beispielsweise auf drei Formen reduzieren: dicke und dünne Äste, sowie Blätter. Diese Formen treten am Baum nur in bestimmten Reihenfolgen auf. Wenn man einige Beoachtungen anstellt, könnte man einige Tatsachen festhalten, wie zum Beispiel die Folgenden:</p>
 
-          var plant_length = plantGraph.node().getTotalLength();
+                        <p> - Blätter wachsen nie an dicken Ästen.</p>
+                        <p> - Dicke Äste wachsen nicht an dünnen Ästen.</p>
+                        <p> - Aus dünnen Ästen werden nach einiger Zeit dicke Äste.</p>
+                        <p>usw.</p>
+                        <br>
+                        <p>Aus einigen dieser Sätze lassen sich im Anschluss sogar Regeln oder Grammatiken formulieren, welche dann auf sehr formale Weise einen Baum (oder andere Dinge in der Natur) beschreiben. Wenn man diese Grammatiken in einen Computer hineingibt, so kann der Computer eine Abbildung des Baumes ableiten. Das interessante dabei ist, dass die Abbildung des Computers nicht unbedingt eine maximale Rekursionstiefe braucht. Was dazu führt, dass man immer tiefer in die Abbildung hineintauchen kann.
+                        Beim hineintauchen wird man feststellen, dass sich das Computerfraktal gar nicht verändert, sondern nur wir unsere Position im Fraktal.</p>
+                        <br>
+                        <div class="text_imgs" style="width:560px;">
+                            <img id="pythagoras" src="imgs/pythagoras.png" width="550px">
+                        </div>
+                        <br>
+                        <p>In der Informatik bezeichnet man diese Grammatiken als Lindenmayer-Systeme und es ist erstaunlich was für beeindruckende Fraktale sie erzeugen können und wie viele dieser Fraktale man in der Natur wiederfindet, so ähnelt der Pythagorasbaum beispielsweise sehr der Form eines Blumekohl oder Brokkoli.</p>
 
-          plantGraph.attr("stroke-dasharray", plant_length + " " + plant_length)
-            .attr("stroke-dashoffset", plant_length)
-            .transition()
-              //.delay(plant_data[idx].generation * 3000)
-              .duration(time)
-              .ease("basis")
-              .attr("stroke-dashoffset", 0);
-        }
-      }
+                        <p>Oft reichen schon wenige Regeln in einem L-System um ein relativ komplexes Fraktal zu bilden. Das kann an der Koch-Kurve sehr schön gezeigt werden. Bei ihr besitzen wir nur eine Form (F), zwei sogenannte Konstanten (+, -) und eine Regel  P={(F → F+F--F+F)}.</p>
 
-      function grow_plant(iterations, max_depth){
-        if(iterations < max_depth){
-          time = randomIntFromInterval(grow_time-200, grow_time+200)
-          setTimeout(function(){
-            var _l = branch_queue.length;
-            //var _l = hotspot_list.length;
+                        <p><strong>F</strong> : Stellt eine Strich da, der in eine Richtung gezogen wird.</p>
+                        <p><strong>+</strong> : Dreht den Strich um 60°  gegen den Uhrzeigersinn.</p>
+                        <p><strong>-</strong> : Dreht den Strich um 60° mit dem Uhrzeigersinn.</p>
+                        <br>
+                        <div class="text_imgs" style="width:760px;">
+                            <img class="picture" id="koch" src="imgs/koch_curve.png" width="750px">
+                        </div>
+                        <br>
+                        <p>Unser Startwort ist F, was einem einfachen Strich entspricht. Nun beginnen wir unsere Regel P auf F anzuwenden. Wir ersetzten also F durch F+F--F+F. Schon nach wenigen Rekursivendurchgängen (Iterationen) erhalten wir ein Muster, dass sich immer wieder selbstenthält und mit dem Ursprung nur schwer in Verbindung gebracht werden. Erst wenn wir in unserem Muster nach sich wiederholenden Abschnitten ausschau halten, bemerken wir, dass jede Stufe die vorherige beinhaltet.
+                        Bemerkenswert an Fraktalen ist, wie schwer es ist deren Ursprung zu ergründen, selbst wenn wir die Regeln kennen nach denen sie sich richten.</p> 
+                        <br>
+                        <div class="text_imgs" style="width:360px;">
+                            <img class="picture" id="koch" src="imgs/flocke.png" width="350px">
+                        </div>
+                        <br>
+                        <p>Diese Schneeflocke ist nach der gleichen Regel P erzeugt worden, wie oben unser kleines Beispiel. Sie beinhaltet ebenfalls nur F, + und - und die Regel P. Der einzige Unterschied liegt im Startwort. Kannst du das Startwort oder seine Form in dem Muster erkennen?
+                        Ähnlich wie bei dieser Schneeflocke geht es uns überall in der Natur. Das Wissen um die Rekursion bietet uns eine neu Sichtweise auf unsere altbekannte Umwelt. Sie ermöglicht es uns nach den verborgenen Regeln der Natur zu suchen und die Magie in ihr zu finden.</p>
 
-            //console.log(_l)
-            for (var i = 0; i < _l; i++){
-              idx = branch_queue.shift();
+                        <p>Ob wir dabei jemals einen Ursprung finden werden bleibt offen</p>
 
-              create_branches(plant_data[idx]); //create children of last branch
+                    </article>
+                    <div id="content_tree">
 
-              draw_branches(plant_data[idx].children, time); // draw children of last branch
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="gmuGrid">
+            </div>
+
+            <div id="gmuPlant">
+            </div>
+
+            <script type="text/javascript">
+            var mouse = {x: 0, y: 0};
+
+            document.addEventListener('mousemove', function(e){ 
+                mouse.x =  e.pageX; 
+                mouse.y =  e.pageY; 
+            }, false);
+
+            // constants
+            var padding = 10
+
+            // variables
+            var w = window.innerWidth - padding;
+            //var h = window.innerHeight- padding;
+            var body = document.body,
+                html = document.documentElement;
+
+            var h = Math.max( body.scrollHeight, body.offsetHeight, 
+                              html.clientHeight, html.scrollHeight, html.offsetHeight );
+            var cols = 0;
+            var rows = 0;
+            var rect_width = 1;
+            var rect_height = 1;
+            var rect_count = 50;
+            var grid_data = new Array();
+            var point_id  = 0;
+            var points = new Array();
+            var rect_opacity = 0.2;
+            var hotspot_list = new Array();
+
+            var gridContainer = d3.select("#gmuGrid")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h);
+ 
+
+            var color_scale = d3.scale.linear()
+                .domain([0,14])
+                .range(["#111111","green"]);
+
+            var grow_time = 1000;
+            var max_angle = Math.PI/5;
+            var branch_length = 30;
+            var tree_length = 60;
+            var branch_queue = new Array();
+            var tree_queue = new Array();
+            var plant_data = new Array();
+            var tree_data = new Array();
+            var branch_count = 0;
+            var p_id = 0;
+            var last_direction = { "x": 0,
+                                   "y": 1}; 
+            var last_angle = 0;
+            var lattest_drawn_id = 0;
+            var age_queue = new Array();
+            var draw_queue = new Array();
+            var artContainer = d3.select("#gmuPlant")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h)
+                .attr("z-index", 100)
+                .attr("pointer-events", "none");
+
+            var treeContainer = d3.select("#content_tree")
+                .append("svg")
+                .attr("width", 1170)
+                .attr("height", 700)
+                .attr("z-index", 100)
+                .attr("pointer-events", "none");
+
+            var button = treeContainer
+                .append("g")
+                .attr("transform", function(d, i) { return "translate("+30+"," + 30 + ")"; });
+
+                buttonRect = button.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("width", 300)
+                    .attr("height", 70)
+                    .attr("fill", "#00ced1")
+                    .attr("pointer-events", "all")
+                    .on("mouseover",  function(d,i) {
+                        buttonRect.transition()
+                            .duration(30)
+                            .attr("fill", "green");
+                    })
+                    .on("click",  function(d,i) {
+                        buttonRect.transition()
+                            .duration(30)
+                            .attr("fill","green")
+                        treeContainer.selectAll("path").remove()
+                        tree_queue = new Array();
+                        tree_data = new Array();
+                        init_tree();
+                        grow_tree(0,7);
+                    })
+                    .on("mouseout",  function(d,i) {
+                        buttonRect.transition()
+                            .duration(30)
+                            .attr("fill", "#00ced1");
+                    });
+
+                button.append("text")
+                    .attr("id","button_text")
+                    .attr("x", 70)
+                    .attr("y", 45)
+                    .attr("pointer-events", "none")
+                    //.attr("font", "30px")
+                    //.attr("dy", "30px")
+                    .text(function(d) { return "generate Tree"; });
+
+            
+            init_grid(400);
+            draw_grid();
+
+            init_tree();
+            grow_tree(0,7);
+
+            run_time_growth();
+
+            //init_point_container();
+
+            //######## Init functions   ########
+
+            function init_grid(r_count){
+                cols = Math.round(Math.sqrt(r_count * (w/h)));
+                rows = Math.round(r_count / cols);
+
+                rect_width = w / cols; // calc width of rects
+                rect_height = h / rows; // calc height of rects
+
+                var idx = 0;
+                for(var r = 0; r < rows; r++){
+                    for(var c = 0; c < cols ; c++){
+                        grid_data[idx] = new Object();
+                        grid_data[idx]["id"]      = idx;
+                        grid_data[idx]["pos_x"]   = rect_width * c;
+                        grid_data[idx]["pos_y"]   = rect_height * r;
+                        grid_data[idx]["width"]   = rect_width;
+                        grid_data[idx]["height"]  = rect_height;
+                        grid_data[idx]["touched"] = 0;
+                        idx++;
+                    }
+                }
             }
-            iterations++;
-            console.log(iterations);
-            grow_plant(iterations,max_depth);
-          }, time);
-        }
-      }
 
-      function grow_tendril(iterations, max_depth){
-        if(iterations < max_depth){
-          time = randomIntFromInterval(grow_time-200, grow_time+200)
-          setTimeout(function(){
-            var _l = branch_queue.length;
-            //console.log(_l)
-            for (var i = 0; i < _l; i++){
-              idx = branch_queue.shift();
+            function draw_grid(){
 
-              create_branches(plant_data[idx]); //create children of last branch
+                var rectGrid = gridContainer.selectAll("rect")
+                    .data(grid_data)
+                    .enter()
+                    .append("rect");
 
-              draw_branches(plant_data[idx].children, time); // draw children of last branch
+                rectGrid.attr("id", function(d,i){return "r"+i;})
+                    .attr("x", function(d,i){return grid_data[i].pos_x})
+                    .attr("y", function(d,i){return grid_data[i].pos_y})
+                    .attr("width", function(d,i){return grid_data[i].width})
+                    .attr("height", function(d,i){return grid_data[i].height})
+                    .attr("fill", "#111111")
+                    .attr("fill-opacity", rect_opacity)
+                    .attr("stroke", "grey")
+                    .attr("stroke-width", 1)
+                    .attr("stroke-opacity", rect_opacity)
+                    .style("pointer-events","auto")
+                    .on("mouseover",  function(d,i) {
+                        gridContainer.select("#r"+parseInt(d.id))
+                                     .transition()
+                                     .duration(30)
+                                     .attr("fill","green")
+                                     .attr("fill-opacity", rect_opacity);
+                        update_hotspots(d.id);
+
+                    })
+                    .on("mouseout",  function(d,i) {
+                        gridContainer.select("#r"+parseInt(d.id))
+                                     .transition()
+                                     .duration(1000)
+                                     .attr("fill",color_scale(d.touched))
+                                     .attr("fill-opacity", rect_opacity);
+                    })
+                    
             }
-            iterations++;
-            console.log(iterations);
-            grow_plant(iterations,max_depth);
-          }, time);
-        }
-      }
 
-      function randomIntFromInterval(min,max){
-        return Math.floor(Math.random()*(max-min+1)+min);
-      }
-      // to do:
-      // on click delete a branch
-      // create one plant out of all branches that exist
+            function update_hotspots(id){
 
-      // ###### old code ######
-      // function color_scale(min,max,val){
-      //   _col = d3.scale.linear()
-      //     .domain([min,max])
-      //     .range(["green","red"]);
-      //   return _col;
-      //   }
-      //
-      // code to get a rect under a spec
-      // var _location_on_grid_x = Math.floor(location.x / data[0].width);
-      // var _location_on_grid_y = Math.floor(location.y / data[0].height);
-      // var _location_rect_id = (_location_on_grid_y) * cols + _location_on_grid_x;
-      // gridContainer.select("#r"+parseInt(_location_rect_id))
-      //                   .transition()
-      //                   .duration(100)
-      //                   .attr("fill","#1111F1")
-      //                   .attr("fill-opacity",0.5);
+                grid_data[id].touched++;
+            }
 
-    </script>
-  </body>
-</html>
+            function run_time_growth() {
+                var last_p = {"x": 0,
+                              "y": 0};
+                setInterval(function(){
+                    var _p  = {"x": mouse.x,
+                               "y": mouse.y };
+
+                    points.push(_p);
+                    last_p = _p
+                    
+                },900);
+
+                setInterval(function(){ 
+                    if (points.length > 1){
+                        if(branch_queue.length == 0){
+                            var _p = points.shift();
+                            var _p2 = points.shift();
+                            init_test_tendril(_p,_p2);
+                        }
+                        else{
+                            idx = branch_queue.shift();
+                            var _p = points.shift();
+                            var _p2 = points.shift();
+                            //if (plant_data.length < ){
+                            create_next_tendril_random_mouse(plant_data[idx],_p,_p2);
+                            
+                            //draw_branches(plant_data[idx].children, 2000);
+                            draw_branches(draw_queue, 2000);
+                            //}
+                        }
+                    }
+                }, 2000);
+
+                // setInterval(function(){
+                //     if(age_queue.length > 2){
+                //         adjust_age(2);
+                //     }
+                // },4000);
+            }
+
+            function init_test_tendril(point, point2){
+                var a = Math.PI / 4
+                var _alpha = -Math.PI/2;
+                var _start = { "x":1, 
+                               "y":h/2};
+                var _omega = get_min_max_angle(_start, _alpha, point);
+                var _middle = { "x": _start.x + branch_length * Math.cos(_omega),
+                                "y": _start.y + branch_length * Math.sin(_omega)};
+
+                _omega = get_min_max_angle(_middle, _omega, point2);
+                var _end = { "x": _middle.x + branch_length * Math.cos(_omega), 
+                             "y": _middle.y + branch_length * Math.sin(_omega)};
+                
+                last_direction = { "x": branch_length * Math.cos(_omega), 
+                                   "y": branch_length * Math.sin(_omega)};
+
+                var _root = new Array(_start,_middle,_end);
+
+                plant_data[p_id] = new Object();
+                plant_data[p_id]["id"] = 0;
+                plant_data[p_id]["branch"] = _root;
+                plant_data[p_id]["angle"] = _omega;
+                plant_data[p_id]["wid"] = 6;
+                plant_data[p_id]["generation"] = 0;
+                plant_data[p_id]["children"] = [];
+                plant_data[p_id]["parent"] = -1;
+                branch_count++;
+                p_id++;
+
+                branch_queue.push(0);
+                draw_branches([0]);
+            }
+
+            function draw_branches(branch_list, time){
+                console.log("to draw: ", draw_queue, draw_queue.length)
+                var _to_draw = branch_list.length;
+                //console.log("Branchlist: ",branch_list)
+                for (var i = 0; i < _to_draw; i++){
+
+                    idx = branch_list.pop();
+                    
+                    //draw_queue.shift();
+                    var lineFunction = d3.svg.line()
+                        .x(function(d) { return d.x; })
+                        .y(function(d) { return d.y; })
+                        .interpolate("cardinal");
+                        //.interpolate("cubic");
+                        //bundle
+                        //monotone
+
+                    var plantGraph = artContainer.append("path")
+                        .attr("d", lineFunction(plant_data[idx].branch))
+                        .attr("id", "p"+plant_data[idx].id)
+                        .attr("stroke", "green")
+                        .attr("pointer-events","stroke")
+                        .attr("stroke-width", plant_data[idx].wid) //- (plant_data[idx].generation) * 0.4)
+                        .attr("fill", "none")
+                        .on("mouseover",  function(d,i) {
+                            _id = this.id;
+                            _id = _id.substr(1);
+                            _id = parseInt(_id);
+
+                            //console.log("NEW LEAF",_id);
+                            create_leaf(plant_data[_id], plant_data[_id].branch, plant_data[_id].angle, "b");
+                    });
+
+                    var plant_length = plantGraph.node().getTotalLength();
+
+                    plantGraph.attr("stroke-dasharray", plant_length + " " + plant_length)
+                        .attr("stroke-dashoffset", plant_length)
+                        .transition()
+                            //.delay(plant_data[idx].generation * 3000)
+                            .duration(time)
+                            .ease("linear")
+                            .attr("stroke-dashoffset", 0);
+                    //age_queue.push(idx);
+
+                }
+                // while (plant_data[age_queue[0]].generation <= plant_data[idx].generation -5){
+                //     i = age_queue.shift();
+                //     //console.log("poped", i);
+                // }
+            }
+
+            function get_min_max_angle(ref_point, angle, new_point, max_angle){
+
+                var _dir = { "x": ref_point.x + (branch_length * Math.cos(angle)),
+                             "y": ref_point.y + (branch_length * Math.sin(angle))}; 
+
+                var _a = {"x": _dir.x - ref_point.x,
+                          "y": _dir.y - ref_point.y};
+
+                var _b = {"x": new_point.x - ref_point.x,
+                          "y": new_point.y - ref_point.y};
+                
+                var result_angle = dot_product(normalize_vec(_a),normalize_vec(_b));
+                
+                if (result_angle > 0.999999){
+                    result_angle = 0.999999
+                } else if (result_angle < -0.9999999){
+                    result_angle = -0.9999999
+                }
+                result_angle = Math.acos(result_angle);
+
+                if ( result_angle > max_angle){
+                    result_angle = max_angle;
+                }
+                // check on which side the next point lies
+                var _side = Math.sign((_dir.x-ref_point.x)*(new_point.y-ref_point.y) -
+                                      (_dir.y-ref_point.y)*(new_point.x-ref_point.x));
+                // adjust
+                if (_side > 0){
+                    result_angle = -result_angle;
+                }
+                result_angle = angle - result_angle;
+                
+                return result_angle;
+            }
+
+            function dot_product(a, b){
+
+                var result = a.x * b.x + a.y * b.y
+                return result
+            }
+
+            function normalize_vec(a){
+                //console.log("norm a",a);
+                _a_length = Math.sqrt((a.x) * (a.x) + (a.y) * (a.y));
+
+                 a.x = (a.x) / _a_length;
+                 a.y = (a.y) / _a_length;
+
+                return a;
+            }
+
+            function create_next_tendril_random_mouse(object, point, point2){
+                var new_child_id = p_id;
+                
+                object.children.push(new_child_id);
+                //console.log("child id :",new_child_id);
+                
+
+                //new_child_id = object.children[0]
+                plant_data[new_child_id] = new Object();
+
+                var _max_angle = Math.PI/5;
+                var _old_end = plant_data[object.id].branch[2];
+                var _old_mid = plant_data[object.id].branch[1];
+                var _old_omega = plant_data[object.id].angle;
+
+                var _start = _old_end;
+
+                var _middle = get_next_grow_point(new_child_id, _start, _old_omega, point, _max_angle);
+
+                var _end = get_next_grow_point(new_child_id, _middle, last_angle, point2, _max_angle);
+                
+                var _branch = new Array(_start, _middle,_end);
+
+                plant_data[new_child_id]["id"] = new_child_id;
+                plant_data[new_child_id]["branch"] = _branch;
+                plant_data[new_child_id]["angle"] = last_angle;
+                plant_data[new_child_id]["wid"] = 7;
+                plant_data[new_child_id]["generation"] = object.generation +1;
+                plant_data[new_child_id]["children"] = [];
+                plant_data[new_child_id]["parent"] = object.id;
+                plant_data[new_child_id]["age"] = 0;
+
+                branch_count++;
+                p_id++;
+
+                //create fancy leaves for a nice look
+
+                var check_angle = Math.cos(last_angle);
+
+                console.log("CHECK ANGLE ", check_angle);
+
+                if(check_angle <0.1){
+                    var a = 0;
+                    create_leaf(object, _branch, last_angle, "a");
+                }else if(check_angle <0.3){
+                    console.log("creating leaf")
+                    create_leaf(object, _branch, last_angle, "b");
+                }else if(check_angle >0.6){
+                    console.log("creating leaf")
+                    create_leaf(object, _branch, last_angle, "b");
+                }else {
+                    // _leaf.push("c");
+                }
+                draw_queue.push(new_child_id);
+                branch_queue.push(new_child_id);
+            }
+
+            function create_leaf(object, branch, middle_angle, type){
+                var new_leaf_id = p_id;
+                //console.log("leaf id :",new_leaf_id);
+                object.children.push(new_leaf_id);
+                //new_child_id = object.children[0]
+                plant_data[new_leaf_id] = new Object();
+
+                var _old_end = branch[2];
+                var _old_mid = plant_data[object.id].branch[1];
+                var _old_omega = plant_data[object.id].angle;
+
+                var _ran_point = {"x": randomIntFromInterval(0,w),
+                                  "y": randomIntFromInterval(0,h)};
+                var _start = get_next_grow_point(new_leaf_id, _old_mid, middle_angle, _ran_point, Math.PI/8);
+                
+                _ran_point = {"x": randomIntFromInterval(0,w),
+                                  "y": randomIntFromInterval(0,h)};
+                var _middle = get_next_grow_point(new_leaf_id, _start, last_angle, _ran_point, Math.PI/5);
+
+                _ran_point = {"x": randomIntFromInterval(0,w),
+                              "y": randomIntFromInterval(0,h)};
+                var _end = get_next_grow_point(new_leaf_id, _middle, last_angle, _ran_point, Math.PI/4);
+                
+                var _branch = new Array(_old_mid, _start, _middle, _end);
+
+                plant_data[new_leaf_id]["id"] = new_leaf_id;
+                plant_data[new_leaf_id]["branch"] = _branch;
+                plant_data[new_leaf_id]["angle"] = last_angle;
+                plant_data[new_leaf_id]["wid"] = 3;
+                plant_data[new_leaf_id]["generation"] = object.generation +1;
+                plant_data[new_leaf_id]["children"] = [];
+                plant_data[new_leaf_id]["parent"] = object.id;
+                plant_data[new_leaf_id]["age"] = 0;
+                branch_count++;
+                p_id++;
+
+                draw_queue.push(new_leaf_id);
+            }
+
+            function get_next_grow_point(id, start, old_angle, new_point, max_angle){
+                //var _max_angle = Math.PI/5;
+                var _omega = get_min_max_angle(start, old_angle, new_point, max_angle);
+
+                var _dir = { "x": branch_length * Math.cos(_omega), //+ (Math.random() * 200) - 100,
+                             "y": branch_length * Math.sin(_omega)}; 
+                
+                var _beta = get_random_angle_by_direction(id, _omega, _dir);
+                
+                _omega = (_omega + (_omega + _beta))/2;
+
+                var _step_end = { "x": start.x + branch_length * Math.cos(_omega), //+ (Math.random() * 200) - 100,
+                                  "y": start.y + branch_length * Math.sin(_omega)};
+                //set the direction of middle as last_direction
+                last_direction = {"x": branch_length * Math.cos(_omega),
+                                  "y": branch_length * Math.sin(_omega)};
+                
+                
+                last_angle = _omega;
+
+                return _step_end;
+            }
+
+            function get_random_angle_by_direction(plant_id, omega, new_dir){
+                var _angle = 3*Math.PI/8;
+                
+                var result_angle = dot_product(normalize_vec(last_direction),normalize_vec(new_dir));
+                result_angle = Math.acos(result_angle);
+                //console.log ("angle differenz:", result_angle);
+                if (result_angle < 0.1){
+                    if (plant_id % 2 == 0){
+                        result_angle = _angle * Math.random();
+                    } else if (plant_id % 2 == 1){
+                        result_angle = - _angle * Math.random();
+                    }
+                } else if (result_angle > 0.61){ 
+                    result_angle = _angle * Math.random() - (_angle/2);
+                } else {
+                    result_angle = 0;
+                }
+                last_direction = new_dir;    
+                return result_angle;
+            }
+
+            function adjust_age(age_steps){
+                for (idx in age_queue){
+                    ageing_branch = plant_data[age_queue[idx]];
+
+                    if (ageing_branch.age <= age_steps){
+                        console.log(ageing_branch.id)
+                        d3.select("#p"+ageing_branch.id)
+                            .transition()
+                                .duration(100000)
+                                .attr("stroke","#043302")
+                                .attr("stroke-width",7);
+                    }
+                }
+            }
+
+            function randomIntFromInterval(min,max){
+                
+                return Math.floor(Math.random()*(max-min+1)+min);
+            }
+
+            function init_tree(){
+                var _omega =   -Math.PI/2;//max_angle * Math.random() + (max_angle/2) ;
+                var _start = { "x":1170/2, 
+                               "y":700};
+                //var _middle = { "x": _start.x + branch_length * Math.cos(_omega) * 0.5+ 20,
+                //                "y": _start.y + (branch_length * Math.sin(_omega) * 0.5)}; 
+                var _end = { "x": _start.x + 2.5* tree_length * Math.cos(_omega), 
+                             "y": _start.y + 2.5* tree_length * Math.sin(_omega)}; 
+
+                var _root = new Array();
+                _root.push(_start);
+                //_root.push(_middle)
+                _root.push(_end);
+
+                tree_data[0] = new Object();
+                tree_data[0]["id"] = 0;
+                tree_data[0]["branch"] = _root;
+                tree_data[0]["angle"] = _omega;
+                tree_data[0]["generation"] = 0;
+                tree_data[0]["children"] = [1,2];
+                tree_data[0]["parent"] = -1;
+                branch_count++;
+
+                tree_queue.push(0);
+                draw_tree_branches([0]);
+            }
+
+            function create_tree_branches(object){
+                for (i in object.children){
+                    child = object.children[i];
+                    tree_data[child] = new Object();
+
+                    var _old_end = tree_data[object.id].branch[1];
+                    var _old_omega = tree_data[object.id].angle;
+                    var _omega = _old_omega + Math.random() * Math.PI/2 - (Math.PI/2 / 2); 
+                    var _start = { "x": _old_end.x, 
+                                   "y": _old_end.y};
+
+                    
+                    var _end = {"x": _start.x + tree_length * Math.cos(_omega),
+                                "y": _start.y + tree_length * Math.sin(_omega)};
+                    
+
+                    var _branch = new Array(_start,_end);
+
+                    tree_data[child]["id"] = child;
+                    tree_data[child]["branch"] = _branch;
+                    tree_data[child]["angle"] = _omega;
+                    tree_data[child]["generation"] = object.generation +1;
+                    tree_data[child]["children"] = [child*2+1,child*2+2];
+                    tree_data[child]["parent"] = object.id;
+                    branch_count++;
+
+                    tree_queue.push(child);
+                }
+            }
+
+            function draw_tree_branches(branch_list, time){
+                var _branch_count = branch_list.length;
+                for (var i = 0; i < _branch_count; i++){
+                    idx = branch_list.shift();
+                    var lineFunction = d3.svg.line()
+                        .x(function(d) { return d.x; })
+                        .y(function(d) { return d.y; })
+                        .interpolate("basis");
+
+                    var plantGraph = treeContainer.append("path")
+                        .attr("d", lineFunction(tree_data[idx].branch))
+                        .attr("id", "t"+tree_data[idx].id)
+                        .attr("stroke", "green")
+                        .attr("stroke-width", 5 - (tree_data[idx].generation) * 0.4)
+                        .attr("fill", "none")
+                        
+
+                    var plant_length = plantGraph.node().getTotalLength();
+
+                    plantGraph.attr("stroke-dasharray", plant_length + " " + plant_length)
+                        .attr("stroke-dashoffset", plant_length)
+                        .transition()
+                        //.delay(plant_data[idx].generation * 3000)
+                            .duration(time)
+                            .ease("basis")
+                            .attr("stroke-dashoffset", 0);
+                }
+            }
+
+            function grow_tree(iterations, max_depth){
+                if(iterations < max_depth){
+                    time = randomIntFromInterval(grow_time-200, grow_time+200)
+                    setTimeout(function(){
+                        var _l = tree_queue.length;
+                        //var _l = hotspot_list.length;
+
+                        //console.log(_l)
+                        for (var i = 0; i < _l; i++){
+                            idx = tree_queue.shift();
+
+                            create_tree_branches(tree_data[idx]); //create children of last branch
+
+                            draw_tree_branches(tree_data[idx].children, time); // draw children of last branch
+                        }
+                        iterations++;
+                        //console.log(iterations);
+                        grow_tree(iterations,max_depth);
+                    }, time);
+                }
+            }
+            </script>
+
+            
+        </div>
+    </body>
