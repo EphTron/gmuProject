@@ -54,7 +54,7 @@ h3.title{
 #content_text p{
     width:900px;
     position: relative;
-    z-index: 70;
+    z-index: 9;
 
     font-size: 1.1em;
     line-height: 1.5em;
