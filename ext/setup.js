@@ -14,21 +14,21 @@ var setup_structure = function() {
   tendril_pot.style.zIndex = "99999999999999999999999";
   tendril_pot.style.pointerEvents =  "none";
 
-  // var grid = document.createElement("div");
-  // grid.className = "grid";
-  // grid.id = "gmuGrid";
-  // grid.style.height = window.innerHeight;
-  // grid.style.width = window.innerWidth;
-  // grid.style.paddingTop = "0px"; 
-  // grid.style.paddingLeft =  "0px";
+  var grid = document.createElement("div");
+  grid.className = "grid";
+  grid.id = "pluginGrid";
+  grid.style.height = window.innerHeight;
+  grid.style.width = window.innerWidth;
+  grid.style.paddingTop = "0px"; 
+  grid.style.paddingLeft =  "0px";
 
-  // grid.style.position = "absolute";
-  // grid.style.top = 0;
-  // grid.style.left =  0;
+  grid.style.position = "absolute";
+  grid.style.top = 0;
+  grid.style.left =  0;
 
   var body = document.body
   body.appendChild(tendril_pot)
-  // body.appendChild(grid)
+  body.appendChild(grid)
 
 }
 setup_structure();

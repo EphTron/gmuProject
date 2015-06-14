@@ -13,7 +13,8 @@
     "d3/d3.min.js",
     "jQuery.js",
     "setup.js",
-    "plant.js"
+    "plant.js",
+    "plant_plugin.js"
   ],
 
   "content_scripts": [

@@ -145,8 +145,8 @@
             // tendril variables/globals
 
             var grow_time = 2000;
-            //var max_angle = Math.PI/7;
             var branch_length = 30;
+            var tendril_segments = 40;
             
             var global_tendril_count = 0;
             var global_tendril_id = 0;
@@ -155,8 +155,9 @@
             var age_counter = 0;
             var branch_count = 0;
             
+            var start_points = new Array();
+            var init_list = new Array();
             var tendril_queue = new Array();
-            var branch_queue = new Array();
             var plant_data = new Array();
             var age_queue = new Array();
             var draw_queue = new Array();
@@ -226,11 +227,11 @@
                     .text(function(d) { return "generate Tree"; });
 
             
-            init_grid(300);
+            init_grid(200);
             draw_grid();
 
             init_tree();
-            grow_tree(0,8);
+            //grow_tree(0,8);
 
             run_time_growth();
 
@@ -262,6 +263,8 @@
             }
 
             function draw_grid(){
+                hotspots.push(grid_data[1]);
+                hotspots.push(grid_data[8]);
 
                 var rectGrid = gridContainer.selectAll("rect")
                     .data(grid_data)
@@ -286,7 +289,7 @@
                                      .attr("fill","green")
                                      .attr("fill-opacity", rect_opacity);
                         update_hotspots(d.id);
-                        if (grid_data[d.id].visited > 0){
+                        if (grid_data[d.id].visited > grid_data[d.id].touched){
                             gridContainer.select("#r"+parseInt(d.id))
                                      .transition()
                                      .duration(70)
@@ -328,55 +331,46 @@
             }
 
             function run_time_growth(){
-                var last_p = {"x": 0,
-                              "y": 0};
-                setInterval(function(){
-                    var _p  = {"x": mouse.x,
-                               "y": mouse.y };
-
-                    points.push(_p);
-                    last_p = _p
-                    
-                },grow_time/2);
+                
 
                 setInterval(function(){ 
                     sort_hotspots_by_touches();
-                    if (points.length > 1){
-                        if(branch_queue.length == 0){
-                            if (global_tendril_id < 1){
-                                var _start = { "x":1, 
-                                               "y":h/3};
-                                var _p = points.shift();
-                                var _p2 = points.shift();
-                                init_new_tendril(_start,_p,_p2);
-
-                                var _start2 = { "x":w/1.5, 
-                                                "y":1};
-
-                                init_new_tendril(_start2,_p,_p2);
-                            }
+                    
+                    if(branch_count == 0){
+                        if (global_tendril_id < 1){
+                            var _start = { "x":1, 
+                                           "y":h/3};
+                            var _p = {"x": mouse.x,
+                                      "y": mouse.y };
+                            var _p2 = {"x": randomIntFromInterval(0,w),
+                                       "y": randomIntFromInterval(0,h)};
+                            init_new_tendril(_start,_p,_p2);
                         }
-                        else{
-                            idx = branch_queue.shift();
-                            var _p = points.shift();
-                            var _p2 = points.shift();
-                            for (var i = 0; i < global_tendril_count; i++){
-                                idx = tendril_queue.shift();
-                                var _current_mouse_pos  = {"x": mouse.x,
-                                                           "y": mouse.y };
-                                if (plant_data[idx].tendril_number < 50){
-                                    // create_next_tendril_random_mouse(plant_data[idx],
-                                    //                                  _current_mouse_pos,
-                                    //                                  _current_mouse_pos);
-                                    create_next_tendril_hotspot_mouse(plant_data[idx],
-                                                                     _current_mouse_pos,
-                                                                     _current_mouse_pos);
-                                } else {
-                                    global_tendril_count--;
-                                }
+                    }
+                    else{
+                        var _temp;
+                        //console.log("tendrils: ",global_tendril_count)
+                        for (var i = 0; i < global_tendril_count; i++){
+                            idx = tendril_queue.shift();
+                            var _current_mouse_pos  = {"x": mouse.x,
+                                                       "y": mouse.y };
+                            if (plant_data[idx].tendril_number < tendril_segments){
+                                // create_next_tendril_random_mouse(plant_data[idx],
+                                create_next_tendril_hotspot_mouse(plant_data[idx],
+                                                                 _current_mouse_pos,
+                                                                 _current_mouse_pos);
+                            } else {
+                                global_tendril_count--;
                             }
+                            _temp = idx;
+                        }
 
-                            draw_branches(draw_queue, grow_time);
+                        draw_branches(draw_queue, grow_time);
+                        if (plant_data[_temp].tendril_number == tendril_segments/2){
+                            if(global_tendril_count < 5){
+                                var _triple = get_random_start_triple();
+                                init_new_tendril(_triple[0],_triple[1],_triple[2]);
+                            }
                         }
                     }
                     //console.log("start ageing")
@@ -385,6 +379,7 @@
             }
 
             function init_new_tendril(start, point, point2){
+                //console.log("init new branch")
                 var a = Math.PI / 4
                 var _alpha = -Math.PI/2;
                 var _start = start;  
@@ -419,9 +414,8 @@
                 global_tendril_id++;
                 global_tendril_count++;
 
+                draw_branches([branch_count], 2000);
                 tendril_queue.push(branch_count);
-                branch_queue.push(branch_count);
-                draw_branches([branch_count], 500);
 
                 //draw_queue.push(branch_count);
 
@@ -443,9 +437,10 @@
                         .x(function(d) { return d.x; })
                         .y(function(d) { return d.y; })
                         .interpolate("cardinal");
+                        //.interpolate("bundle");
                         //.interpolate("basis");
                         //.interpolate("cubic");
-                        //bundle
+
                         //monotone
                     //console.log("drawing:", plant_data[idx].id)
                     var plantGraph = artContainer.append("path")
@@ -462,15 +457,15 @@
                             _id = parseInt(_id);
 
                             //console.log("NEW LEAF",_id);
-                            if (global_tendril_count < 4){
-                                var _start = plant_data[_id].branch[1];
-                                var _p = {"x": randomIntFromInterval(0,w),
-                                          "y": randomIntFromInterval(0,h)};
-                                var _p2 = {"x": randomIntFromInterval(0,w),
-                                           "y": randomIntFromInterval(0,h)};
-                                //init_new_tendril(_start,_p,_p2);
-                            }
-                            //create_leaf(plant_data[_id], plant_data[_id].branch, plant_data[_id].angle, "lb");
+                            // if (global_tendril_count < 4){
+                            //     var _start = plant_data[_id].branch[1];
+                            //     var _p = {"x": randomIntFromInterval(0,w),
+                            //               "y": randomIntFromInterval(0,h)};
+                            //     var _p2 = {"x": randomIntFromInterval(0,w),
+                            //                "y": randomIntFromInterval(0,h)};
+                            //     init_new_tendril(_start,_p,_p2);
+                            // }
+                            create_leaf(plant_data[_id], plant_data[_id].branch, plant_data[_id].angle, "lb");
                     });
 
                     var plant_length = plantGraph.node().getTotalLength();
@@ -532,12 +527,9 @@
             }
 
             function normalize_vec(a){
-                //console.log("norm a",a);
                 _a_length = Math.sqrt((a.x) * (a.x) + (a.y) * (a.y));
-
                  a.x = (a.x) / _a_length;
                  a.y = (a.y) / _a_length;
-
                 return a;
             }
 
@@ -582,7 +574,7 @@
                                  "y": branch_length * Math.sin(last_angle)};
                 var check_angle = dot_product(normalize_vec(_old_dir),normalize_vec(_new_dir));
                 check_angle = Math.acos(check_angle);
-                console.log("angle:",check_angle);
+                //console.log("angle:",check_angle);
                 if(check_angle <0.1){
                     create_leaf(object, _branch, last_angle, "la");
                 }else if(check_angle <0.3){
@@ -595,7 +587,6 @@
                     // _leaf.push("c");
                 }
                 draw_queue.push(new_child_id);
-                branch_queue.push(new_child_id);
                 tendril_queue.push(new_child_id);
             }
 
@@ -615,32 +606,35 @@
 
                 // get rect old plant was in
                 var _current_rect_id = get_rect_id_by_pos(_start);
-                var _
+
                 var _next_point = point;
-                // get next hotspot to grow to
                 var _hotspot_id = get_next_hotspot_id(_start);
                 if (_hotspot_id == -1){
-                    console.log("mouse")
+                    if (hotspots[0].touched > 10){
+                        _next_point = get_random_point_on_rect(hotspots[0].id);
+                    } 
                 } else {
-                    console.log("hotspot grow");
                     _next_point = get_random_point_on_rect(_hotspot_id);
                 }
 
-                var _middle = get_next_grow_point(1, _start, _old_omega, _next_point, _max_angle);
+                var _middle = get_next_grow_point(object.tendril_number +1, _start, _old_omega, _next_point, _max_angle);
 
                 if (_hotspot_id == -1){
-                    console.log("mouse again");
+                    if (hotspots[0].touched > 10){
+                        _next_point = get_random_point_on_rect(hotspots[0].id);
+                    } else {
                     _next_point = point2;
+                    }
                 } else {
-                    console.log("hotspot grow again", _hotspot_id);
                     _next_point = get_random_point_on_rect(_hotspot_id);
                 }
 
-                var _end = get_next_grow_point(0, _middle, last_angle, _next_point, _max_angle);
+                var _end = get_next_grow_point(object.tendril_number + 1, _middle, last_angle, _next_point, _max_angle);
                 
                 var _branch = new Array(_start, _middle,_end);
                 // mark current rect as visited - to avoid growing over it again
                 _current_rect_id = get_rect_id_by_pos(_end);
+                grid_data[_current_rect_id].touched--;
                 grid_data[_current_rect_id].touched--;
                 grid_data[_current_rect_id].visited++;
 
@@ -667,17 +661,16 @@
                 //console.log("angle:",check_angle);
                 if(check_angle <0.1){
                     create_leaf(object, _branch, last_angle, "la");
+                    start_points.push(_branch);
                 }else if(check_angle <0.3){
                     create_leaf(object, _branch, last_angle, "lb");
                 }else if(check_angle >0.8){
                     create_leaf(object, _branch, last_angle, "lc");
+                    start_points.push(_branch);
                 }else if(check_angle >0.6){
                     create_leaf(object, _branch, last_angle, "ld");
-                }else {
-                    // _leaf.push("c");
                 }
                 draw_queue.push(new_child_id);
-                branch_queue.push(new_child_id);
                 tendril_queue.push(new_child_id);
             }
 
@@ -694,20 +687,20 @@
                 var _old_omega = plant_data[object.id].angle;
 
                 if (type == "la"){
-                    console.log("a")
+                    // console.log("a")
                     var _ran_point = {"x": randomIntFromInterval(0,w),
                                       "y": randomIntFromInterval(0,h)};
                     var _start = get_next_grow_point(new_leaf_id, _old_mid, middle_angle, _ran_point, Math.PI/8);
                     
                     _ran_point = {"x": randomIntFromInterval(0,w),
-                                      "y": randomIntFromInterval(0,h)};
+                                  "y": randomIntFromInterval(0,h)};
                     var _middle = get_next_grow_point(new_leaf_id, _start, last_angle, _ran_point, Math.PI/5);
 
                     _ran_point = {"x": randomIntFromInterval(0,w),
                                   "y": randomIntFromInterval(0,h)};
                     var _end = get_next_grow_point(new_leaf_id, _middle, last_angle, _ran_point, Math.PI/4);
                 } else if (type == "lb" || type == "ld"){
-                    console.log("b / d")
+                    // console.log("b / d")
                     var _ran_point = {"x": randomIntFromInterval(0,w),
                                       "y": randomIntFromInterval(0,h)};
                     var _start = get_next_grow_point(new_leaf_id, _old_mid, middle_angle, _ran_point, Math.PI/10);
@@ -720,7 +713,7 @@
                                   "y": randomIntFromInterval(0,h)};
                     var _end = get_next_grow_point(new_leaf_id, _middle, last_angle, _ran_point, Math.PI/10);
                 }else if (type == "lc"){
-                    console.log("c")
+                    // console.log("c")
                     var _ran_point = {"x": randomIntFromInterval(0,w),
                                       "y": randomIntFromInterval(0,h)};
                     var _start = get_next_grow_point(new_leaf_id, _old_start, middle_angle, _ran_point, Math.PI/6);
@@ -791,7 +784,7 @@
                 var _rect_id   = Math.abs(_on_grid_y * cols + _on_grid_x);
                 var _x_values, _y_values;
 
-                console.log("Rect:",_rect_id, " X:", _on_grid_x, " Y:", _on_grid_y);
+                // console.log("Rect:",_rect_id, " X:", _on_grid_x, " Y:", _on_grid_y);
                 //console.log("Cols:", cols, " Rows:", rows);
                 if (_on_grid_x > 0 && _on_grid_x < cols-1){
                     _x_values = new Array(_on_grid_x -1, _on_grid_x, _on_grid_x +1);
@@ -831,6 +824,40 @@
                 }
             }
 
+            function get_random_start_triple(){
+                
+                var c = randomIntFromInterval(0,branch_count)
+                if (c % 6 == 0 ){
+                    // left side
+                    var _sta = {"x": 1,
+                                "y": randomIntFromInterval(50, h -100)};
+                    var _mid = get_random_point_on_rect(hotspots[0].id);
+                    var _end = get_random_point_on_rect(hotspots[0].id);
+                    var _triple = new Array(_sta, _mid, _end);
+                    return _triple;
+                } else if (c % 6 == 2){
+                    // right side
+                    var _sta = {"x": w-1,
+                                "y": randomIntFromInterval(50, h -50)};
+                    var _mid = get_random_point_on_rect(hotspots[1].id);
+                    var _end = get_random_point_on_rect(hotspots[1].id);
+                    var _triple = new Array(_sta, _mid, _end);
+                    return _triple;
+                } else if (c % 6 == 1 || c % 6 == 3 || c % 6 == 4 || c % 6 == 5){
+                    var i = randomIntFromInterval(0, start_points.length-1);
+                    //console.log("I:", i," Start points: " ,start_points)
+                    var _triple = start_points[i];
+                    if (start_points.length > 10){
+                        start_points.splice(i, 1);
+                    }
+                    var _sta = start_points[i][0];
+                    var _mid = start_points[i][1];
+                    var _end = get_random_point_on_rect(hotspots[0].id);
+                    var _triple = new Array(_sta, _mid, _end);
+                    return _triple;
+                }
+            }
+
             function get_random_point_on_rect(rect_id){
                 var _point = { "x": randomIntFromInterval(grid_data[rect_id].pos_x, grid_data[rect_id].pos_x + grid_data[rect_id].width),
                                "y": randomIntFromInterval(grid_data[rect_id].pos_y, grid_data[rect_id].pos_y + grid_data[rect_id].height)};
@@ -841,12 +868,12 @@
                 var _on_grid_x = Math.floor(point.x / rect_width);
                 var _on_grid_y = Math.floor(point.y / rect_height);
                 var _rect_id   = Math.abs(_on_grid_y * cols + _on_grid_x);
-                console.log("Rect:",_rect_id, " X:", _on_grid_x, " Y:", _on_grid_y);
+                //onsole.log("Rect:",_rect_id, " X:", _on_grid_x, " Y:", _on_grid_y);
                 return _rect_id;
             }
 
             function get_random_angle_by_direction(plant_id, omega, new_dir){
-                var _angle = 3*Math.PI/7;
+                var _angle = 3*Math.PI/5;
                 
                 var result_angle = dot_product(normalize_vec(last_direction),normalize_vec(new_dir));
                 result_angle = Math.acos(result_angle);
