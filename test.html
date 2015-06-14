@@ -194,7 +194,7 @@
 
       function init_tendril(){
         var a = Math.PI/3
-        var _alpha = -3;//-Math.PI/2;
+        var _alpha = - Math.PI/2;//-Math.PI/2;
         var _omega = 1;//_alpha + a *Math.random() - a/2
         //_alpha + a *Math.random() - a/2
 
@@ -205,8 +205,13 @@
                        "y":h};
         var _middle = { "x": _start.x + 2*(branch_length * Math.cos(_omega - _alpha) ),
                         "y": _start.y + 2*(branch_length * Math.sin(_omega - _alpha) )}; 
+
+
         var _middle = { "x": _start.x + 2*(branch_length * Math.cos(_alpha) ),
                         "y": _start.y + 2*(branch_length * Math.sin(_alpha) )}; 
+
+
+
         var _end = { "x": _start.x + 4* branch_length * Math.cos(_omega), 
                      "y": _start.y + 4* branch_length * Math.sin(_omega)}; 
         var _end = { "x": _start.x + 4* branch_length * Math.cos(_alpha), 

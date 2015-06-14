@@ -4,7 +4,7 @@ body{
     margin:0;
     padding:0;
 
-    background: #212121;
+    background: #D1D1D1;
     position: relative;
 }
 
@@ -42,7 +42,7 @@ h3.title{
     height: 100%;
 
     /*background: rgba(20,40,20,0.8);*/
-    color:white;
+    color:black;
 
     margin-left:auto;
     margin-right: auto;
@@ -57,7 +57,7 @@ h3.title{
     z-index: 70;
 
     font-size: 1.1em;
-    line-height: 1.3em;
+    line-height: 1.5em;
 
     margin-left:auto;
     margin-right: auto;
