@@ -1,16 +1,62 @@
-== '''Plants vs Humans''' ==
+= '''Plants vs Humans''' =
 
-[[Image:EphTron_gmuTree.png|200px|thumb|right]]
+Im Rahmen dieses Semesterprojekts wurde ein Chrome-Plugin entwickelt.
+
+Das Plugin lässt künstliche Ranken über alle Tabs des Chrome-Webbrowsers wachsen.
+
+= Einleitung =
 
 == Ideenfindung ==
 
-Die Grundidee für meine Semesteraufgabe entstand bereits in der Einführungswoche, als uns die unterschiedlichen Projekte der Professur für Gestaltung Medialer Umgebungen vorgestellt wurden.
-Insbesondere interessierten und inspirierten mich die Projekte in denen Veränderungen von Umgebungen oder Organismen aufgenommen wurden, wie beispielsweise in dem Projekt "the outline of paradise".
-Der Ansatz Bewegungen von Organsimen aufzunehmen, um deren Charakteristik (und in manchen Fällen auch deren Ästhetik) anschließend auf Mediale Umgebungen zu übertragen, ließ mich nicht mehr los.
+Die Grundidee für meine Semesteraufgabe entstand bereits in der Einführungswoche, als die unterschiedlichen Projekte der Professur für Gestaltung Medialer Umgebungen vorgestellt wurden.
+Insbesondere interessierten und inspirierten mich die Projekte in denen Veränderungen von Umgebungen oder Organismen aufgenommen wurden, wie beispielsweise in dem Projekt "the outline of paradise" oder dem programmierten Videofilter.
+Der Ansatz Bewegungen von Organsimen aufzunehmen, um deren Charakteristik (und in vielen Fällen auch deren Ästhetik) anschließend auf Mediale Umgebungen zu übertragen reizte mich.
 
-Als ich mir die Frage stellt, was mich an dem Ansatz so faszinierte, stieß ich auf mehrere Gründe.
-Zum einen gefiel mir die Dynamik, die der Ansatz mit sich bringt. Die meisten Medien denen man im Alltag begegnet sind sehr statisch und besitzen keinerlei "Eigenleben". Das gilt sowohl für Medien im öffentlichen Raum, wie beispielsweise Plakate und Schaufenster, als auch für virtuelle Medien, wie Webseiten. Solche statischen Medien fügen sich meistens nur in die Umgebung ein und übermitteln ihren Inhalt. Im Gegensatz dazu führt der bewegte Ansatz zu einer Dynamik, die die Umgebung erweitert und den Empfänger der Medien dazu einläd sich die Veränderung genauer anzuschauen.
-Zum anderen ermöglichen die Aufnahmen eine Form der Interaktion, wenn das Medium durch die Bewegungen des Empfängers beeinflusst wird.
+Im Gegensatz zu vielen alltäglichen Medien führt der bewegte Ansatz zu einer immer neuen und dynamischen Vielfalt, die den Empfänger der Medien dazu einläd sich die Veränderungen genauer anzuschauen oder mit dem Medium zu interagieren. 
+
+Ich beschloss einen ähnlichen Ansatz in meiner Semesterarbeit zu dem Thema "Plants vs Humans" zu verfolgen.
+Besonders die Interaktion und ein künstliches Eigenleben des Mediums sollten bei meiner Idee im Mittelpunkt stehen.
+Das Grundkonzept meiner Arbeit war es Mausbewegungen von Nutzern aufzuzeichnen und eine Webseite durch diese Aufzeichnungen visuell zu verändern. Um das Konzept an das Thema "Plants vs Humans" anzupassen, entschied ich mich eine künstliche Pflanze zu programmieren und sie mit der Bewegungsmatrix der Maus zu "gießen".
+
+
+== Motivation ==
+
+
+Die meisten Medien denen man im Alltag begegnet sind sehr statisch und besitzen keinerlei "Eigenleben". Das gilt sowohl für Medien im öffentlichen Raum, wie beispielsweise Plakate und Schaufenster, als auch für virtuelle Medien, wie Webseiten. Solche statischen Medien fügen sich meistens nur in die Umgebung ein und übermitteln ihren Inhalt, bieten dem Empfänger meistens jedoch keine Abwechslung. Im Rahmen meines Semesterprojekts habe ich mir vorgenommen einen "Maus"-Tracker für Webseiten zu programmieren und mit den Daten des Trackers eine künstliche Pflanze wachsen zu lassen.
+
+
+= Konzept =
+
+
+== Erster Entwurf ==
+
+[[Image:EphTron_gmuTree.png|200px|thumb|right]]
+[[Image:GmuRanke.png|200px|thumb|right]]
+
+== Rekursive Interaktivität ==
+
+
+
+= Umsetzung =
+
+= Zukünftige Arbeit =
+
+
+
+
+
+
+STICHPUNKTE
+
+Meine Grundidee orientiert sich an der Aufnahme von Organsimen.
+
+Dieser Ansatz gefällt mir weil er dynamisch ist.
+Viele Medien sind nicht dynamisch
+
+Semesterarbeit soll dynamischen Ansatz verfolgen.
+Grundidee - Mauszeigerbewegungen aufzeichnen.
+
+
 
 Ein weiterer Grund 
 
@@ -18,6 +64,10 @@ Die fehlende dynamik der Medien führt dann in vielen Fällen  Empfänger der Me
 2. dynamic
 2. dynamic
 3. interaktivität
+
+
+
+Zum anderen verleiht der Ansatz dem Medium eine abstrakte Form der Wahrnehmung. Richtet man die Aufnahmen eine dynamische Form der "Interaktion", wenn man die Aufnahmen richtig einsetzt. Wenn das Medium in der Lage ist Änderung in seiner Umwelt  das Medium die Möglichkeit bekommt auf seine Umwelt zu wenn das Medium durch die Bewegungen des Empfängers beeinflusst wird. Man ist es nicht gewöhnt, dass Medien auf ihre Umwelt regieren.
 
 
 Zum einen bemerkte ich, dass viele Medien sehr statisch 
@@ -41,7 +91,48 @@ Dec 21, 2014: added a grid
 
 Jan 05, 2015: improved grid
 
+Jan 08, 2015: added plant simulationwww
+
+Jan 09, 2015: improved visualization
+
+
+== '''Plants vs Humans''' ==
+
+Im Rahmen dieses Semesterprojekts wurde ein Chrome-Plugin entwickelt.
+Das Plugin lässt künstliche Ranken über alle Tabs des Chrome-Webbrowsers wachsen.
+
+[[Image:EphTron_gmuTree.png|200px|thumb|right]]
+[[Image:GmuRanke.png|200px|thumb|right]]
+
+== Ideenfindung ==
+
+Die Grundidee für meine Semesteraufgabe entstand bereits in der Einführungswoche, als uns die unterschiedlichen Projekte der Professur für Gestaltung Medialer Umgebungen vorgestellt wurden.
+Insbesondere interessierten und inspirierten mich die Projekte in denen Veränderungen von Umgebungen oder Organismen aufgenommen wurden, wie beispielsweise in dem Projekt "the outline of paradise".
+Der Ansatz Bewegungen von Organsimen aufzunehmen, um deren Charakteristik (und in manchen Fällen auch deren Ästhetik) anschließend auf Mediale Umgebungen zu übertragen, ließ mich nicht mehr los.
+
+Als ich mir die Frage stellt, was mich an dem Ansatz so faszinierte, stieß ich auf mehrere Gründe.
+Zum einen gefiel mir die Dynamik, die der Ansatz mit sich bringt. Die meisten Medien denen man im Alltag begegnet sind sehr statisch und besitzen keinerlei "Eigenleben". Das gilt sowohl für Medien im öffentlichen Raum, wie beispielsweise Plakate und Schaufenster, als auch für virtuelle Medien, wie Webseiten. Solche statischen Medien fügen sich meistens nur in die Umgebung ein und übermitteln ihren Inhalt. Im Gegensatz dazu führt der bewegte Ansatz zu einer Dynamik, die die Umgebung erweitert und den Empfänger der Medien dazu einläd sich die Veränderung genauer anzuschauen.
+Zum anderen ermöglichen die Aufnahmen eine Form der Interaktion, wenn das Medium durch die Bewegungen des Empfängers beeinflusst wird. Der Empfänger wird 
+
+== Implementation ==
+To implement my ideas I will use HTML, CSS and JavaScript. For my plant visualization I am going to use the JavaScript library d3.js from Mike Bostock.
+https://github.com/mbostock/d3/wiki/Gallery
+
+So far the growth of the plant is based on simple randomized angle changes between branches of the plant. In future I want to replace the randomized angles by L-Systems.
+
+== Progress ==
+
+Follow my exact progress on https://github.com/EphTron/gmuProject/
+
+Dec 21, 2014: added a grid
+
+Jan 05, 2015: improved grid
+
 Jan 08, 2015: added plant simulation
 
 Jan 09, 2015: improved visualization
 
+
+<nowiki><script type="text/javascript">
+alert("Test");
+</script></nowiki>

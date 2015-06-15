@@ -283,25 +283,25 @@
                     .attr("stroke-opacity", rect_opacity)
                     .style("pointer-events","auto")
                     .on("mouseover",  function(d,i) {
-                        gridContainer.select("#r"+parseInt(d.id))
-                                     .transition()
-                                     .duration(70)
-                                     .attr("fill","green")
-                                     .attr("fill-opacity", rect_opacity);
+                        // gridContainer.select("#r"+parseInt(d.id))
+                        //              .transition()
+                        //              .duration(70)
+                        //              .attr("fill","green")
+                        //              .attr("fill-opacity", rect_opacity);
                         update_hotspots(d.id);
-                        if (grid_data[d.id].visited > grid_data[d.id].touched){
-                            gridContainer.select("#r"+parseInt(d.id))
-                                     .transition()
-                                     .duration(70)
-                                     .attr("fill","red")
-                                     .attr("fill-opacity", rect_opacity);
-                        }
+                        // if (grid_data[d.id].visited > grid_data[d.id].touched){
+                        //     gridContainer.select("#r"+parseInt(d.id))
+                        //              .transition()
+                        //              .duration(70)
+                        //              .attr("fill","red")
+                        //              .attr("fill-opacity", rect_opacity);
+                        // }
 
                     })
                     .on("mouseout",  function(d,i) {
                         gridContainer.select("#r"+parseInt(d.id))
                                      .transition()
-                                     .duration(1000)
+                                     .duration(500)
                                      .attr("fill",color_scale(d.touched))
                                      .attr("fill-opacity", rect_opacity);
                     })

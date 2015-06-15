@@ -36,9 +36,10 @@ var cols = 0;
 var rows = 0;
 var rect_width = 1;
 var rect_height = 1;
-var rect_count = 50;
+var rect_count = 250;
 var point_id  = 0;
 var rect_opacity = 0.2;
+var grid_exists = false;
 
 var points = new Array();
 var grid_data = new Array();
@@ -97,7 +98,7 @@ checkDocumentHeight(check_size);
 //$(window).resize(checkWidth);
 
 console.log("Hello Plugin");
-init_grid(200);
+init_grid(rect_count);
 //draw_grid();
 track_cursor(50);
 
@@ -116,14 +117,9 @@ function check_size() {
     if (temp_h > h){
         h = temp_h;
     }
-    gridContainer.attr("width", w).attr("height", h);
+    //gridContainer.attr("width", w).attr("height", h);
     artContainer.attr("width", w).attr("height", h);
-    init_grid(200);
-
-    console.log("changed size")
-    console.log("w:", w)
-    console.log("h:", h)
-
+    update_grid();
 }
 
 
@@ -138,7 +134,6 @@ function track_cursor(time){
 }
 
 function init_grid(r_count){
-    grid_data = new Array();
     cols = Math.round(Math.sqrt(r_count * (w/h)));
     rows = Math.round(r_count / cols);
 
@@ -147,7 +142,6 @@ function init_grid(r_count){
 
     var idx = 0;
     for(var r = 0; r < rows; r++){
-        console.log("r")
         for(var c = 0; c < cols ; c++){
             grid_data[idx] = new Object();
             grid_data[idx]["id"]      = idx;
@@ -157,6 +151,28 @@ function init_grid(r_count){
             grid_data[idx]["height"]  = rect_height;
             grid_data[idx]["touched"] = 0;
             grid_data[idx]["visited"] = 0;
+            idx++;
+        }
+    }
+}
+
+function update_grid(){
+    cols = Math.round(Math.sqrt(rect_count * (w/h)));
+    rows = Math.round(rect_count / cols);
+
+    rect_width = w / cols; // calc width of rects
+    rect_height = h / rows; // calc height of rects
+
+    var idx = 0;
+    for(var r = 0; r < rows; r++){
+        for(var c = 0; c < cols ; c++){
+            if (idx > grid_data.length-1){
+                grid_data[idx] = new Object();
+            }
+            grid_data[idx]["pos_x"]   = rect_width * c;
+            grid_data[idx]["pos_y"]   = rect_height * r;
+            grid_data[idx]["width"]   = rect_width;
+            grid_data[idx]["height"]  = rect_height;
             idx++;
         }
     }
@@ -210,8 +226,10 @@ function draw_grid(){
 
 function update_hotspots(id){
     if (typeof grid_data[id] != 'undefined') {
-        grid_data[id].touched++;
-    
+
+        if (grid_data[id].touched < 30){
+            grid_data[id].touched++;
+        }
         if(hotspots.indexOf(grid_data[id]) == -1){
             hotspots.push(grid_data[id]);
         }
@@ -257,8 +275,8 @@ function run_time_growth(){
                 var _current_mouse_pos  = {"x": mouse.x,
                                            "y": mouse.y };
                 if (plant_data[idx].tendril_number < tendril_segments){
-                    create_next_tendril_random_mouse(plant_data[idx],
-                   // create_next_tendril_hotspot_mouse(plant_data[idx],
+                    //create_next_tendril_random_mouse(plant_data[idx],
+                    create_next_tendril_hotspot_mouse(plant_data[idx],
                                                      _current_mouse_pos,
                                                      _current_mouse_pos);
                 } else {
@@ -352,6 +370,7 @@ function draw_branches(branch_list, time){
             .attr("pointer-events","stroke")
             .attr("stroke-width", plant_data[idx].wid) //- (plant_data[idx].generation) * 0.4)
             .attr("stroke-linecap", "round")  // stroke-linecap type
+            //.attr("stroke-opacity", "1.0")  // stroke-linecap type
             .attr("fill", "none")
             .on("mouseover",  function(d,i) {
                 _id = this.id;
@@ -369,8 +388,8 @@ function draw_branches(branch_list, time){
                 //     init_new_tendril(_start,_p,_p2);
                 // }
                 create_leaf(plant_data[_id], plant_data[_id].branch, plant_data[_id].angle, "lb");
-        });
-
+            });
+            
         var plant_length = plantGraph.node().getTotalLength();
 
         plantGraph.attr("stroke-dasharray", plant_length + " " + plant_length)
@@ -515,9 +534,8 @@ function create_next_tendril_hotspot_mouse(object, point, point2){
     var _next_point = point;
     var _hotspot_id = get_next_hotspot_id(_start);
     if (_hotspot_id == -1){
-        if (hotspots[0].touched > 10){
+        if (hotspots[0].touched > 15){
             _next_point = get_random_point_on_rect(hotspots[0].id);
-
         } 
     } else {
         _next_point = get_random_point_on_rect(_hotspot_id);
@@ -570,13 +588,17 @@ function create_next_tendril_hotspot_mouse(object, point, point2){
     //console.log("angle:",check_angle);
     if(check_angle <0.1){
         create_leaf(object, _branch, last_angle, "la");
+        create_leaf(object, _branch, last_angle, "la");
         start_points.push(_branch);
     }else if(check_angle <0.3){
+        create_leaf(object, _branch, last_angle, "lb");
         create_leaf(object, _branch, last_angle, "lb");
     }else if(check_angle >0.8){
         create_leaf(object, _branch, last_angle, "lc");
         start_points.push(_branch);
     }else if(check_angle >0.6){
+        create_leaf(object, _branch, last_angle, "ld");
+        create_leaf(object, _branch, last_angle, "ld");
         create_leaf(object, _branch, last_angle, "ld");
     }
     draw_queue.push(new_child_id);
@@ -769,9 +791,16 @@ function get_random_start_triple(){
 }
 
 function get_random_point_on_rect(rect_id){
-    var _point = { "x": randomIntFromInterval(grid_data[rect_id].pos_x, grid_data[rect_id].pos_x + grid_data[rect_id].width),
-                   "y": randomIntFromInterval(grid_data[rect_id].pos_y, grid_data[rect_id].pos_y + grid_data[rect_id].height)};
-    return _point;
+    if (typeof grid_data[rect_id] != 'undefined') {
+        var _point = { "x": randomIntFromInterval(grid_data[rect_id].pos_x, grid_data[rect_id].pos_x + grid_data[rect_id].width),
+                       "y": randomIntFromInterval(grid_data[rect_id].pos_y, grid_data[rect_id].pos_y + grid_data[rect_id].height)};
+        return _point;
+    } else {
+        console.log("CURRENT MOUSE");
+        var _current_mouse_pos  = {"x": mouse.x,
+                                   "y": mouse.y };
+        return _current_mouse_pos;
+    }
 }
 
 function get_rect_id_by_pos(point){
@@ -783,7 +812,8 @@ function get_rect_id_by_pos(point){
 }
 
 function get_random_angle_by_direction(plant_id, omega, new_dir){
-    var _angle = 3*Math.PI/5;
+    //var _angle = 3*Math.PI/5;
+    var _angle = Math.PI/5;
     
     var result_angle = dot_product(normalize_vec(last_direction),normalize_vec(new_dir));
     result_angle = Math.acos(result_angle);
@@ -808,13 +838,24 @@ function start_ageing(){
         idx = age_queue.shift();
         //console.log("apply ageing",idx);
         ageing_branch = plant_data[idx];
+        console.log("type",ageing_branch.type);
 
         if (ageing_branch.type == "ta"){
+            // if (ageing_branch.tendril_number > tendril_segments-2){
+            //     console.log("end");
+            //     d3.select("#p"+ageing_branch.id)
+            //     .transition()
+            //         .duration(16000)
+            //         .attr("stroke","rgb(0,128,0)")
+            //         .attr("stroke-width",8);
+            // } else { 
+            console.log("end");
             d3.select("#p"+ageing_branch.id)
                 .transition()
                     .duration(16000)
                     .attr("stroke","rgb(50, 80, 32)")
                     .attr("stroke-width",8);
+            //}
         } else if (ageing_branch.type == "la"){
             d3.select("#p"+ageing_branch.id)
                 .transition()
