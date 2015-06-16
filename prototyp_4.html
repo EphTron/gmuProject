@@ -18,7 +18,7 @@
   </head>
   <body>
     <div id="gmuArt">
-      <div id="website">
+      <!-- <div id="website">
         <form action="input_button.htm">
           <p>
             <textarea cols="20" rows="4" name="textfeld"></textarea>
@@ -27,7 +27,7 @@
             <input id="b2" type="button" name="Text 2" value="Text 2 anzeigen"
               onclick="this.form.textfeld.value='Ich bin Text 2 - ganz normal'">
           </p>
-        </form>
+        </form> -->
       </div>
       <div id="gmuPlant">
       </div>
@@ -64,7 +64,7 @@
 
       var grow_time = 1000;
       var max_angle = 3*Math.PI/4;
-      var branch_length = w / 30;
+      var branch_length = 100;
       var branch_queue = new Array();
       var plant_data = new Array();
       var branch_count = 0;
@@ -75,7 +75,7 @@
 
       // run
       init_plant();
-      grow_plant(0,5);
+      grow_plant(0,6);
       
       init_grid(rect_count);
       draw_grid();
@@ -198,8 +198,8 @@
                        "y":h};
         //var _middle = { "x": _start.x + branch_length * Math.cos(_omega) * 0.5+ 20,
         //                "y": _start.y + (branch_length * Math.sin(_omega) * 0.5)}; 
-        var _end = { "x": _start.x + 2.5* branch_length * Math.cos(_omega), 
-                     "y": _start.y + 4.5* branch_length * Math.sin(_omega)}; 
+        var _end = { "x": _start.x + 1.5* branch_length * Math.cos(_omega), 
+                     "y": _start.y + 1.5* branch_length * Math.sin(_omega)}; 
 
         var _root = new Array();
         _root.push(_start);
@@ -259,8 +259,8 @@
           var _start = { "x": _old_end.x, 
                          "y": _old_end.y};
 
-          //var _middle = { "x": _start.x + branch_length * Math.cos(_omega/1.2) * 0.5 + (Math.random() * 200) - 100,
-          //                "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
+          var _middle = { "x": _start.x + branch_length * Math.cos(_omega/1.2) * 0.5 + (Math.random() * 200) - 100,
+                          "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
 
           //var _end = find_hottest_hotspot(_start);
           var _end = find_closest_hotspot(_start, 10, _old_omega);
@@ -275,12 +275,12 @@
           if (_end.x == 0 && _end.y == 0){
             console.log("STILL ZERO ?");
           }
-          //var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-          //            "y": _start.y + branch_length * Math.sin(_omega)};
+          // var _end = {"x": _start.x + branch_length * Math.cos(_omega),
+          //             "y": _start.y + branch_length * Math.sin(_omega)};
 
           var _branch = new Array();
           _branch.push(_start);
-          //_branch.push(_middle);
+          _branch.push(_middle);
           _branch.push(_end);
 
           plant_data[child]["id"] = child;
@@ -295,51 +295,6 @@
         }
       }
 
-      function create_tendril_branch(object){
-        new_child_id = object.children
-        plant_data[new_child_id] = new Object();
-        
-        var _old_end = plant_data[object.id].branch[2];
-        var _old_mid = plant_data[object.id].branch[1];
-        var _old_omega = plant_data[object.id].angle;
-        var _omega = _old_omega + Math.random() * max_angle - (max_angle / 2); 
-        var _start = { "x": _old_end.x, 
-                       "y": _old_end.y};
-
-        var _middle = { "x": _start.x + branch_length * Math.cos(_omega/1.2) * 0.5 + (Math.random() * 200) - 100,
-                        "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
-
-        //var _end = find_hottest_hotspot(_start);
-        var _end = find_closest_hotspot(_start, 10, _old_omega);
-        if (_end.x == 0 && _end.y == 0){
-          _end = find_hottest_hotspot(_start);
-          if (_end.x == 0 && _end.y == 0){
-            console.log("random");
-            var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-                        "y": _start.y + branch_length * Math.sin(_omega)};
-          }
-        }
-        if (_end.x == 0 && _end.y == 0){
-          console.log("STILL ZERO ?");
-        }
-        //var _end = {"x": _start.x + branch_length * Math.cos(_omega),
-        //            "y": _start.y + branch_length * Math.sin(_omega)};
-
-        var _branch = new Array();
-        _branch.push(_start);
-        //_branch.push(_middle);
-        _branch.push(_end);
-
-        plant_data[child]["id"] = child;
-        plant_data[child]["branch"] = _branch;
-        plant_data[child]["angle"] = _omega;
-        plant_data[child]["generation"] = object.generation +1;
-        plant_data[child]["children"] = [child*2+1,child*2+2];
-        plant_data[child]["parent"] = object.id;
-        branch_count++;
-
-        branch_queue.push(child);
-      }
 
       function find_hottest_hotspot(location){
         // this function searches for the most touched rect on the grid
@@ -443,7 +398,7 @@
             .attr("d", lineFunction(plant_data[idx].branch))
             .attr("id", "p"+plant_data[idx].id)
             .attr("stroke", "green")
-            .attr("stroke-width", 5 - (plant_data[idx].generation) * 0.4)
+            .attr("stroke-width", 7 - (plant_data[idx].generation) * 0.5)
             .attr("fill", "none")
             .on("mouseover",  function(d,i) {
               console.log("testetsestset")
@@ -483,50 +438,11 @@
         }
       }
 
-      function grow_tendril(iterations, max_depth){
-        if(iterations < max_depth){
-          time = randomIntFromInterval(grow_time-200, grow_time+200)
-          setTimeout(function(){
-            var _l = branch_queue.length;
-            //console.log(_l)
-            for (var i = 0; i < _l; i++){
-              idx = branch_queue.shift();
-
-              create_branches(plant_data[idx]); //create children of last branch
-
-              draw_branches(plant_data[idx].children, time); // draw children of last branch
-            }
-            iterations++;
-            console.log(iterations);
-            grow_plant(iterations,max_depth);
-          }, time);
-        }
-      }
 
       function randomIntFromInterval(min,max){
         return Math.floor(Math.random()*(max-min+1)+min);
       }
-      // to do:
-      // on click delete a branch
-      // create one plant out of all branches that exist
-
-      // ###### old code ######
-      // function color_scale(min,max,val){
-      //   _col = d3.scale.linear()
-      //     .domain([min,max])
-      //     .range(["green","red"]);
-      //   return _col;
-      //   }
-      //
-      // code to get a rect under a spec
-      // var _location_on_grid_x = Math.floor(location.x / data[0].width);
-      // var _location_on_grid_y = Math.floor(location.y / data[0].height);
-      // var _location_rect_id = (_location_on_grid_y) * cols + _location_on_grid_x;
-      // gridContainer.select("#r"+parseInt(_location_rect_id))
-      //                   .transition()
-      //                   .duration(100)
-      //                   .attr("fill","#1111F1")
-      //                   .attr("fill-opacity",0.5);
+      
 
     </script>
   </body>

@@ -1,38 +1,65 @@
-== '''Plants vs Humans''' ==
+== Erster Entwurf ==
 
-[[Image:EphTron_gmuTree.png|200px|thumb|right]]
+[[Image:EphTron_gmuTree.png|thumb|right|Abbildung 2. Screenshot des ersten Prototyps.]]
 
-== Ideenfindung ==
+[[Image:Another_tree.png|thumb|right|Abbildung 3. Screenshot nach visuellen Anpassung des ersten Prototyps.]]
 
-Die Grundidee für meine Semesteraufgabe entstand bereits in der Einführungswoche, als uns die unterschiedlichen Projekte der Professur für Gestaltung Medialer Umgebungen vorgestellt wurden.
-Insbesondere interessierten und inspirierten mich die Projekte in denen Veränderungen von Umgebungen oder Organismen aufgenommen wurden, wie beispielsweise in dem Projekt "the outline of paradise".
-Der Ansatz Bewegungen von Organsimen aufzunehmen, um deren Charakteristik (und in manchen Fällen auch deren Ästhetik) anschließend auf Mediale Umgebungen zu übertragen ließ mich nicht mehr los.
+Bei meinem ersten Prototyp verfolgt ich die Idee einen sich stetig verändernden und wachsenden Webseitenhintergrund zu entwerfen. Dazu sollte im Hintergrund der Webseite ein künstlicher Binärbaum wachsen, der sowohl in Richtung der aktuellen Mausposition, wie auch in zufällige Richtungen wachsen konnte. 
+Mit diesem ersten Entwurf wollte ich die generelle Tauglichkeit meines Konzepts testen und überprüfen, wie ein sehr einfaches Beispiel aussehen würde.
 
-Die Faszination für diese Idee hat mehrere Gründe
-Als ich mir die Frage stellt, was mich an dem Ansatz so faszinierte, entdeckte ich mehrere Gründe:
-1. Zum einen bemerkte ich, dass viele Medien sehr statisch 
+[http://efraps.kochab.uberspace.de/plants-vs-humans/prototyp_1.html Link 1: Erster Prototyp.]
+
+Link 1 zeigt den ersten Prototypen. Bei diesem Prototypen wurde das Mauswachstum deaktiviert, weil der Wachstumsprozess des Baumes dadurch gestört wurde, so dass kein Baum mehr zu erkennen war (siehe Abb. X).
+
+Eine erste Auswertung des Prototyps zeigte, dass das Mauswachstum keine sinnvollen Formen hervorbrachte, wohingegen das zufällige Wachstum schon pflanzliche Eigenschaften aufweisen konnte. Außerdem war das Aussehen des Baumes sehr schlicht und nicht besonders interessant. Zusätzlich stellte sich heraus, dass eine große Anzahl an Ästen zu Rucklern und Aussetzern des Browsers führen konnten.
+Um mein Konzept, die Programmstruktur und das System zu verbessern, wurden einige Veränderungen am ersten Prototypen durchgeführt. Das Ziel der Änderungen war es konzeptionelle Fehler von einfachen Programmierfehlern und Strukturfehlern zu trennen. Die Änderungen wurden im Hinblick auf die folgenden Aspekte vorgenommen:
+:* Technische Grenzen für Baumgröße und Astanzahl
+:* Visuelle Ästhetik
+:* Interaktivität
+:* Wachstumsstruktur
+
+[http://efraps.kochab.uberspace.de/plants-vs-humans/prototyp_2.html Link 2: Angepasster Prototyp.]
+
+Nach vielen Änderungen am ersten Prototyp zeigte sich, welche Probleme zu lösen und welche dem Konzept geschuldet waren.
+Es stellte sich heraus, dass sich das Aussehen des Baumes leicht anpassen ließ, was jedoch nicht bedeutete, dass es leicht war ästehtische und passende Formen für den Baum zu finden. Auch die Ruckler waren der Programmstruktur geschuldet und ließen sich weitestgehend beseitigen, in dem das Wachstum des Baumes in unterschiedliche Phasen aufgeteilte wurde.
+Bei der Interaktivität und der Wachstumsstruktur ließen sich jedoch keine zufriedenstellenden Lösungen finden.
+
+[[Image:Bad_tree1.png|200px|right|Abbildung 4. Screenshot nach visuellen Anpassung des ersten Prototyps.]]
+
+[http://efraps.kochab.uberspace.de/plants-vs-humans/prototyp_2.html Link zu angepassten Prototyp.]
 
 
-== Idee & Konzept ==
-My basic idea is to create an interactive background for a website.
-To combine this idea with the concept of ''Plants vs Humans vs Robots''  
-I decided to simulate a growing plant. The growth can be influenced by ''human'' website visitors.
+Programmstruktur an. Obwohl der erste Prototyp visuell nicht besonders ansprechend war, zeigte sich, dass sich das Aussehen des Baumes leicht anpassen ließ. Zusätzlich stellte sich heraus, dass eine große Anzahl an Ästen zu Rucklern und Aussetzern des Browsers führen konnten.
 
-== Implementation ==
-To implement my ideas I will use HTML, CSS and JavaScript. For my plant visualization I am going to use the JavaScript library d3.js from Mike Bostock.
-https://github.com/mbostock/d3/wiki/Gallery
 
-So far the growth of the plant is based on simple randomized angle changes between branches of the plant. In future I want to replace the randomized angles by L-Systems.
+Da sich bei einem Binärbaum die Astanzahl des Baumes mit jeder Wachstumsstufe verdoppelt, rief der Baum ab einer gewissen Stufe stets schwere Ruckler im Browser herbei.
 
-== Progress ==
+Auch nach vielen Änderungen blieben jedoch
 
-Follow my exact progress on https://github.com/EphTron/gmuProject/
+Alle Veränderungen des Prototyps führ
 
-Dec 21, 2014: added a grid
+Nach vielen Veränderungen zeigten sich einige Probleme
 
-Jan 05, 2015: improved grid
+Obwohl der erste Prototyp visuell nicht besonders ansprechend war, zeigte sich, dass das Aussehen des Baumes sich leicht verändern ließ. Das verwendete Framework d3 liefert eine große Anzahl an Funktionen zur Interpolation zwischen
 
-Jan 08, 2015: added plant simulation
 
-Jan 09, 2015: improved visualization
+[[Image:Another_tree.png|200px|right|Abbildung 3. Screenshot nach Anpassung des ersten Prototyps.]]
 
+[http://efraps.kochab.uberspace.de/plants-vs-humans/prototyp_2.html Link zu angepassten Prototyp.]
+
+bei denen jeweils unterschiedliche Parameter gewählt wurden
+
+Es zeigten , wie Interaktivtät, Ästhektik, Wachstumsgeschwindikeit und Pflanzenanzahl überprüfen.
+
+
+
+# technische limits, 
+
+
+Der diente in erster Linie als Test für viele unterschiedliche Faktoren. Ich w
+
+<!--[[Image:EphTron_gmuTree.png|600px|Abbildung 1. Der erste Entwurf.]]-->
+[[Image:EphTron_gmuTree.png|600px|right|Abbildung 1. Der erste Entwurf.]]
+Bei meinem ersten Entwurf
+
+<!--[[Image:EphTron_gmuTree.png|200px|thumb|right]]-->

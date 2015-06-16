@@ -436,9 +436,9 @@
                     var lineFunction = d3.svg.line()
                         .x(function(d) { return d.x; })
                         .y(function(d) { return d.y; })
-                        .interpolate("cardinal");
+                        //.interpolate("cardinal");
                         //.interpolate("bundle");
-                        //.interpolate("basis");
+                        .interpolate("basis");
                         //.interpolate("cubic");
 
                         //monotone
@@ -590,6 +590,8 @@
                 tendril_queue.push(new_child_id);
             }
 
+
+
             function create_next_tendril_hotspot_mouse(object, point, point2){
                 var new_child_id = branch_count;
                 
@@ -630,6 +632,17 @@
                 }
 
                 var _end = get_next_grow_point(object.tendril_number + 1, _middle, last_angle, _next_point, _max_angle);
+                
+                // TEST
+                // var _omega = _old_omega + Math.random() * 3*Math.PI/4 - (3*Math.PI/4 / 2); 
+                // var _start = { "x": _old_end.x, 
+                //                "y": _old_end.y};
+
+                // var _middle = { "x": _start.x + branch_length * Math.cos(_omega/1.2) * 0.5 + (Math.random() * 100),
+                //                 "y": _start.y + (branch_length * Math.sin(_omega/1.2) * 0.5)  }; 
+
+                // var _end = {"x": _start.x + branch_length * Math.cos(_omega),
+                //           "y": _start.y + branch_length * Math.sin(_omega)};
                 
                 var _branch = new Array(_start, _middle,_end);
                 // mark current rect as visited - to avoid growing over it again
