@@ -372,6 +372,13 @@ function draw_branches(branch_list, time){
             .attr("stroke-linecap", "round")  // stroke-linecap type
             //.attr("stroke-opacity", "1.0")  // stroke-linecap type
             .attr("fill", "none")
+            .on("click",  function(d,i) {
+                _id = this.id;
+                //artContainer.select("#p"+parseInt(_id))
+                artContainer.select("#"+(_id))
+                    .style("stroke-opacity", "0.2")
+                    .attr("stroke-opacity", "0.2");
+            })
             .on("mouseover",  function(d,i) {
                 _id = this.id;
                 _id = _id.substr(1);
@@ -387,7 +394,7 @@ function draw_branches(branch_list, time){
                 //                "y": randomIntFromInterval(0,h)};
                 //     init_new_tendril(_start,_p,_p2);
                 // }
-                create_leaf(plant_data[_id], plant_data[_id].branch, plant_data[_id].angle, "lb");
+                //create_leaf(plant_data[_id], plant_data[_id].branch, plant_data[_id].angle, "lb");
             });
             
         var plant_length = plantGraph.node().getTotalLength();

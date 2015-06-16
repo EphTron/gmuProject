@@ -18,29 +18,59 @@ Ich beschloss einen ähnlichen Ansatz in meiner Semesterarbeit zu dem Thema "Pla
 Besonders die Interaktion und ein künstliches Eigenleben des Mediums sollten bei meiner Idee im Mittelpunkt stehen.
 Das Grundkonzept meiner Arbeit war es Mausbewegungen von Nutzern aufzuzeichnen und eine Webseite durch diese Aufzeichnungen visuell zu verändern. Um das Konzept an das Thema "Plants vs Humans" anzupassen, entschied ich mich eine künstliche Pflanze zu programmieren und sie mit der Bewegungsmatrix der Maus zu "gießen".
 
-
 == Motivation ==
-
 
 Die meisten Medien denen man im Alltag begegnet sind sehr statisch und besitzen keinerlei "Eigenleben". Das gilt sowohl für Medien im öffentlichen Raum, wie beispielsweise Plakate und Schaufenster, als auch für virtuelle Medien, wie Webseiten. Solche statischen Medien fügen sich meistens nur in die Umgebung ein und übermitteln ihren Inhalt, bieten dem Empfänger meistens jedoch keine Abwechslung. Im Rahmen meines Semesterprojekts habe ich mir vorgenommen einen "Maus"-Tracker für Webseiten zu programmieren und mit den Daten des Trackers eine künstliche Pflanze wachsen zu lassen.
 
 
-= Konzept =
+= Konzeptentwicklung =
 
+
+== Grundidee ==
+
+[[Image:‎heatmap.png|thumb|right|Abbildung 1. Eyetracker Heatmap.]]
+
+Das Grundkonzept meiner Arbeit war es Mausbewegungen von Nutzern aufzuzeichnen und eine Webseite durch diese Aufzeichnungen visuell zu verändern. Um das Konzept an das Thema "Plants vs Humans" anzupassen, entschied ich mich eine künstliche Pflanze zu programmieren und sie mit der Bewegungsmatrix der Maus zu "gießen".
+
+Ähnlich wie ein Eyetracker die Fixationspunkte einer Person auf dem Bildschirm anzeigen kann (Siehe Abb. 1), sollte die Webseite die am häufigsten von der Maus besuchten Bereiche markieren und hervorheben.
 
 == Erster Entwurf ==
 
-[[Image:EphTron_gmuTree.png|200px|thumb|right]]
+
+
+Bei meinem ersten Prototyp verfolgt ich die Idee einen sich stetig verändernden und wachsenden Webseitenhintergrund zu entwerfen. Als künstliche Pflanze diente die abstrakte Form eines Baumes, der sowohl in Richtung der aktuellen Mausposition als auch in zufällige Richtungen wachsen konnte. 
+
+
+Ziel sollte es sein ähnlich wie bei e
+
+Nach dem ich meine grundlegende Idee gefunden hatte
+
+
+<!--[[Image:EphTron_gmuTree.png|600px|Abbildung 1. Der erste Entwurf.]]-->
+[[Image:EphTron_gmuTree.png|600px|right|Abbildung 1. Der erste Entwurf.]]
+Bei meinem ersten Entwurf
+
+<!--[[Image:EphTron_gmuTree.png|200px|thumb|right]]-->
+
+
+== Konzeptanpassungen ==
+
+=== Versus ===
+
+=== Interaktionsmethoden ===
+
+=== Ranke statt Baum ===
+
 [[Image:GmuRanke.png|200px|thumb|right]]
 
-== Rekursive Interaktivität ==
+=== Rekursive Interaktivität ===
 
 
 
 = Umsetzung =
 
 = Zukünftige Arbeit =
-
+<nowiki><script> alert("hel");</script></nowiki>
 
 
 
