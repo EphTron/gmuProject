@@ -8,24 +8,25 @@ Das Plugin lässt künstliche Ranken über alle Tabs des Chrome-Webbrowsers wach
 
 == Ideenfindung ==
 
-Die Grundidee für meine Semesteraufgabe entstand bereits in der Einführungswoche, als die unterschiedlichen Projekte der Professur für Gestaltung Medialer Umgebungen vorgestellt wurden.
+Die Grundidee für meine Semesteraufgabe entstand bereits in der Einführungswoche, als die unterschiedlichen Projekte der Professur für Gestaltung medialer Umgebungen vorgestellt wurden.
 Insbesondere interessierten und inspirierten mich die Projekte in denen Veränderungen von Umgebungen oder Organismen aufgenommen wurden, wie beispielsweise in dem Projekt "the outline of paradise" oder dem programmierten Videofilter.
-Der Ansatz Bewegungen von Organsimen aufzunehmen, um deren Charakteristik (und in vielen Fällen auch deren Ästhetik) anschließend auf Mediale Umgebungen zu übertragen reizte mich.
+Der Ansatz Bewegungen von Organsimen aufzunehmen, um deren Charakteristik (und in vielen Fällen auch deren Ästhetik) anschließend auf mediale Umgebungen zu übertragen reizte mich.
 
 Im Gegensatz zu vielen alltäglichen Medien führt der bewegte Ansatz zu einer immer neuen und dynamischen Vielfalt, die den Empfänger der Medien dazu einläd sich die Veränderungen genauer anzuschauen oder mit dem Medium zu interagieren. 
 
 Ich beschloss einen ähnlichen Ansatz in meiner Semesterarbeit zu dem Thema "Plants vs Humans" zu verfolgen.
 Besonders die Interaktion und ein künstliches Eigenleben des Mediums sollten bei meiner Idee im Mittelpunkt stehen.
-Das Grundkonzept meiner Arbeit war es Mausbewegungen von Nutzern aufzuzeichnen und eine Webseite durch diese Aufzeichnungen visuell zu verändern. Um das Konzept an das Thema "Plants vs Humans" anzupassen, entschied ich mich eine künstliche Pflanze zu programmieren und sie mit der Bewegungsmatrix der Maus zu "gießen".
+Das Grundkonzept meiner Arbeit war es Mausbewegungen von Nutzern aufzuzeichnen und eine Webseite durch diese Aufzeichnungen visuell zu verändern.
+
 
 == Motivation ==
 
-Die meisten Medien denen man im Alltag begegnet sind sehr statisch und besitzen keinerlei "Eigenleben". Das gilt sowohl für Medien im öffentlichen Raum, wie beispielsweise Plakate und Schaufenster, als auch für virtuelle Medien, wie Webseiten. Solche statischen Medien fügen sich meistens nur in die Umgebung ein und übermitteln ihren Inhalt, bieten dem Empfänger meistens jedoch keine Abwechslung. Im Rahmen meines Semesterprojekts habe ich mir vorgenommen einen "Maus"-Tracker für Webseiten zu programmieren und mit den Daten des Trackers eine künstliche Pflanze wachsen zu lassen.
+Die meisten Medien, denen man im Alltag begegnet, sind sehr statisch und besitzen keinerlei "Eigenleben". Das gilt sowohl für Medien im öffentlichen Raum, wie beispielsweise Plakate und Schaufenster, als auch für virtuelle Medien, wie Webseiten. Solche statischen Medien fügen sich meistens nur in die Umgebung ein und übermitteln ihren Inhalt, bieten dem Empfänger meistens jedoch keine Abwechslung. Im Rahmen meines Semesterprojekts habe ich mir vorgenommen einen "Maus"-Tracker für Webseiten zu programmieren und mit den Daten des Trackers eine künstliche Pflanze wachsen zu lassen.
 
 
 = Konzept =
 
-Während der Arbeit an meinem Semesterprojekt musste ich mein Konzept stetig verändern und an gewisse technische Probleme, sowie konzeptionelle Ideen anpassen. Ich entwickelte viele verschiedene Prototypen und Features, die jedesmal in abgewandlter Form auf meiner Grundidee aufbauten. Im Folgenden soll zuerst die Grundidee beschrieben werden und im Anschluss die Entwicklung des Konzepts vom ersten Entwurf hin zu meinem finalen Konzept.
+Während der Arbeit an meinem Semesterprojekt musste ich mein Konzept stetig verändern und an gewisse technische Probleme sowie neue konzeptionelle Ideen anpassen. Ich entwickelte viele verschiedene Prototypen und Features, die jedesmal in abgewandlter Form auf meiner Grundidee aufbauten. Im Folgenden soll zuerst die Grundidee beschrieben werden und im Anschluss die Entwicklung des Konzepts vom ersten Entwurf hin zu meinem finalen Konzept.
 
 
 == Grundidee ==
@@ -47,74 +48,59 @@ Zur Aufnahme der Mausbewegungen legte ich ein Gitter aus vielen kleinen Vierecke
 
 [[Image:Another_tree.png|thumb|right|Abbildung 3. Screenshot nach visuellen Anpassung des ersten Prototyps.]]
 
-Bei meinem ersten Prototyp verfolgt ich die Idee einen sich stetig verändernden und wachsenden Webseitenhintergrund zu entwerfen. Dazu sollte im Hintergrund der Webseite ein künstlicher Binärbaum wachsen, der sowohl in Richtung der aktuellen Mausposition, wie auch in zufällige Richtungen wachsen konnte. 
-Mit diesem ersten Entwurf wollte ich die generelle Tauglichkeit meines Konzepts testen und überprüfen, wie ein sehr einfaches Beispiel aussehen würde.
+Bei meinem ersten Prototyp verfolgte ich die Idee eines sich stetig verändernden und wachsenden Webseitenhintergrunds. Dazu sollte im Hintergrund der Webseite ein künstlicher Binärbaum wachsen, der sowohl in Richtung der aktuellen Mausposition, wie auch in zufällige Richtungen wachsen konnte. 
+Mit diesem ersten Entwurf wollte ich die generelle Tauglichkeit meines Konzepts an einem einfachen Beispiel testen und überprüfen.
 
 [http://efraps.kochab.uberspace.de/plants-vs-humans/prototyp_1.html Link 1: Erster Prototyp.]
 
-Link 1 zeigt den ersten Prototypen. Bei diesem Prototypen wurde das Mauswachstum deaktiviert, weil der Wachstumsprozess des Baumes dadurch gestört wurde, so dass kein Baum mehr zu erkennen war (siehe Abb. X).
+Link 1 zeigt den ersten Prototypen. Bei diesem Prototypen wurde das Mauswachstum deaktiviert, weil der Wachstumsprozess des Baumes dadurch gestört wurde, so dass kein Baum mehr zu erkennen war (siehe Abb. 4).
 
-Eine erste Auswertung des Prototyps zeigte, dass das Mauswachstum keine sinnvollen Formen hervorbrachte, wohingegen das zufällige Wachstum schon pflanzliche Eigenschaften aufweisen konnte. Außerdem war das Aussehen des Baumes sehr schlicht und nicht besonders interessant. Zusätzlich stellte sich heraus, dass eine große Anzahl an Ästen zu Rucklern und Aussetzern des Browsers führen konnten.
+Eine erste Auswertung des Prototyps zeigte, dass das Wachstum in Richtung der Maus keine sinnvollen Formen hervorbrachte, wohingegen das zufällige Wachstum schon pflanzliche Eigenschaften aufweisen konnte. Außerdem war das Aussehen des Baumes sehr schlicht und nicht besonders interessant. Zusätzlich stellte sich heraus, dass der Browser zu ruckeln begann, wenn eine große Anzahl an Ästen gezeichnet wurde.
 Um mein Konzept, die Programmstruktur und das System zu verbessern, wurden einige Veränderungen am ersten Prototypen durchgeführt. Das Ziel der Änderungen war es konzeptionelle Fehler von einfachen Programmierfehlern und Strukturfehlern zu trennen. Die Änderungen wurden im Hinblick auf die folgenden Aspekte vorgenommen:
 :* Technische Grenzen für Baumgröße und Astanzahl
 :* Visuelle Ästhetik
 :* Interaktivität
 :* Wachstumsstruktur
 
+[[Image:bad_tree1.png|thumb|right|Abbildung 4. Wachstum der Äste zum Mauspfad.]]
 [http://efraps.kochab.uberspace.de/plants-vs-humans/prototyp_2.html Link 2: Angepasster Prototyp.]
 
-Nach vielen Änderungen am ersten Prototyp zeigte sich, welche Probleme zu lösen und welche dem Konzept geschuldet waren.
-Es stellte sich heraus, dass sich das Aussehen des Baumes leicht anpassen ließ, was jedoch nicht bedeutete, dass es leicht war ästehtische und passende Formen für den Baum zu finden. Auch die Ruckler waren der Programmstruktur geschuldet und ließen sich weitestgehend beseitigen, in dem das Wachstum des Baumes in unterschiedliche Phasen aufgeteilte wurde.
+Bei dieser Überarbeitung stellte sich heraus, dass sich einige Probleme nicht beheben ließen, da sie ihren Ursprung nicht im Code hatten, sondern im Konzept. Beispielsweise lässt sich die Darstellung eines Baumes sehr schlecht mit einem Mauspfad vereinen. Die Äste des Baumes müssen in unterschiedliche Richtungen wachsen, um die charakteristische Baumform zu erhalten; wachsen alle Äste in eine Richtung so geht diese Form verloren (siehe Abb. 4)
+
+Andere Probleme, wie das Aussehen des Baumes ließen sich leicht anpassen, was jedoch nicht bedeutete, dass es leicht war ästehtische und passende Formen für den Baum zu finden. Auch die Überlastung des Browsers durch viele wachsende Äste waren der Programmstruktur geschuldet und ließen sich weitestgehend beseitigen, indem das Wachstum des Baumes in unterschiedliche Phasen aufgeteilte wurde.
 Bei der Interaktivität und der Wachstumsstruktur ließen sich jedoch keine zufriedenstellenden Lösungen finden.
-
-[[Image:Bad_tree1.png|200px|right|Abbildung 4. Screenshot nach visuellen Anpassung des ersten Prototyps.]]
-
-[http://efraps.kochab.uberspace.de/plants-vs-humans/prototyp_2.html Link zu angepassten Prototyp.]
-
-
-Programmstruktur an. Obwohl der erste Prototyp visuell nicht besonders ansprechend war, zeigte sich, dass sich das Aussehen des Baumes leicht anpassen ließ. Zusätzlich stellte sich heraus, dass eine große Anzahl an Ästen zu Rucklern und Aussetzern des Browsers führen konnten.
-
-
-Da sich bei einem Binärbaum die Astanzahl des Baumes mit jeder Wachstumsstufe verdoppelt, rief der Baum ab einer gewissen Stufe stets schwere Ruckler im Browser herbei.
-
-Auch nach vielen Änderungen blieben jedoch
-
-Alle Veränderungen des Prototyps führ
-
-Nach vielen Veränderungen zeigten sich einige Probleme
-
-Obwohl der erste Prototyp visuell nicht besonders ansprechend war, zeigte sich, dass das Aussehen des Baumes sich leicht verändern ließ. Das verwendete Framework d3 liefert eine große Anzahl an Funktionen zur Interpolation zwischen
-
-
-[[Image:Another_tree.png|200px|right|Abbildung 3. Screenshot nach Anpassung des ersten Prototyps.]]
-
-[http://efraps.kochab.uberspace.de/plants-vs-humans/prototyp_2.html Link zu angepassten Prototyp.]
-
-bei denen jeweils unterschiedliche Parameter gewählt wurden
-
-Es zeigten , wie Interaktivtät, Ästhektik, Wachstumsgeschwindikeit und Pflanzenanzahl überprüfen.
-
-
-
-# technische limits, 
-
-
-Der diente in erster Linie als Test für viele unterschiedliche Faktoren. Ich w
-
-<!--[[Image:EphTron_gmuTree.png|600px|Abbildung 1. Der erste Entwurf.]]-->
-[[Image:EphTron_gmuTree.png|600px|right|Abbildung 1. Der erste Entwurf.]]
-Bei meinem ersten Entwurf
-
-<!--[[Image:EphTron_gmuTree.png|200px|thumb|right]]-->
 
 
 == Konzeptanpassungen ==
 
-=== Versus ===
+Die Evaluierung des Prototypen hatte einige Probleme aufgezeigt, die zu großen Teilen auf das Konzept des ersten Entwurfs zurückzuführen waren. Einerseits musste eine Lösung zur sinnvollen Steuerung der künstlichen Pflanze mit der Maus gefunden werden und andererseits musste die Interaktivität mit der Pflanze durch eine motivierendere Idee stärker gefördert werden. Die Konzeptänderungen, die zugunsten dieser Anforderungen vorgenommen wurden, sollen in den folgenden Abschnitten beschrieben werden.
+
 
 === Interaktionsmethoden ===
 
+In meinem ersten Konzept wurde der Nutzer nicht dazu animiert mit der Webseite zu interagieren, da die Webseite keinerlei Funktion für den Nutzer bot. Sie diente ausschließlich dem Wachstum des Baumes.
+Um die Interaktionen von Mausnutzern mit Webseiten besser verstehen zu können, betrachtete ich wozu die Maus auf Webseiten generell dient und welche Interaktionsmethoden zu beobachten sind.
+Ich unterschied zwischen verschiedenen Interaktionsmethoden:
+:* Gezielte Interaktion mit der Maus (Bsp.: Anklicken eines Buttons)
+:* Unterstützende Interaktion mit der Maus (Bsp.: Mitbewegen der Maus zum Lesen)
+:* Zufällige Interaktion mit der Maus (Bsp.: unbewusstes Bewegen der Maus)
+:* Keine Interaktion
+
+Da die Webseite des ersten Prototyps nicht direkt zur Interaktion einlud, war davon auszugehen, dass nur zufällige oder keine Interaktion mit der Maus stattfand. 
+In meinem neuen Konzept sollte die Webseite zur Interaktion einladen. Diese Interaktion konnte entweder aktiv auf die Pflanze bezogen sein, oder :
+:# Ein Webseite, in der das Pflanzenwachstum im Mittelpunkt steht.
+:# Eine Webseite, die den Nutzer zur Intera
+
+ Ich wollte meine Pflanze eine Stufe zurück stellen und 
+
+=== Versus ===
+
+
+
 === Ranke statt Baum ===
+
+
+
 
 [[Image:GmuRanke.png|200px|thumb|right]]
 
