@@ -1,8 +1,10 @@
 = '''Plants vs Humans''' =
 
-Im Rahmen dieses Semesterprojekts wurde ein Chrome-Plugin entwickelt.
+[[Image:Another_ranke.png|300px|right| Eine Ranke des Plugins.]]
 
-Das Plugin lässt künstliche Ranken über alle Tabs des Chrome-Webbrowsers wachsen.
+Im Rahmen dieses Semesterprojekts wurde ein Chrome-Plugin entwickelt, das eine künstliche Ranke über alle Tabs des Chrome-Webbrowsers wachsen lässt. Wer das Plugin ausprobieren möchte, kann es sich gerne hier herunterladen:[https://github.com/EphTron/gmuProject https://github.com/EphTron/gmuProject]
+
+Ansonsten kann die Funktionsweise des Plugins auch hier geteste werden: [https://efraps.kochab.uberspace.de/plants-vs-humans/ Plants vs Humans]
 
 = Einleitung =
 
@@ -76,6 +78,17 @@ Bei der Interaktivität und der Wachstumsstruktur ließen sich jedoch keine zufr
 Die Evaluierung des Prototypen hatte einige Probleme aufgezeigt, die zu großen Teilen auf das Konzept des ersten Entwurfs zurückzuführen waren. Einerseits musste eine Lösung zur sinnvollen Steuerung der künstlichen Pflanze mit der Maus gefunden werden und andererseits musste die Interaktivität mit der Pflanze durch eine motivierendere Idee stärker gefördert werden. Die Konzeptänderungen, die zugunsten dieser Anforderungen vorgenommen wurden, sollen in den folgenden Abschnitten beschrieben werden.
 
 
+=== Ranke statt Baum ===
+
+[[Image:GmuRanke.png|300px|thumb|right]]
+
+Wie in Absatz 3.1 beschrieben wurde, erwieß es sich als sehr schwierig die Wachstumsrichtung des Baumes mit einer Maus sinnvoll zu beeinflussen. Die Maus wird immer eine Art Pfad bilden, wenn man sie über den Bildschirm bewegt. Zusätzlich vermehren sich die Äste des Baumes so schnell, dass die Webseite sehr schnell zuwächst und der Browser aufgrund der vielen Animationen oft in die Kniee gezwungen wird.
+Ein weitere Nachteil des Baumes ist, dass er sinnvollerweise nur von unten ins Bild kommen kann und seine Äste nicht Kreise wachsen können.
+
+Ich wollte meine Pflanze jedoch nicht immer von der gleichen Position aus loswachsen lassen, weshalb ich den Baum durch eine Ranke ersetzte.
+Die Ranke hatte einerseits den Vorteile, dass sie an jedem Rand der Webseite starten kann und dass sie sich nicht so oft aufteilt, wie die Äste des Baumes.
+
+
 === Interaktionsmethoden ===
 
 In meinem ersten Konzept wurde der Nutzer nicht dazu animiert mit der Webseite zu interagieren, da die Webseite keinerlei Funktion für den Nutzer bot. Sie diente ausschließlich dem Wachstum des Baumes.
@@ -86,33 +99,48 @@ Ich unterschied zwischen verschiedenen Interaktionsmethoden:
 :* Zufällige Interaktion mit der Maus (Bsp.: unbewusstes Bewegen der Maus)
 :* Keine Interaktion
 
-Da die Webseite des ersten Prototyps nicht direkt zur Interaktion einlud, war davon auszugehen, dass nur zufällige oder keine Interaktion mit der Maus stattfand. 
-In meinem neuen Konzept sollte die Webseite zur Interaktion einladen. Diese Interaktion konnte entweder aktiv auf die Pflanze bezogen sein, oder :
-:# Ein Webseite, in der das Pflanzenwachstum im Mittelpunkt steht.
-:# Eine Webseite, die den Nutzer zur Intera
+Da die Webseite des ersten Prototyps nicht direkt zur Interaktion einlud, war davon auszugehen, dass nur zufällige oder keine Interaktion mit der Maus stattfand. In meinem neuen Konzept sollte die Webseite zur gezielten Interaktion einladen. 
+Es gab zwei mögliche Interaktionsansätze:
+:# Eine Webseite, auf der das Pflanzenwachstum im Mittelpunkt steht.
+:# Eine Webseite, auf der der Webseiteninhalt im Mittelpunkt steht.
 
- Ich wollte meine Pflanze eine Stufe zurück stellen und 
+Bei der Entscheidung für einen der beiden Interaktionsansätze half mir der Projekttitel "Plants vs Humans".
 
 === Versus ===
 
+'''Wie störend wäre es, wenn die Pflanze den ganzen Computerbildschirm zuwuchern könnte?!'''
 
+Um dem Titel der Semesterarbeit gerecht zu werden, reichte es nicht aus, die Pflanze im Hintergrund der Webseite wachsen zu lassen.
+Ich beschloss die Pflanze als Gegner aufzufassen und sie als Störfaktor einzubauen. Dieser Ansatz ließ sich besonders gut mit dem zweiten Interaktionsansatz aus 3.1.1 kombinieren.
 
-=== Ranke statt Baum ===
+Ich wollte die Pflanze in eine Umgebung setzen in die sie nicht hineingehört, damit sie den Menschen dort besonders plagen kann. Die Pflanze sollte in der Lage sein Elemente der Webseite auf der sie wächst zu verdecken, so dass die Webseite immer schwerer zu bedienen wird. Diese Idee ließ sich sehr gut mit meiner Grundidee verknüpfen, denn der Störfaktor der Pflanze ist am größten, wenn die Pflanze immer in die Richtung der Elemente wächst, die der Nutzer am häufigsten gebraucht.
 
-
-
-
-[[Image:GmuRanke.png|200px|thumb|right]]
 
 === Rekursive Interaktivität ===
 
+Mit dem Ansatz die Pflanze als Störfaktor aufzufassen, kam mir ein weitere Idee mit der man die Interaktion zwischen Pflanze und Mensch verstärken konnte. Ich wollte eine Art Rückkopplung in mein Konzept einbauen. Der Webseitennutzer sollte nicht nur zusehen können, wie die Pflanze immer mehr die Webseite übernimmt; er sollte auch eingreifen können. 
+Deshalb verlieh ich der Pflanze die Eigentschaft Transparent zu werden, wenn man sie anklickte. Damit hatte der Nutzer noch eine Chance die Webseite weiter zu benutzen, gleichzeitig würde die Mausbewegung die Pflanze wieder an die genau gleiche Stelle lenken wie zuvor. Pflanze und Nutzer würden damit in einen nie endenden Kreislauf eintauchen, in dem sie sich immer wieder gegenseitig beeinflussen.
+
+
+== Finales Konzept == 
+
+[[Image:Twitter_tendril.png|500px|thumb| Zugewachsene Twitter Webseite]]
+
+
+Nach der Überarbeitung des Konzepts gab es viele neue Ansätze, doch die große Frage war, wie der Inhalt für eine solche Webseite aussehen sollte. Am besten würde sich eine Webseite eigenen auf der man sich länger aufhält, denn erst dann kann sich die Pflanze richtig entfalten - Webseiten wie Facebook, Twitter und Youtube.
+Mir wurde klar, dass die Pflanze nicht an eine einzelne Webseite gebunden werden sollte, sondern für alle Webseiten zur Verfügung gestellt werden musste.
+
+Ich entschied mich ein Chrome-Plugin zu entwickeln, welches eine wuchernde Ranke erzeugt. Die Ranke sollte immer in die Bereiche der Webseite wachsen, indenen sich die Maus am häufigsten befand und dabei alle Elemente überdecken. Die Pflanze soll dabei gegen den Menschen agieren und ihm die Lust am Internet verderben, denn sie wächst unermüdlich weiter und weiter.
+Insbesondere auf Webseiten wieder Twitter und Facebook auf denen viele Menschen alltäglich ihre Zeit verschwenden. 
+
+[https://efraps.kochab.uberspace.de/plants-vs-humans/ Webseite mit wuchernder Ranke.]
 
 
 = Umsetzung =
 
-== Maustracking == 
+Zur Umsetzung meines Konzepts verwendete ich HTML, CSS und JavaScript. Insbesondere verwendete ich die JavaScript Bibliothek d3.js von Mike Bostock für die Visulisierungen der Pflanze und des Gitters.
+[https://github.com/mbostock/d3/wiki/Gallery Siehe auch github.com/mbostock/d3/wiki/Gallery]
 
-Zur Erstellung einer Mausheatmap, unterteilte ich die Webseite in ein Gitter aus vielen kleinen Vierecken. Bewegte der Nutzer die Maus über die Webseite, so legte er stets 
 
 = Zukünftige Arbeit =
 
@@ -123,6 +151,7 @@ Dynamische Geschwindikeit
 Unterscheidung zwischen Klicks und Hover.
 
 Ranken unterschiedlicher Länge
+
 
 
 
