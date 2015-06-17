@@ -100,7 +100,7 @@ checkDocumentHeight(check_size);
 console.log("Hello Plugin");
 init_grid(rect_count);
 //draw_grid();
-track_cursor(50);
+track_cursor(75);
 
 run_time_growth();
 
@@ -226,8 +226,10 @@ function draw_grid(){
 
 function update_hotspots(id){
     if (typeof grid_data[id] != 'undefined') {
-
-        if (grid_data[id].touched < 30){
+        // if (grid_data[id].visited > 1 && grid_data[id].touched > 1){
+        //     grid_data[].touched--;
+        // }
+        if (grid_data[id].touched < 8){
             grid_data[id].touched++;
         }
         if(hotspots.indexOf(grid_data[id]) == -1){
@@ -541,7 +543,7 @@ function create_next_tendril_hotspot_mouse(object, point, point2){
     var _next_point = point;
     var _hotspot_id = get_next_hotspot_id(_start);
     if (_hotspot_id == -1){
-        if (hotspots[0].touched > 15){
+        if (hotspots[0].touched > 7){
             _next_point = get_random_point_on_rect(hotspots[0].id);
         } 
     } else {
@@ -551,7 +553,7 @@ function create_next_tendril_hotspot_mouse(object, point, point2){
     var _middle = get_next_grow_point(object.tendril_number +1, _start, _old_omega, _next_point, _max_angle);
 
     if (_hotspot_id == -1){
-        if (hotspots[0].touched > 10){
+        if (hotspots[0].touched > 7){
             _next_point = get_random_point_on_rect(hotspots[0].id);
             console.log("to hottest hotspot");
         } else {

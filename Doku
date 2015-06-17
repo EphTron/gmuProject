@@ -1,8 +1,8 @@
-= '''Plants vs Humans''' =
-
 [[Image:Another_ranke.png|300px|right| Eine Ranke des Plugins.]]
 
-Im Rahmen dieses Semesterprojekts wurde ein Chrome-Plugin entwickelt, das eine künstliche Ranke über alle Tabs des Chrome-Webbrowsers wachsen lässt. Wer das Plugin ausprobieren möchte, kann es sich gerne hier herunterladen:[https://github.com/EphTron/gmuProject https://github.com/EphTron/gmuProject]
+= '''Plants vs Humans''' =
+
+Im Rahmen dieses Semesterprojekts wurde ein Chrome-Plugin entwickelt, das eine künstliche Ranke über alle Tabs des Chrome-Webbrowsers wachsen lässt. Wer das Plugin ausprobieren möchte, kann es sich gerne hier herunterladen:   [https://github.com/EphTron/gmuProject https://github.com/EphTron/gmuProject]
 
 Ansonsten kann die Funktionsweise des Plugins auch hier geteste werden: [https://efraps.kochab.uberspace.de/plants-vs-humans/ Plants vs Humans]
 
@@ -80,8 +80,6 @@ Die Evaluierung des Prototypen hatte einige Probleme aufgezeigt, die zu großen 
 
 === Ranke statt Baum ===
 
-[[Image:GmuRanke.png|300px|thumb|right]]
-
 Wie in Absatz 3.1 beschrieben wurde, erwieß es sich als sehr schwierig die Wachstumsrichtung des Baumes mit einer Maus sinnvoll zu beeinflussen. Die Maus wird immer eine Art Pfad bilden, wenn man sie über den Bildschirm bewegt. Zusätzlich vermehren sich die Äste des Baumes so schnell, dass die Webseite sehr schnell zuwächst und der Browser aufgrund der vielen Animationen oft in die Kniee gezwungen wird.
 Ein weitere Nachteil des Baumes ist, dass er sinnvollerweise nur von unten ins Bild kommen kann und seine Äste nicht Kreise wachsen können.
 
@@ -113,138 +111,76 @@ Bei der Entscheidung für einen der beiden Interaktionsansätze half mir der Pro
 Um dem Titel der Semesterarbeit gerecht zu werden, reichte es nicht aus, die Pflanze im Hintergrund der Webseite wachsen zu lassen.
 Ich beschloss die Pflanze als Gegner aufzufassen und sie als Störfaktor einzubauen. Dieser Ansatz ließ sich besonders gut mit dem zweiten Interaktionsansatz aus 3.1.1 kombinieren.
 
-Ich wollte die Pflanze in eine Umgebung setzen in die sie nicht hineingehört, damit sie den Menschen dort besonders plagen kann. Die Pflanze sollte in der Lage sein Elemente der Webseite auf der sie wächst zu verdecken, so dass die Webseite immer schwerer zu bedienen wird. Diese Idee ließ sich sehr gut mit meiner Grundidee verknüpfen, denn der Störfaktor der Pflanze ist am größten, wenn die Pflanze immer in die Richtung der Elemente wächst, die der Nutzer am häufigsten gebraucht.
+Ich wollte die Pflanze in eine Umgebung setzen, in die sie nicht hineingehört, damit sie den Menschen dort besonders plagen kann. Die Pflanze sollte in der Lage sein Elemente der Webseite, auf der sie wächst, zu verdecken, so dass die Webseite immer schwerer zu bedienen wird. Diese Idee ließ sich sehr gut mit meiner Grundidee verknüpfen, denn der Störfaktor der Pflanze ist am größten, wenn die Pflanze immer in die Richtung der Elemente wächst, die der Nutzer am häufigsten gebraucht.
 
 
 === Rekursive Interaktivität ===
 
-Mit dem Ansatz die Pflanze als Störfaktor aufzufassen, kam mir ein weitere Idee mit der man die Interaktion zwischen Pflanze und Mensch verstärken konnte. Ich wollte eine Art Rückkopplung in mein Konzept einbauen. Der Webseitennutzer sollte nicht nur zusehen können, wie die Pflanze immer mehr die Webseite übernimmt; er sollte auch eingreifen können. 
-Deshalb verlieh ich der Pflanze die Eigentschaft Transparent zu werden, wenn man sie anklickte. Damit hatte der Nutzer noch eine Chance die Webseite weiter zu benutzen, gleichzeitig würde die Mausbewegung die Pflanze wieder an die genau gleiche Stelle lenken wie zuvor. Pflanze und Nutzer würden damit in einen nie endenden Kreislauf eintauchen, in dem sie sich immer wieder gegenseitig beeinflussen.
+Mit dem Ansatz die Pflanze als Störfaktor aufzufassen, kam mir ein weitere Idee, mit der man die Interaktion zwischen Pflanze und Mensch verstärken konnte. Ich wollte eine Art Rückkopplung in mein Konzept einbauen. Der Webseitennutzer sollte nicht nur zusehen können, wie die Pflanze die Webseite übernimmt; er sollte auch eingreifen können. 
+Deshalb verlieh ich der Pflanze die Eigentschaft transparent zu werden, wenn man sie anklickte. Damit hatte der Nutzer noch eine Chance die Webseite weiter zu benutzen, gleichzeitig würde die Mausbewegung die Pflanze wieder an die genau gleiche Stelle lenken wie zuvor. Pflanze und Nutzer würden damit in einen nie endenden Kreislauf eintauchen, in dem sie sich immer wieder gegenseitig beeinflussen.
 
 
 == Finales Konzept == 
 
-[[Image:Twitter_tendril.png|500px|thumb| Zugewachsene Twitter Webseite]]
+[[Image:Twitter_tendril.png|500px|thumb| Abbildung 5. Zugewachsene Twitter Webseite.]]
 
 
-Nach der Überarbeitung des Konzepts gab es viele neue Ansätze, doch die große Frage war, wie der Inhalt für eine solche Webseite aussehen sollte. Am besten würde sich eine Webseite eigenen auf der man sich länger aufhält, denn erst dann kann sich die Pflanze richtig entfalten - Webseiten wie Facebook, Twitter und Youtube.
+Nach der Überarbeitung des Konzepts gab es viele neue Ansätze, doch es blieb die Frage, wie der Inhalt für eine solche Webseite aussehen sollte. Am besten würde sich eine Webseite eignen, auf der man sich länger aufhält, denn erst dann kann sich die Pflanze richtig entfalten - Webseiten wie Facebook, Twitter und Youtube.
 Mir wurde klar, dass die Pflanze nicht an eine einzelne Webseite gebunden werden sollte, sondern für alle Webseiten zur Verfügung gestellt werden musste.
 
-Ich entschied mich ein Chrome-Plugin zu entwickeln, welches eine wuchernde Ranke erzeugt. Die Ranke sollte immer in die Bereiche der Webseite wachsen, indenen sich die Maus am häufigsten befand und dabei alle Elemente überdecken. Die Pflanze soll dabei gegen den Menschen agieren und ihm die Lust am Internet verderben, denn sie wächst unermüdlich weiter und weiter.
-Insbesondere auf Webseiten wieder Twitter und Facebook auf denen viele Menschen alltäglich ihre Zeit verschwenden. 
+Ich entschied mich ein Chrome-Plugin zu entwickeln, welches eine wuchernde Ranke erzeugt. Die Ranke sollte immer in die Bereiche der Webseite wachsen, in denen sich die Maus am häufigsten befand und dabei alle Elemente überdecken. Die Pflanze sollte dabei gegen den Menschen agieren und ihm die Lust am Internet verderben, denn sie wächst unermüdlich weiter und weiter.
+Insbesondere auf Webseiten wieder Twitter und Facebook, auf denen viele Menschen alltäglich ihre Zeit verbringen. 
 
 [https://efraps.kochab.uberspace.de/plants-vs-humans/ Webseite mit wuchernder Ranke.]
 
 
 = Umsetzung =
 
-Zur Umsetzung meines Konzepts verwendete ich HTML, CSS und JavaScript. Insbesondere verwendete ich die JavaScript Bibliothek d3.js von Mike Bostock für die Visulisierungen der Pflanze und des Gitters.
+Zur Umsetzung meines Konzepts verwendete ich HTML, CSS und JavaScript. Insbesondere nutzte ich die JavaScript Bibliothek d3.js von Mike Bostock für die Visulisierungen der Pflanze und des Gitters.
 [https://github.com/mbostock/d3/wiki/Gallery Siehe auch github.com/mbostock/d3/wiki/Gallery]
+
+
+== Wachstum == 
+
+[[Image:Ranke_nur_zur_Maus.png|300px|right|thumb| Abbildung 6. Ranke mit Wachstumsprinzip 1.]]
+
+Eine grundlegende Anforderung meines Konzepts war es, dass das Wachstum der Pflanze beeinflusst werden konnte. In unterschiedlichen Prototypen testete ich die folgenden Ansätze:
+:# Wachstum zur aktuellen Mausposition.
+:# Wachstum zum meist berührten Punkt der Webseite.
+:# Wachstum zum räumlich nächsten, meist berührten Punkt.
+
+
+[[Image:GmuRanke.png|300px|thumb|right| Abbildung 7. Ranke mit kombinierten Wachstumsprinzipien.]]
+
+Es zeigte sich, dass das erste Wachstumsprinzip sehr einseitig und vorhersehbar war. Wenn die Pflanze immer in Richtung der Maus wächst, bilden sich meistens Ballungen, die durch lange gerade Strecken verbunden sind (siehe Abb. 6).
+
+Die zwei anderen Wachstumsprinzipien konnten jedoch nicht alleine verwendet werden, da es häufig zu Situationen kommt, in denen keine berührten Punkte in der Nähe der Pflanze liegen.
+Aus diesem Grund wurden die Prinzipien für das Wachstumsprinzip der Ranke kombiniert. Die Ranke bevorzugt als erstes Maushotspots, die sich in räumlicher Nähe zur Pflanze befinden (Prinzip 3). Sind keine Hotspots in der Nähe, so wächst sie zu einem Punkt auf der Webseite, der über 10 mal von der Maus berührt wurde (Prinzip 2). Gibt es keinen Punkt der häufiger als 10 Berührt wurde, wächst die Pflanze in Richtung der aktuellen Mausposition (Prinzip 1). Abbildung 7 zeigt, dass die Kombination der Wachstumsprinzipien zu einer natürlicheren Form der Ranke führt. Damit die Pflanze nicht in gerade Strecken zu den Hotspots wächst, wird auf jeden Richtungswinkel ein kleiner Zufallswert gerechnet.
+
+== Pflanzenmodell ==
+
+Um der Ranke eine organische Form zu verleihen, orientierte ich mich an dem Wachstumsmodell einer Rebe. Ich abstrahierte ein vereinfachtes Modell aus der [https://www.uni-hohenheim.de/lehre370/weinbau/biologie/bio1.htm Beschreibung von Rolf Blaich]. 
+Zusätzlich programmierte ich einen Alterungsprozess, bei dem die Pflanzenabschnitte langsam ihre Farbe und Dicke ändern.
+
+Ich verzichtete absichtlich auf Blätter, damit die Pflanze die Webseite nicht zu schnell überwuchern konnte.
+Ich ersetzte die Blätter durch unterschiedliche kleine Zweige, die in unterschiedliche Richtung aus der Pflanze austreten können. Aktuell besitzt die Pflanze vier unterschiedliche Zweige, die in Abhängigkeit vom Winkel der Hauptranke anfangen zu sprießen.
+
+== Probleme ==
+
+Bei der Verwendung des Plugins entstehen auf manchen Webseiten immer wieder unvorhergesehene Probleme, die ich bisher noch nicht lösen konnte.
+Zum einen gibt es einige Webseiten, die ihre Seitengröße beim Scrollen verändern. Auf diesen Webseiten können die Mauspositionen manchmal nicht richtig übermittelt werden oder die Ranke kann nicht in alle Bereiche der Webseite vordringen.
+Auf anderen Webseiten, wie beispielsweise auf Facebook, wird die Pflanze nach dem Anklicken eines Profils immer vollständig gelöscht, so dass sie wieder von vorne anfängt zu wachsen. Auf Twitter und Youtube ist dieser Fehler nicht zu beobachten.
+Manche Webseitenelemente, insbesondere Iframes, lassen sich oft nicht überwachsen.
 
 
 = Zukünftige Arbeit =
 
+Während der Entwicklung des Semesterprojekts stellte ich fest, dass dieses Plugin nie ein eindeutiges Ende finde würde. Es gibt unendlich viele Möglichkeiten die Ranke zu gestalten. Meine Programmstruktur unterstützt sowohl abstrakte Punkt als auch organische Rankenmodelle. 
+In Zukunft möchte ich besonders das Aussehen der Rankenzweige verbessern und das Wachstum der Hauptranke auf das Wachstum der Zweige anpassen.
 
-Man kann sich zu dieser Arbeit eine große Anzahl an Erweiterungen vorstellen.
-Beispielsweise:
-Dynamische Geschwindikeit
-Unterscheidung zwischen Klicks und Hover.
-
-Ranken unterschiedlicher Länge
-
-
-
-
-
-
-
-STICHPUNKTE
-
-Meine Grundidee orientiert sich an der Aufnahme von Organsimen.
-
-Dieser Ansatz gefällt mir weil er dynamisch ist.
-Viele Medien sind nicht dynamisch
-
-Semesterarbeit soll dynamischen Ansatz verfolgen.
-Grundidee - Mauszeigerbewegungen aufzeichnen.
-
-
-
-Ein weiterer Grund 
-
-Die fehlende dynamik der Medien führt dann in vielen Fällen  Empfänger der Medien wird d
-2. dynamic
-2. dynamic
-3. interaktivität
-
-
-
-Zum anderen verleiht der Ansatz dem Medium eine abstrakte Form der Wahrnehmung. Richtet man die Aufnahmen eine dynamische Form der "Interaktion", wenn man die Aufnahmen richtig einsetzt. Wenn das Medium in der Lage ist Änderung in seiner Umwelt  das Medium die Möglichkeit bekommt auf seine Umwelt zu wenn das Medium durch die Bewegungen des Empfängers beeinflusst wird. Man ist es nicht gewöhnt, dass Medien auf ihre Umwelt regieren.
-
-
-Zum einen bemerkte ich, dass viele Medien sehr statisch 
-
-== Idee & Konzept ==
-My basic idea is to create an interactive background for a website.
-To combine this idea with the concept of ''Plants vs Humans vs Robots''  
-I decided to simulate a growing plant. The growth can be influenced by ''human'' website visitors.
-
-== Implementation ==
-To implement my ideas I will use HTML, CSS and JavaScript. For my plant visualization I am going to use the JavaScript library d3.js from Mike Bostock.
-https://github.com/mbostock/d3/wiki/Gallery
-
-So far the growth of the plant is based on simple randomized angle changes between branches of the plant. In future I want to replace the randomized angles by L-Systems.
-
-== Progress ==
-
-Follow my exact progress on https://github.com/EphTron/gmuProject/
-
-Dec 21, 2014: added a grid
-
-Jan 05, 2015: improved grid
-
-Jan 08, 2015: added plant simulationwww
-
-Jan 09, 2015: improved visualization
-
-
-== '''Plants vs Humans''' ==
-
-Im Rahmen dieses Semesterprojekts wurde ein Chrome-Plugin entwickelt.
-Das Plugin lässt künstliche Ranken über alle Tabs des Chrome-Webbrowsers wachsen.
-
-[[Image:EphTron_gmuTree.png|200px|thumb|right]]
-[[Image:GmuRanke.png|200px|thumb|right]]
-
-== Ideenfindung ==
-
-Die Grundidee für meine Semesteraufgabe entstand bereits in der Einführungswoche, als uns die unterschiedlichen Projekte der Professur für Gestaltung Medialer Umgebungen vorgestellt wurden.
-Insbesondere interessierten und inspirierten mich die Projekte in denen Veränderungen von Umgebungen oder Organismen aufgenommen wurden, wie beispielsweise in dem Projekt "the outline of paradise".
-Der Ansatz Bewegungen von Organsimen aufzunehmen, um deren Charakteristik (und in manchen Fällen auch deren Ästhetik) anschließend auf Mediale Umgebungen zu übertragen, ließ mich nicht mehr los.
-
-Als ich mir die Frage stellt, was mich an dem Ansatz so faszinierte, stieß ich auf mehrere Gründe.
-Zum einen gefiel mir die Dynamik, die der Ansatz mit sich bringt. Die meisten Medien denen man im Alltag begegnet sind sehr statisch und besitzen keinerlei "Eigenleben". Das gilt sowohl für Medien im öffentlichen Raum, wie beispielsweise Plakate und Schaufenster, als auch für virtuelle Medien, wie Webseiten. Solche statischen Medien fügen sich meistens nur in die Umgebung ein und übermitteln ihren Inhalt. Im Gegensatz dazu führt der bewegte Ansatz zu einer Dynamik, die die Umgebung erweitert und den Empfänger der Medien dazu einläd sich die Veränderung genauer anzuschauen.
-Zum anderen ermöglichen die Aufnahmen eine Form der Interaktion, wenn das Medium durch die Bewegungen des Empfängers beeinflusst wird. Der Empfänger wird 
-
-== Implementation ==
-To implement my ideas I will use HTML, CSS and JavaScript. For my plant visualization I am going to use the JavaScript library d3.js from Mike Bostock.
-https://github.com/mbostock/d3/wiki/Gallery
-
-So far the growth of the plant is based on simple randomized angle changes between branches of the plant. In future I want to replace the randomized angles by L-Systems.
-
-== Progress ==
-
-Follow my exact progress on https://github.com/EphTron/gmuProject/
-
-Dec 21, 2014: added a grid
-
-Jan 05, 2015: improved grid
-
-Jan 08, 2015: added plant simulation
-
-Jan 09, 2015: improved visualization
-
-
-<nowiki><script type="text/javascript">
-alert("Test");
-</script></nowiki>
+Auch Abseite des Aussehens kann man sich noch eine große Anzahl an Erweiterungen vorstellen:
+:* Variable Rankenfarbe
+:* Dynamische Wachstumsgeschwindigkeit
+:* Besondere Effekte bei Mausklicks
+:* Unterschiedlich Rankenlänge
+:* Behalten der Pflanzenform, beim Wechseln eines Tabs

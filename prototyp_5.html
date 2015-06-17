@@ -6,10 +6,7 @@
     
         <!-- >>>>>STYLESHEETS<<<<< -->
         <link href="css_reset.css" rel="stylesheet" type="text/css">
-        <link href="plants-vs-humans.css" rel="stylesheet" type="text/css">
-
-        <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:regular&amp;subset=latin"/>
-        <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Arvo:regular&amp;subset=latin"/>
+        <link href="gmuStyle.css" rel="stylesheet" type="text/css">
             
         <!-- >>>>>BOOTSTRAP SCRIPTS<<<<< -->
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -22,74 +19,7 @@
     </head>
     <body>
         <div id="gmuArt">
-            <div id="website">
-                <div id="header">
-                    <h3 class="title">PLANTS vs HUMANS</h3>
-                </div>
-                
-                <div id="content_text">
-                    <article>
-                        <h3>Die Natur in der Technik oder die Technik in der Natur.</h3>
-                        <br>
-                        <hr class="shadow"/>
-                        <br>
-
-                        <p>In meinem Uni-Projekt "PLANTS vs HUMANS" ist ein kleines Chrome-Plugin entstanden, welches einen künstlichen Baum über den Bildschirm wachsen lässt. Ein künstlicher Baum, der die Nutzer davon abhält eine Webseite sinnvoll zu bedienen. Ein künstlicher Baum, der nichts nützt und trotzdem interessant ist. Er ist nicht interessant weil er stört, sondern aufgrund seines Wachstums und der daraus resultierenden Form. Eine Form die vielen Formen in der Natur in gewisserweise sehr ähnlich ist, da sie nach dem gleichen Prinzip entsteht. Ein Prinzip das sich in den Wolken, in Schneeflocken, an der Küste, in den Bergen, in Pflanzen – überall – wiederfinden lässt.</p>
-
-                        <p>Rekursion – Ein Phänomen, dass sich überall in der Natur finden lässt und oftmals nur unterbewusst bewundert wird, weil wir das Muster nicht in seinem gesamten Ausmaß erkennen. Das Phänomen, dass Formen sich wiederholen, dass Formen sich in sich selbst spiegeln, dass Formen aus sich selbst bestehen. Die Einfachheit und die Genialität der Rekursion verschließt sich dem Auge meist in einer komplexen Vielfalt an Formen, die man erst nach längerem Beobachten durchdringt. In manchen Dingen ist sie leichter zu entdecken als in anderen. 
-                        Es fällt uns beispielsweise schwer genauer zu beschreiben, wie die Struktur eines Baumes oder eines Blumenkohls entsteht. Eine gewisse Ähnlichkeit zwischen beiden Pflanzen ist jedoch nicht von der Hand zu weisen und lässt uns schließen, dass ähnliche "Prozesse" statt finden. Bei Farnblättern hingegen ist das Prinzip der Rekursion leichter zu erfassen. Dort scheinen immer kleinere Kopien des Blattes selbst an dem Blatt zu hängen, nur um ~90° gedreht. Das Farnblatt wird in sich wiederholenden Schritten aus einer einfachen Grundform aufgebaut. Hat man diese Grundlage der Rekursion einmal erkannt, so findet man sie auch beim Blumenkohl wieder, nur mit einer anderen Form. Der Blumenkohl erweckt den Eindruck als bestehe er aus vielen kleinen Blumenkohlen, und diese wieder aus vielen kleinen... bis es irgendwann nicht mehr kleiner geht. In diesem Fall hat man die maximale Rekursionstiefe erreicht.</p>
-                        <p>In der Mathematik werden solche geometrischen Formen, die sich selbstbeinhalten, als Fraktale bezeichnet.</p>
-
-                        <div class="text_imgs" style="width:700px;">
-                            <img class="picture" id="farn" src="imgs/farn.jpg" height="300px">
-                            <img class="picture" id="kohl" src="imgs/kohl.jpg" height="300px">
-                        </div>
-                        <br>
-                        <hr class="shadow"/>
-                        <br>
-
-                        <p>Bei Bäumen sind diese rekursiven Fraktale ebenfalls vorhanden, nur etwas komplizierter, weil sie mehrere Grundformen beinhalten und komplexeren Regeln folgen. Um den Baum etwas zu vereinfachen könnte man ihn beispielsweise auf drei Formen reduzieren: dicke und dünne Äste, sowie Blätter. Diese Formen treten am Baum nur in bestimmten Reihenfolgen auf. Wenn man einige Beoachtungen anstellt, könnte man einige Tatsachen festhalten, wie zum Beispiel die Folgenden:</p>
-
-                        <p> - Blätter wachsen nie an dicken Ästen.</p>
-                        <p> - Dicke Äste wachsen nicht an dünnen Ästen.</p>
-                        <p> - Aus dünnen Ästen werden nach einiger Zeit dicke Äste.</p>
-                        <p>usw.</p>
-                        <br>
-                        <p>Aus einigen dieser Sätze lassen sich im Anschluss sogar Regeln oder Grammatiken formulieren, welche dann auf sehr formale Weise einen Baum (oder andere Dinge in der Natur) beschreiben. Wenn man diese Grammatiken in einen Computer hineingibt, so kann der Computer eine Abbildung des Baumes ableiten. Das interessante dabei ist, dass die Abbildung des Computers nicht unbedingt eine maximale Rekursionstiefe braucht. Was dazu führt, dass man immer tiefer in die Abbildung hineintauchen kann.
-                        Beim hineintauchen wird man feststellen, dass sich das Computerfraktal gar nicht verändert, sondern nur wir unsere Position im Fraktal.</p>
-                        <br>
-                        <div class="text_imgs" style="width:560px;">
-                            <img id="pythagoras" src="imgs/pythagoras.png" width="550px">
-                        </div>
-                        <br>
-                        <p>In der Informatik bezeichnet man diese Grammatiken als Lindenmayer-Systeme und es ist erstaunlich was für beeindruckende Fraktale sie erzeugen können und wie viele dieser Fraktale man in der Natur wiederfindet, so ähnelt der Pythagorasbaum beispielsweise sehr der Form eines Blumekohl oder Brokkoli.</p>
-
-                        <p>Oft reichen schon wenige Regeln in einem L-System um ein relativ komplexes Fraktal zu bilden. Das kann an der Koch-Kurve sehr schön gezeigt werden. Bei ihr besitzen wir nur eine Form (F), zwei sogenannte Konstanten (+, -) und eine Regel  P={(F → F+F--F+F)}.</p>
-
-                        <p><strong>F</strong> : Stellt eine Strich da, der in eine Richtung gezogen wird.</p>
-                        <p><strong>+</strong> : Dreht den Strich um 60°  gegen den Uhrzeigersinn.</p>
-                        <p><strong>-</strong> : Dreht den Strich um 60° mit dem Uhrzeigersinn.</p>
-                        <br>
-                        <div class="text_imgs" style="width:760px;">
-                            <img class="picture" id="koch" src="imgs/koch_curve.png" width="750px">
-                        </div>
-                        <br>
-                        <p>Unser Startwort ist F, was einem einfachen Strich entspricht. Nun beginnen wir unsere Regel P auf F anzuwenden. Wir ersetzten also F durch F+F--F+F. Schon nach wenigen Rekursivendurchgängen (Iterationen) erhalten wir ein Muster, dass sich immer wieder selbstenthält und mit dem Ursprung nur schwer in Verbindung gebracht werden. Erst wenn wir in unserem Muster nach sich wiederholenden Abschnitten ausschau halten, bemerken wir, dass jede Stufe die vorherige beinhaltet.
-                        Bemerkenswert an Fraktalen ist, wie schwer es ist deren Ursprung zu ergründen, selbst wenn wir die Regeln kennen nach denen sie sich richten.</p> 
-                        <br>
-                        <div class="text_imgs" style="width:360px;">
-                            <img class="picture" id="koch" src="imgs/flocke.png" width="350px">
-                        </div>
-                        <br>
-                        <p>Diese Schneeflocke ist nach der gleichen Regel P erzeugt worden, wie oben unser kleines Beispiel. Sie beinhaltet ebenfalls nur F, + und - und die Regel P. Der einzige Unterschied liegt im Startwort. Kannst du das Startwort oder seine Form in dem Muster erkennen?
-                        Ähnlich wie bei dieser Schneeflocke geht es uns überall in der Natur. Das Wissen um die Rekursion bietet uns eine neu Sichtweise auf unsere altbekannte Umwelt. Sie ermöglicht es uns nach den verborgenen Regeln der Natur zu suchen und die Magie in ihr zu finden.</p>
-
-                        <p>Ob wir dabei jemals einen Ursprung finden werden bleibt offen</p>
-
-                    </article>
-                    <div id="content_tree">
-
-                    </div>
+            <div id="website">  
 
                 </div>
             </div>
@@ -144,9 +74,9 @@
  
             // tendril variables/globals
 
-            var grow_time = 2000;
-            var branch_length = 30;
-            var tendril_segments = 40;
+            var grow_time = 1000;
+            var branch_length = 40;
+            var tendril_segments = 60;
             
             var global_tendril_count = 0;
             var global_tendril_id = 0;
@@ -172,65 +102,10 @@
                 .attr("z-index", 100)
                 .attr("pointer-events", "none");
 
-            // tree variables/globales    
-
-            var tree_length = 60;
-            var tree_branch_count = 0;
-            var tree_queue = new Array();
-            var tree_data = new Array();
-            var treeContainer = d3.select("#content_tree")
-                .append("svg")
-                .attr("width", 1170)
-                .attr("height", 700)
-                .attr("z-index", 100)
-                .attr("pointer-events", "none");
-
-            var button = treeContainer
-                .append("g")
-                .attr("transform", function(d, i) { return "translate("+30+"," + 30 + ")"; });
-
-                buttonRect = button.append("rect")
-                    .attr("x", 0)
-                    .attr("y", 0)
-                    .attr("width", 300)
-                    .attr("height", 70)
-                    .attr("fill", "#00ced1")
-                    .attr("pointer-events", "all")
-                    .on("mouseover",  function(d,i) {
-                        buttonRect.transition()
-                            .duration(30)
-                            .attr("fill", "green");
-                    })
-                    .on("click",  function(d,i) {
-                        buttonRect.transition()
-                            .duration(30)
-                            .attr("fill","green")
-                        treeContainer.selectAll("path").remove()
-                        tree_queue = new Array();
-                        tree_data = new Array();
-                        init_tree();
-                        grow_tree(0,7);
-                    })
-                    .on("mouseout",  function(d,i) {
-                        buttonRect.transition()
-                            .duration(30)
-                            .attr("fill", "#00ced1");
-                    });
-
-                button.append("text")
-                    .attr("id","button_text")
-                    .attr("x", 70)
-                    .attr("y", 45)
-                    .attr("pointer-events", "none")
-                    //.attr("font", "30px")
-                    //.attr("dy", "30px")
-                    .text(function(d) { return "generate Tree"; });
-
             
             init_grid(200);
             draw_grid();
 
-            init_tree();
             //grow_tree(0,8);
 
             run_time_growth();
@@ -752,9 +627,6 @@
                 plant_data[new_leaf_id]["children"] = [];
                 plant_data[new_leaf_id]["parent"] = object.id;
                 branch_count++;
-                if (type == "la"){
-                    create_leaf(object, _branch, last_angle, "lb");
-                }
 
                 draw_queue.push(new_leaf_id);
             }
@@ -983,86 +855,7 @@
                 tree_queue.push(0);
                 draw_tree_branches([0]);
             }
-
-            function create_tree_branches(object){
-                for (i in object.children){
-                    child = object.children[i];
-                    tree_data[child] = new Object();
-
-                    var _old_end = tree_data[object.id].branch[1];
-                    var _old_omega = tree_data[object.id].angle;
-                    var _omega = _old_omega + Math.random() * Math.PI/2 - (Math.PI/2 / 2); 
-                    var _start = { "x": _old_end.x, 
-                                   "y": _old_end.y};
-
-                    
-                    var _end = {"x": _start.x + tree_length * Math.cos(_omega),
-                                "y": _start.y + tree_length * Math.sin(_omega)};
-                    
-
-                    var _branch = new Array(_start,_end);
-
-                    tree_data[child]["id"] = child;
-                    tree_data[child]["branch"] = _branch;
-                    tree_data[child]["angle"] = _omega;
-                    tree_data[child]["generation"] = object.generation +1;
-                    tree_data[child]["children"] = [child*2+1,child*2+2];
-                    tree_data[child]["parent"] = object.id;
-                    tree_branch_count++;
-
-                    tree_queue.push(child);
-                }
-            }
-
-            function draw_tree_branches(branch_list, time){
-                var _branch_count = branch_list.length;
-                for (var i = 0; i < _branch_count; i++){
-                    idx = branch_list.shift();
-                    var lineFunction = d3.svg.line()
-                        .x(function(d) { return d.x; })
-                        .y(function(d) { return d.y; })
-                        .interpolate("basis");
-
-                    var plantGraph = treeContainer.append("path")
-                        .attr("d", lineFunction(tree_data[idx].branch))
-                        .attr("id", "t"+tree_data[idx].id)
-                        .attr("stroke", "green")
-                        .attr("stroke-width", 8 - (tree_data[idx].generation) * 0.6)
-                        .attr("stroke-linecap", "round")  // stroke-linecap type
-                        .attr("fill", "none")
-                        
-
-                    var plant_length = plantGraph.node().getTotalLength();
-
-                    plantGraph.attr("stroke-dasharray", plant_length + " " + plant_length)
-                        .attr("stroke-dashoffset", plant_length)
-                        .transition()
-                        //.delay(plant_data[idx].generation * 3000)
-                            .duration(time)
-                            .ease("basis")
-                            .attr("stroke-dashoffset", 0);
-                }
-            }
-
-            function grow_tree(iterations, max_depth){
-                if(iterations < max_depth){
-                    time = randomIntFromInterval(grow_time-200, grow_time+200)
-                    setTimeout(function(){
-                        var _l = tree_queue.length;
-
-                        for (var i = 0; i < _l; i++){
-                            idx = tree_queue.shift();
-
-                            create_tree_branches(tree_data[idx]); //create children of last branch
-
-                            draw_tree_branches(tree_data[idx].children, time); // draw children of last branch
-                        }
-                        iterations++;
-                        //console.log(iterations);
-                        grow_tree(iterations,max_depth);
-                    }, time);
-                }
-            }
+            
             </script>
 
             
